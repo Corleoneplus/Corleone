@@ -1,1 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Corleone Store</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
+:root{--bg:#0a0e14;--card:#141a23;--border:#2a3441;--text:#e6edf3;--muted:#8b949e;--gold:#d4af37;--primary:#2f81f7;--success:#238636;--danger:#da3633;--accent:#58a6ff}
+body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:var(--card);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100}
+.logo{font-weight:900;font-size:1.4rem;color:var(--gold);letter-spacing:1px}
+#user-bar{display:flex;gap:12px;align-items:center}
+#user-name{color:var(--muted);font-size:.9rem}
+.balance{background:var(--success);padding:5px 14px;border-radius:20px;font-size:.9rem;font-weight:700}
+.screen{max-width:900px;margin:20px auto;padding:0 16px}
+.hidden{display:none!important}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:16px}
+.card.center{text-align:center}
+h1{color:var(--gold);margin-bottom:12px}
+h3{color:var(--accent);margin-bottom:14px;font-size:1.15rem}
+.muted{color:var(--muted);font-size:.9rem;line-height:1.6}
+#tg-widget-container{margin:24px 0;display:flex;justify-content:center;min-height:50px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--card);padding:6px;border-radius:12px;border:1px solid var(--border)}
+.tabs button{flex:1;padding:11px 6px;background:transparent;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;border-radius:8px;transition:.2s;font-weight:600}
+.tabs button.active{background:var(--gold);color:#000}
+.tab-content{display:none}.tab-content.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.shop-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;gap:8px}
+.shop-item:hover{border-color:var(--gold);transform:translateY(-2px)}
+.shop-item.sold{opacity:.5;cursor:not-allowed}
+.shop-item .title{font-weight:700;font-size:1.02rem}
+.shop-item .meta{display:flex;justify-content:space-between;font-size:.85rem}
+.shop-item .price{color:var(--gold);font-weight:700}
+.shop-item .stock{color:var(--accent)}
+.btn{background:var(--gold);color:#000;border:none;padding:11px 18px;border-radius:8px;cursor:pointer;font-size:.95rem;font-weight:700;transition:.2s}
+.btn:hover{background:#e8c655}.btn.sm{padding:6px 12px;font-size:.82rem;background:var(--border);color:var(--text)}
+.btn.red{background:var(--danger);color:#fff}
+.btn.blue{background:var(--primary);color:#fff}
+input,select{width:100%;padding:11px;margin:6px 0;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.95rem;font-family:inherit}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+.purchase-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.purchase-item .info{display:flex;flex-direction:column;gap:4px}
+.purchase-item .phone{font-weight:700;color:var(--gold);font-family:monospace;font-size:1.05rem}
+.breadcrumb{margin-bottom:14px;padding:9px 14px;background:var(--card);border-radius:8px;font-size:.9rem}
+.breadcrumb a{color:var(--gold);cursor:pointer;text-decoration:none}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px}
+.modal-content{background:var(--card);border-radius:14px;width:100%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;border:1px solid var(--gold)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border)}
+.modal-header h3{color:var(--gold);margin:0}
+.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:200px;max-height:400px}
+.chat-msg{padding:11px 15px;border-radius:14px;max-width:82%;word-wrap:break-word;font-size:.92rem;line-height:1.5}
+.chat-msg.system{background:var(--border);align-self:flex-start}
+.chat-msg.user{background:var(--primary);align-self:flex-end;color:#fff}
+.chat-msg.otp{background:var(--success);align-self:flex-start;font-weight:700;font-size:1.05rem}
+.chat-msg.error{background:var(--danger);align-self:flex-start}
+.chat-footer{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.chat-footer button{flex:1}
+.msg{margin-top:12px;padding:11px;border-radius:8px;font-size:.9rem;line-height:1.5}
+.msg.error{background:rgba(218,54,51,.2);color:#ff8888}
+.msg.success{background:rgba(35,134,54,.2);color:#6fdb7c}
+.msg.info{background:rgba(47,129,247,.15);color:var(--accent)}
+@media(max-width:600px){header{padding:10px 12px}.logo{font-size:1.05rem}.balance{font-size:.8rem;padding:3px 9px}#user-name{display:none}.grid{grid-template-columns:1fr}.tabs button{font-size:.8rem;padding:9px 4px}}
+</style>
+</head>
+<body>
 
+<header>
+<div class="logo">CORLEONE STORE</div>
+<div id="user-bar" class="hidden">
+<span id="user-name"></span>
+<span class="balance">💰 <b id="user-balance">0.00</b>$</span>
+<button id="logout-btn" class="btn sm">خروج</button>
+</div>
+</header>
+
+<div id="login-screen" class="screen">
+<div class="card center">
+<h1>مرحباً بك في Corleone Store</h1>
+<p class="muted">سجّل دخولك بحساب تيليجرام للوصول إلى رصيدك ومشترياتك</p>
+<div id="tg-widget-container"></div>
+<p class="muted" style="font-size:.8rem;margin-top:18px">إذا واجهت مشكلة، ابدأ من البوت أولاً</p>
+</div>
+</div>
+
+<div id="main-screen" class="screen hidden">
+<div class="tabs">
+<button data-tab="shop" class="active">🛍️ المتجر</button>
+<button data-tab="purchases">📦 مشترياتي</button>
+<button data-tab="recharge">💳 شحن</button>
+<button data-tab="support">🆘 الدعم</button>
+</div>
+
+<section id="tab-shop" class="tab-content active">
+<div id="breadcrumb" class="breadcrumb hidden"></div>
+<div id="shop-grid" class="grid"></div>
+</section>
+
+<section id="tab-purchases" class="tab-content">
+<div id="purchases-list"></div>
+</section>
+
+<section id="tab-recharge" class="tab-content">
+<div class="card">
+<h3>🪙 شحن بالكريبتو (TON / USDT)</h3>
+<div class="row">
+<select id="crypto-asset"><option value="TON">TON</option><option value="USDT">USDT</option></select>
+<input id="crypto-amount" type="number" min="1" step="0.5" placeholder="المبلغ بالدولار">
+<button id="crypto-create" class="btn">إنشاء فاتورة</button>
+</div>
+<div id="crypto-result" class="hidden"></div>
+</div>
+
+<div class="card">
+<h3>📱 شحن آسيا سيل</h3>
+<p class="muted" style="font-size:.85rem;margin-bottom:10px">السعر: <b style="color:var(--gold)" id="asia-price">0.60</b>$ لكل 1000 دينار</p>
+<input id="asia-phone" type="tel" placeholder="رقم آسيا (مثال: 07701234567)">
+<button id="asia-start" class="btn">ابدأ</button>
+<div id="asia-steps" class="hidden" style="margin-top:14px">
+<div id="asia-step-otp" class="hidden">
+<input id="asia-otp" placeholder="كود التحقق من آسيا سيل">
+<button id="asia-otp-submit" class="btn">تأكيد</button>
+</div>
+<div id="asia-step-amount" class="hidden">
+<input id="asia-amount" type="number" placeholder="المبلغ بالدينار (حد أدنى 1000)">
+<button id="asia-amount-submit" class="btn">متابعة</button>
+</div>
+<div id="asia-step-confirm" class="hidden">
+<p class="muted" id="asia-confirm-info" style="margin-bottom:10px"></p>
+<input id="asia-confirm" placeholder="كود تأكيد التحويل">
+<button id="asia-confirm-submit" class="btn">تأكيد نهائي</button>
+</div>
+</div>
+<div id="asia-msg" class="msg" style="display:none"></div>
+</div>
+</section>
+
+<section id="tab-support" class="tab-content">
+<div class="card center">
+<h3>🆘 الدعم الفني</h3>
+<p class="muted" style="margin-bottom:16px">للتواصل المباشر:</p>
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+<a class="btn blue" href="https://t.me/Z_5_F6" target="_blank" style="text-decoration:none">@Z_5_F6</a>
+<a class="btn blue" href="https://t.me/nhnhhnhn" target="_blank" style="text-decoration:none">@nhnhhnhn</a>
+</div>
+</div>
+</section>
+</div>
+
+<div id="chat-modal" class="modal hidden">
+<div class="modal-content">
+<div class="modal-header"><h3 id="chat-title">الكود</h3><button id="chat-close" class="btn sm">✖</button></div>
+<div id="chat-body" class="chat-body"></div>
+<div class="chat-footer"><button id="chat-request-otp" class="btn">🔄 طلب كود OTP</button></div>
+</div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   ⚠️ عدّل هذا السطر إلى رابط خادمك (الباك اند)
+   مثال: "https://corleone-api.up.railway.app"
+   ══════════════════════════════════════════════ */
+const API_BASE = "https://YOUR-BACKEND-DOMAIN";
+
+const state = { token: localStorage.getItem("token")||null, user:null, config:null, parent:null, chatId:null };
+
+async function api(path, method="GET", body=null) {
+    const h = { "Content-Type":"application/json" };
+    if (state.token) h["Authorization"] = "Bearer " + state.token;
+    const r = await fetch(API_BASE + path, { method, headers:h, body: body?JSON.stringify(body):null });
+    const d = await r.json().catch(()=>({}));
+    if (!r.ok) throw new Error(d.detail || d.error || "خطأ " + r.status);
+    return d;
+}
+
+async function loadConfig(retries=10) {
+    try {
+        const cfg = await api("/api/config");
+        if (!cfg.bot_username) {
+            if (retries > 0) { await new Promise(x=>setTimeout(x,2000)); return loadConfig(retries-1); }
+            throw new Error("البوت لم يجهز بعد");
+        }
+        state.config = cfg;
+        document.getElementById("asia-price").textContent = cfg.asia_price_per_1000.toFixed(2);
+        const c = document.getElementById("tg-widget-container");
+        const s = document.createElement("script");
+        s.async = true;
+        s.src = "https://telegram.org/js/telegram-widget.js?22";
+        s.setAttribute("data-telegram-login", cfg.bot_username);
+        s.setAttribute("data-size", "large");
+        s.setAttribute("data-onauth", "onTGLogin(user)");
+        s.setAttribute("data-request-access", "write");
+        c.appendChild(s);
+    } catch (e) {
+        document.getElementById("tg-widget-container").innerHTML = `<p class="msg error">تعذر الاتصال بالخادم: ${e.message}</p>`;
+    }
+}
+
+window.onTGLogin = async function(user) {
+    try {
+        const r = await api("/api/auth", "POST", user);
+        state.token = r.token; state.user = r.user;
+        localStorage.setItem("token", r.token);
+        showMain();
+    } catch (e) { alert("فشل تسجيل الدخول: " + e.message); }
+};
+
+function showMain() {
+    document.getElementById("login-screen").classList.add("hidden");
+    document.getElementById("main-screen").classList.remove("hidden");
+    document.getElementById("user-bar").classList.remove("hidden");
+    document.getElementById("user-name").textContent = state.user.first_name || "";
+    document.getElementById("user-balance").textContent = state.user.balance.toFixed(2);
+    loadShop(null); loadPurchases();
+}
+
+function logout() { state.token=null; state.user=null; localStorage.removeItem("token"); location.reload(); }
+
+async function loadShop(parentId) {
+    const g = document.getElementById("shop-grid");
+    g.innerHTML = '<p class="muted">جاري التحميل...</p>';
+    try {
+        const r = await api("/api/shop" + (parentId ? "?parent="+parentId : ""));
+        state.parent = parentId;
+        renderBC(r.parent);
+        if (r.items.length === 0) { g.innerHTML = '<p class="muted">لا توجد عناصر.</p>'; return; }
+        g.innerHTML = "";
+        for (const it of r.items) {
+            const d = document.createElement("div");
+            d.className = "shop-item";
+            const isCat = it.type === "category";
+            if (isCat && it.stock <= 0) d.classList.add("sold");
+            d.innerHTML = `
+                <div class="title">${it.emoji} ${it.title}</div>
+                ${isCat ? `<div class="meta"><span class="price">${it.price.toFixed(2)}$</span><span class="stock">${it.stock>0?"متوفر: "+it.stock:"نفدت"}</span></div>` : '<div class="meta"><span class="muted">📁 مجلد</span></div>'}
+            `;
+            d.onclick = () => isCat ? (it.stock > 0 && buyNumber(it)) : loadShop(it.id);
+            g.appendChild(d);
+        }
+    } catch (e) { g.innerHTML = `<p class="msg error">${e.message}</p>`; }
+}
+
+function renderBC(p) {
+    const bc = document.getElementById("breadcrumb");
+    if (!p) { bc.classList.add("hidden"); return; }
+    bc.classList.remove("hidden");
+    bc.innerHTML = `<a onclick="loadShop(null)">🏠 المتجر</a> / ${p.emoji} ${p.title}`;
+}
+
+async function buyNumber(it) {
+    if (!confirm(`شراء ${it.title} بـ ${it.price.toFixed(2)}$؟`)) return;
+    try {
+        const r = await api("/api/buy", "POST", { node_id: it.id });
+        state.user.balance = r.new_balance;
+        document.getElementById("user-balance").textContent = r.new_balance.toFixed(2);
+        alert(`✅ تم الشراء!\n\nالرقم: ${r.phone}\n${r.password ? "الباسوورد: "+r.password : ""}\n\nاذهب لـ "مشترياتي" لطلب كود OTP.`);
+        loadShop(state.parent); loadPurchases();
+    } catch (e) { alert("فشل الشراء: " + e.message); }
+}
+
+async function loadPurchases() {
+    const l = document.getElementById("purchases-list");
+    l.innerHTML = '<p class="muted">جاري التحميل...</p>';
+    try {
+        const r = await api("/api/purchases");
+        if (r.items.length === 0) { l.innerHTML = '<p class="muted">لا توجد مشتريات.</p>'; return; }
+        l.innerHTML = "";
+        for (const p of r.items) {
+            const d = document.createElement("div");
+            d.className = "purchase-item";
+            d.innerHTML = `
+                <div class="info">
+                    <span class="phone">${p.flag} ${p.phone}</span>
+                    ${p.password ? `<span class="muted" style="font-size:.8rem">باسوورد: ${p.password}</span>` : ""}
+                    <span class="muted" style="font-size:.8rem">${p.country} · ${p.price.toFixed(2)}$</span>
+                </div>
+                <button class="btn" onclick="openChat(${p.number_id}, '${p.phone}')">📩 الكود</button>
+            `;
+            l.appendChild(d);
+        }
+    } catch (e) { l.innerHTML = `<p class="msg error">${e.message}</p>`; }
+}
+
+function openChat(nid, phone) {
+    state.chatId = nid;
+    document.getElementById("chat-title").textContent = "الكود — " + phone;
+    document.getElementById("chat-body").innerHTML = "";
+    document.getElementById("chat-modal").classList.remove("hidden");
+    addMsg("system", "اضغط 'طلب كود OTP' لاستلام الكود من البوت");
+}
+function closeChat() { document.getElementById("chat-modal").classList.add("hidden"); state.chatId=null; }
+function addMsg(t, txt) {
+    const b = document.getElementById("chat-body");
+    const d = document.createElement("div");
+    d.className = "chat-msg " + t;
+    d.textContent = txt;
+    b.appendChild(d); b.scrollTop = b.scrollHeight;
+}
+async function reqOTP() {
+    if (!state.chatId) return;
+    addMsg("user", "طلبت كود OTP");
+    const load = document.createElement("div");
+    load.className = "chat-msg system"; load.textContent = "⏳ جاري السحب...";
+    document.getElementById("chat-body").appendChild(load);
+    try {
+        const r = await api("/api/otp/" + state.chatId, "POST");
+        load.remove();
+        if (r.code) addMsg("otp", "🔑 كود الدخول: " + r.code);
+        else addMsg("error", "❌ " + (r.error || "لم يصل"));
+    } catch (e) { load.remove(); addMsg("error", "❌ " + e.message); }
+}
+
+async function createCrypto() {
+    const amt = parseFloat(document.getElementById("crypto-amount").value);
+    const ast = document.getElementById("crypto-asset").value;
+    const r = document.getElementById("crypto-result");
+    if (!amt || amt <= 0) { alert("أدخل مبلغاً صحيحاً"); return; }
+    r.classList.remove("hidden"); r.innerHTML = '<p class="muted">⏳ جاري الإنشاء...</p>';
+    try {
+        const res = await api("/api/crypto/create", "POST", { amount: amt, asset: ast });
+        r.innerHTML = `
+            <p class="msg success">✅ تم إنشاء الفاتورة</p>
+            <p style="margin:10px 0">المبلغ: <b>${res.amount} ${res.asset}</b></p>
+            <a href="${res.pay_url}" target="_blank" class="btn blue" style="display:inline-block;text-decoration:none">💳 ادفع الآن</a>
+            <button class="btn" onclick="checkCrypto(${res.invoice_id})" style="margin-right:8px">🔄 تحقق</button>
+            <div id="crypto-check" style="margin-top:10px"></div>
+        `;
+    } catch (e) { r.innerHTML = `<p class="msg error">${e.message}</p>`; }
+}
+async function checkCrypto(id) {
+    const el = document.getElementById("crypto-check");
+    el.innerHTML = '<p class="muted">⏳ جاري التحقق...</p>';
+    try {
+        const r = await api("/api/crypto/check/" + id);
+        if (r.paid) {
+            el.innerHTML = `<p class="msg success">✅ تم الدفع! رصيدك: ${r.new_balance.toFixed(2)}$</p>`;
+            state.user.balance = r.new_balance;
+            document.getElementById("user-balance").textContent = r.new_balance.toFixed(2);
+        } else el.innerHTML = `<p class="msg info">⏳ لم يتم الدفع (${r.status})</p>`;
+    } catch (e) { el.innerHTML = `<p class="msg error">${e.message}</p>`; }
+}
+
+function showAsia(step) {
+    ["otp","amount","confirm"].forEach(s => document.getElementById("asia-step-"+s).classList.add("hidden"));
+    document.getElementById("asia-steps").classList.remove("hidden");
+    if (step) document.getElementById("asia-step-"+step).classList.remove("hidden");
+}
+function asiaMsg(msg, type="info") {
+    const el = document.getElementById("asia-msg");
+    el.style.display = "block"; el.className = "msg " + type; el.innerHTML = msg;
+}
+async function asiaStart() {
+    const p = document.getElementById("asia-phone").value.trim();
+    if (!p) return;
+    asiaMsg("⏳ جاري إرسال كود التحقق...");
+    try {
+        await api("/api/asia/start", "POST", { phone: p });
+        asiaMsg("✅ تم إرسال الكود. أدخله:", "success"); showAsia("otp");
+    } catch (e) { asiaMsg("❌ " + e.message, "error"); }
+}
+async function asiaOtp() {
+    const c = document.getElementById("asia-otp").value.trim();
+    if (!c) return;
+    asiaMsg("⏳ جاري التحقق...");
+    try {
+        await api("/api/asia/otp", "POST", { code: c });
+        asiaMsg("✅ تم التحقق. أدخل المبلغ:", "success"); showAsia("amount");
+    } catch (e) { asiaMsg("❌ " + e.message, "error"); }
+}
+async function asiaAmount() {
+    const a = parseInt(document.getElementById("asia-amount").value);
+    if (!a || a < 1000) { alert("الحد الأدنى 1000 دينار"); return; }
+    asiaMsg("⏳ جاري بدء التحويل...");
+    try {
+        const r = await api("/api/asia/amount", "POST", { amount: a });
+        asiaMsg(`✅ حوّل <b>${r.amount_iqd.toLocaleString()} دينار</b> إلى <b>${r.receiver}</b><br>سيضاف لك <b>${r.credit_usd.toFixed(2)}$</b>`, "success");
+        document.getElementById("asia-confirm-info").innerHTML = `أدخل كود التأكيد من آسيا سيل`;
+        showAsia("confirm");
+    } catch (e) { asiaMsg("❌ " + e.message, "error"); }
+}
+async function asiaConfirm() {
+    const c = document.getElementById("asia-confirm").value.trim();
+    if (!c) return;
+    asiaMsg("⏳ جاري التأكيد...");
+    try {
+        const r = await api("/api/asia/confirm", "POST", { code: c });
+        asiaMsg(`🎉 تم الشحن! أضيف: <b>${r.credit_usd.toFixed(2)}$</b> — رصيدك: <b>${r.new_balance.toFixed(2)}$</b>`, "success");
+        state.user.balance = r.new_balance;
+        document.getElementById("user-balance").textContent = r.new_balance.toFixed(2);
+        document.getElementById("asia-steps").classList.add("hidden");
+    } catch (e) { asiaMsg("❌ " + e.message, "error"); }
+}
+
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => {
+    document.querySelectorAll(".tabs button").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    document.getElementById("tab-" + b.dataset.tab).classList.add("active");
+    if (b.dataset.tab === "purchases") loadPurchases();
+});
+
+document.getElementById("logout-btn").onclick = logout;
+document.getElementById("chat-close").onclick = closeChat;
+document.getElementById("chat-request-otp").onclick = reqOTP;
+document.getElementById("crypto-create").onclick = createCrypto;
+document.getElementById("asia-start").onclick = asiaStart;
+document.getElementById("asia-otp-submit").onclick = asiaOtp;
+document.getElementById("asia-amount-submit").onclick = asiaAmount;
+document.getElementById("asia-confirm-submit").onclick = asiaConfirm;
+
+(async () => {
+    await loadConfig();
+    if (state.token) {
+        try { state.user = await api("/api/me"); showMain(); }
+        catch { localStorage.removeItem("token"); state.token = null; }
+    }
+})();
+</script>
+</body>
+  </html>
