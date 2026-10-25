@@ -55,6 +55,22 @@ body::before {
 
 .hidden { display: none !important; }
 
+/* ===== شريط التنبيه بانقطاع السيرفر ===== */
+#offline-banner {
+    background: var(--danger);
+    color: #fff;
+    text-align: center;
+    padding: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    position: sticky;
+    top: 60px; /* تحت الهيدر */
+    z-index: 99;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s ease;
+}
+@keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
 /* ===== شاشة الافتتاح ===== */
 #splash-screen {
     position: fixed; inset: 0; background: var(--bg-main); z-index: 9999;
@@ -308,6 +324,9 @@ header {
     </div>
 </header>
 
+<!-- لافتة السيرفر غير متصل -->
+<div id="offline-banner" class="hidden">السيرفر غير متصل الآن، يرجى المحاولة لاحقاً</div>
+
 <!-- الدخول -->
 <div id="login-screen" class="hidden">
     <div class="login-card">
@@ -428,6 +447,7 @@ header {
 <script>
 const API_BASE = "https://corleonestore.wisp.uno";
 let BOT_USERNAME = "";
+let isServerOnline = false; // متغير تتبع حالة السيرفر
 
 const state = {
   token: localStorage.getItem("token") || null,
@@ -471,7 +491,29 @@ function updateBalanceDisplay(newBalance) {
     }
 }
 
+// دوال حالة السيرفر
+function setServerOnline() {
+    isServerOnline = true;
+    document.getElementById("server-status-dot").className = "status-dot online";
+    document.getElementById("server-status-text").textContent = "حالة السيرفر: متصل";
+    document.getElementById("server-status-text").style.color = "var(--success)";
+    document.getElementById("offline-banner").classList.add("hidden");
+}
+
+function setServerOffline() {
+    isServerOnline = false;
+    document.getElementById("server-status-dot").className = "status-dot offline";
+    document.getElementById("server-status-text").textContent = "حالة السيرفر: غير متصل";
+    document.getElementById("server-status-text").style.color = "var(--danger)";
+    document.getElementById("offline-banner").classList.remove("hidden");
+}
+
 async function api(path, method = "GET", body = null) {
+    // إذا السيرفر غير متصل، نرفض الطلب فوراً بدون ما نحاول الاتصال
+    if (!isServerOnline && path !== "/api/config") {
+        throw new Error("السيرفر غير متصل الآن");
+    }
+
     const headers = { "Content-Type": "application/json" };
     if (state.token) headers["Authorization"] = "Bearer " + state.token;
     
@@ -481,6 +523,7 @@ async function api(path, method = "GET", body = null) {
         try { data = await res.json(); } catch(e) { data = {}; }
         
         if (res.status === 401 && path !== "/api/login") {
+            // هذا خطأ حقيقي بالتوكن، مش خطأ شبكة
             localStorage.removeItem("token");
             state.token = null;
             location.reload();
@@ -493,16 +536,18 @@ async function api(path, method = "GET", body = null) {
             }
             throw new Error(errMsg);
         }
+        setServerOnline(); // إذا نجح الطلب، السيرفر متصل
         return data;
     } catch (err) {
-        if(err.message === "Failed to fetch") throw new Error("تعذر الاتصال بالخادم، تأكد من الإنترنت");
+        if (err.name === 'TypeError' || err.message.includes('fetch')) {
+            setServerOffline(); // فشل الاتصال
+            throw new Error("السيرفر غير متصل الآن");
+        }
         throw err;
     }
 }
 
 async function checkServerStatus() {
-    const dot = document.getElementById("server-status-dot");
-    const text = document.getElementById("server-status-text");
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -512,14 +557,12 @@ async function checkServerStatus() {
         if (res.ok) {
             const cfg = await res.json();
             BOT_USERNAME = cfg.bot_username;
-            dot.className = "status-dot online";
-            text.textContent = "حالة السيرفر: متصل";
-            text.style.color = "var(--success)";
-        } else { throw new Error("offline"); }
+            setServerOnline();
+        } else {
+            throw new Error("offline");
+        }
     } catch (e) {
-        dot.className = "status-dot offline";
-        text.textContent = "حالة السيرفر: غير متصل";
-        text.style.color = "var(--danger)";
+        setServerOffline();
     }
 }
 
@@ -590,9 +633,16 @@ async function bootApp() {
             state.user = await api("/api/me");
             targetScreen = 'main';
         } catch (e) {
-            localStorage.removeItem("token");
-            state.token = null;
-            targetScreen = 'login';
+            // إذا كان الخطأ بسبب السيرفر، لا نسجل خروج
+            if (e.message === "السيرفر غير متصل الآن") {
+                targetScreen = 'main'; // نبقيه بالصفحة الرئيسية
+                state.user = { balance: 0.00 }; // قيمة مؤقتة
+            } else {
+                // إذا كان التوكن خربان فعلاً
+                localStorage.removeItem("token");
+                state.token = null;
+                targetScreen = 'login';
+            }
         }
     }
 
@@ -618,7 +668,7 @@ async function bootApp() {
         loadShop(null);
         
         setInterval(async () => {
-            if(document.hidden) return;
+            if(document.hidden || !isServerOnline) return;
             try {
                 const me = await api("/api/me");
                 state.user = me;
@@ -636,6 +686,7 @@ async function bootApp() {
 }
 
 document.getElementById("login-btn").onclick = async () => {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     const pwd = document.getElementById("login-password").value.trim();
     if (!pwd) return showToast("أدخل كلمة السر", "error");
     const btn = document.getElementById("login-btn");
@@ -664,7 +715,6 @@ document.getElementById("login-btn").onclick = async () => {
     }
 };
 
-// تسجيل الخروج
 document.getElementById("logout-btn").onclick = () => {
     document.getElementById("logout-modal").classList.add("show");
 };
@@ -680,6 +730,12 @@ function doLogout() {
 
 async function loadShop(parentId) {
     const grid = document.getElementById("shop-grid");
+    
+    if (!isServerOnline) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; color: var(--danger); text-align: center; padding: 40px 20px; font-weight:800; font-size:1.1rem;">السيرفر غير متصل الآن<br><span style="font-size:0.9rem; color:var(--text-muted); font-weight:600;">يرجى المحاولة لاحقاً</span></div>`;
+        return;
+    }
+
     grid.innerHTML = getShopSkeleton();
     
     const bc = document.getElementById("breadcrumb");
@@ -708,7 +764,6 @@ async function loadShop(parentId) {
                 const div = document.createElement("div");
                 
                 if (item.type === "category" && item.stock <= 0) {
-                    // حالة النفاذ
                     div.className = "shop-item sold";
                     div.innerHTML = `
                         <div class="title">${item.title}</div>
@@ -716,7 +771,6 @@ async function loadShop(parentId) {
                     `;
                     div.onclick = () => showToast("هذا القسم نفذت كميته", "error");
                 } else {
-                    // حالة التوفر
                     div.className = "shop-item";
                     div.style.animationDelay = `${index * 0.05}s`;
                     div.innerHTML = `
@@ -745,6 +799,7 @@ async function loadShop(parentId) {
 }
 
 async function buyNumber(item) {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     if (!confirm(`هل تريد شراء ${item.title} بـ ${item.price}$؟`)) return;
     try {
         showToast("جاري إتمام الشراء...", "success");
@@ -777,6 +832,12 @@ function requestOtpFromSuccess() { const id = state.lastPurchasedId; closeSucces
 
 async function loadPurchases() {
     const list = document.getElementById("purchases-list");
+    
+    if (!isServerOnline) {
+        list.innerHTML = `<div style="color: var(--danger); text-align: center; padding: 40px 20px; font-weight:800; font-size:1.1rem;">السيرفر غير متصل الآن<br><span style="font-size:0.9rem; color:var(--text-muted); font-weight:600;">يرجى المحاولة لاحقاً</span></div>`;
+        return;
+    }
+
     list.innerHTML = getPurchasesSkeleton();
     
     try {
@@ -823,6 +884,7 @@ async function loadPurchases() {
 }
 
 async function logoutNumber(numberId) {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     if (!confirm("هل أنت متأكد من تسجيل الخروج من هذا الرقم؟ لن تتمكن من طلب كود OTP له بعد الآن.")) return;
     try {
         await api("/api/logout/" + numberId, "POST");
@@ -832,6 +894,7 @@ async function logoutNumber(numberId) {
 }
 
 function openChat(numberId) {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     state.chatNumberId = numberId;
     document.getElementById("chat-body").innerHTML = "";
     document.getElementById("chat-modal").classList.add("show");
@@ -839,7 +902,7 @@ function openChat(numberId) {
 function closeChat() { document.getElementById("chat-modal").classList.remove("show"); state.chatNumberId = null; }
 
 document.getElementById("chat-request-otp").onclick = async () => {
-    if (!state.chatNumberId) return;
+    if (!state.chatNumberId || !isServerOnline) return;
     const body = document.getElementById("chat-body");
     body.innerHTML = '<div class="loader"></div>';
     try {
@@ -853,6 +916,7 @@ document.getElementById("chat-request-otp").onclick = async () => {
 };
 
 document.getElementById("asia-start").onclick = async () => {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     const phone = document.getElementById("asia-phone").value;
     if (!phone) return showToast("أدخل الرقم", "error");
     const msg = document.getElementById("asia-msg");
@@ -867,6 +931,7 @@ document.getElementById("asia-start").onclick = async () => {
 };
 
 document.getElementById("asia-otp-submit").onclick = async () => {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     const code = document.getElementById("asia-otp").value;
     try {
         await api("/api/asia/otp", "POST", { code });
@@ -876,6 +941,7 @@ document.getElementById("asia-otp-submit").onclick = async () => {
 };
 
 document.getElementById("asia-amount-submit").onclick = async () => {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     const amount = parseInt(document.getElementById("asia-amount").value);
     try {
         const res = await api("/api/asia/amount", "POST", { amount });
@@ -886,6 +952,7 @@ document.getElementById("asia-amount-submit").onclick = async () => {
 };
 
 document.getElementById("asia-confirm-submit").onclick = async () => {
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
     const code = document.getElementById("asia-confirm").value;
     try {
         const res = await api("/api/asia/confirm", "POST", { code });
