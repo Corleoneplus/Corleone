@@ -48,30 +48,50 @@ body::before {
 }
 
 .hidden { display: none !important; }
-.loader { display: inline-block; width: 24px; height: 24px; border: 2px solid rgba(212, 175, 55, 0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loader { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(212, 175, 55, 0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* الشريط العلوي */
 header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 20px; position: sticky; top: 0; z-index: 100;
+    padding: 12px 20px; position: sticky; top: 0; z-index: 100;
     background: rgba(7, 9, 15, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-glass);
 }
 
-#user-bar { display: flex; gap: 12px; align-items: center; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-logo { height: 35px; width: auto; object-fit: contain; border-radius: 6px; }
+.header-title { font-family: var(--font-en); font-weight: 900; color: var(--gold); font-size: 1.1rem; letter-spacing: 1px; display: none; }
+
+#user-bar { display: flex; gap: 10px; align-items: center; }
 .balance {
-    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    padding: 6px 14px; border-radius: 30px; font-size: 0.9rem; font-weight: 700;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 700;
     color: var(--gold-light); font-family: var(--font-en);
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: 4px;
 }
+
+/* مؤشر حالة السيرفر */
+.status-pill {
+    font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px;
+    display: flex; align-items: center; gap: 6px; transition: var(--smooth);
+}
+.status-pill::before {
+    content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+}
+.status-checking { background: rgba(155, 161, 166, 0.1); color: var(--text-muted); border: 1px solid var(--text-muted); }
+.status-checking::before { background: var(--text-muted); animation: pulse 1.5s infinite; }
+.status-online { background: rgba(46, 160, 67, 0.1); color: var(--success); border: 1px solid var(--success); }
+.status-online::before { background: var(--success); }
+.status-offline { background: rgba(218, 54, 51, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+.status-offline::before { background: var(--danger); }
+@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
 /* شاشة تسجيل الدخول */
 #login-screen {
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    height: 100vh; padding: 20px;
+    height: calc(100vh - 60px); padding: 20px;
 }
 
 .login-card {
@@ -111,7 +131,7 @@ header {
 /* الأزرار */
 .btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; padding: 16px; border: none; border-radius: 14px;
+    width: 100%; padding: 14px; border: none; border-radius: 12px;
     font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
     cursor: pointer; transition: var(--smooth);
     background: linear-gradient(135deg, var(--gold), #b8952b);
@@ -168,6 +188,19 @@ header {
 .shop-item .stock { color: var(--text-muted); }
 .shop-item.sold { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
 
+/* زر الرجوع */
+.back-nav {
+    margin-bottom: 15px; display: flex; align-items: center;
+}
+.btn-back {
+    background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass);
+    color: var(--text-main); padding: 8px 16px; border-radius: 10px;
+    font-family: var(--font-ar); font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: var(--smooth); display: flex; align-items: center; gap: 8px;
+}
+.btn-back:hover { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); }
+.btn-back::before { content: '\2192'; font-family: Arial, sans-serif; font-size: 1.1rem; color: var(--gold); } /* سهم يشير لليمين */
+
 /* المشتريات */
 .purchase-card {
     background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px;
@@ -210,6 +243,8 @@ header {
     box-shadow: 0 20px 50px rgba(0,0,0,0.9);
 }
 .modal.show .modal-content { transform: scale(1) translateY(0); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-title { font-weight: 700; color: var(--gold); font-size: 1.1rem; }
 
 /* الإشعارات */
 .toast {
@@ -222,24 +257,31 @@ header {
 .toast.error { background: var(--danger); }
 .toast.success { background: var(--success); }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
 @media (max-width: 600px) {
     .brand-title { font-size: 1.5rem; }
     .tab-btn { font-size: 0.9rem; padding: 12px 0; }
     .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
     .purchase-card .actions { flex-direction: column; }
+    .header-title { display: none; }
+    .status-pill { font-size: 0.7rem; padding: 4px 8px; }
+}
+@media (min-width: 601px) {
+    .header-title { display: block; } /* إظهار النص بجانب اللوكو في الشاشات الكبيرة */
 }
 </style>
 </head>
 <body>
 
 <header>
-    <h1 style="font-family:var(--font-en); color:var(--gold); font-size:1.2rem; letter-spacing:1px; font-weight:900;">CORLEONE PLUS</h1>
+    <div class="header-right">
+        <img src="logo.png" alt="Logo" class="header-logo" onerror="this.style.display='none';">
+        <span class="header-title">CORLEONE PLUS</span>
+    </div>
     
     <div id="user-bar" class="hidden">
-        <div class="balance">💰 <span id="user-balance">0.00</span>$</div>
-        <button id="logout-btn" class="btn outline" style="width:auto; padding:8px 12px; font-size:0.8rem;">خروج</button>
+        <div class="status-pill status-checking" id="server-status">جاري الفحص</div>
+        <div class="balance">$ <span id="user-balance">0.00</span></div>
+        <button id="logout-btn" class="btn outline" style="width:auto; padding:6px 12px; font-size:0.8rem;">تسجيل الخروج</button>
     </div>
 </header>
 
@@ -269,8 +311,9 @@ header {
 
     <!-- المتجر -->
     <div id="tab-shop" class="tab-content active">
-        <div id="breadcrumb" class="hidden" style="margin-bottom: 15px; font-size: 0.9rem; font-weight:600;">
-            <span style="color: var(--gold); cursor: pointer;" onclick="loadShop(null)">الرئيسية</span> / <span id="bc-current" style="color:var(--text-muted);"></span>
+        <div id="breadcrumb" class="hidden back-nav">
+            <button class="btn-back" onclick="loadShop(null)">رجوع</button>
+            <span id="bc-current" style="color:var(--gold); font-weight:700; margin-right:10px;"></span>
         </div>
         <div id="shop-grid" class="grid">
             <div style="grid-column: 1/-1; text-align: center; padding: 40px;"><div class="loader"></div></div>
@@ -285,7 +328,7 @@ header {
     <!-- الشحن -->
     <div id="tab-recharge" class="tab-content">
         <div class="card">
-            <div class="card-title">📱 شحن آسيا سيل</div>
+            <div class="card-title">شحن آسيا سيل</div>
             <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
             <input type="tel" id="asia-phone" class="form-control" placeholder="رقم الآسيا (مثال: 07701234567)">
             <button id="asia-start" class="btn">بدء الشحن</button>
@@ -314,19 +357,19 @@ header {
 <!-- مودال الكود -->
 <div id="chat-modal" class="modal">
     <div class="modal-content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <div style="font-weight: 700; color: var(--gold); font-size:1.1rem;" id="chat-title">🔑 الكود</div>
+        <div class="modal-header">
+            <div class="modal-title" id="chat-title">الكود</div>
             <button onclick="closeChat()" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✖</button>
         </div>
         <div id="chat-body" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; min-height: 100px;"></div>
-        <button id="chat-request-otp" class="btn">🔄 طلب كود OTP</button>
+        <button id="chat-request-otp" class="btn">طلب كود OTP</button>
+        <button class="btn outline" style="margin-top: 10px;" onclick="closeChat()">رجوع</button>
     </div>
 </div>
 
 <!-- مودال نجاح الشراء -->
 <div id="success-modal" class="modal">
     <div class="modal-content" style="text-align:center;">
-        <div style="font-size:3rem; margin-bottom:10px;">🎉</div>
         <div style="font-weight: 900; color: var(--gold); font-size:1.3rem; margin-bottom: 15px;">تم الشراء بنجاح!</div>
         
         <div style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px; margin-bottom:20px;">
@@ -340,7 +383,7 @@ header {
         </div>
         
         <div style="display:flex; gap:10px;">
-            <button class="btn" onclick="requestOtpFromSuccess()" id="succ-otp-btn">📩 طلب الكود</button>
+            <button class="btn" onclick="requestOtpFromSuccess()" id="succ-otp-btn">طلب الكود</button>
             <button class="btn outline" onclick="closeSuccess()">إغلاق</button>
         </div>
     </div>
@@ -395,6 +438,28 @@ async function api(path, method = "GET", body = null) {
     }
 }
 
+// فحص حالة السيرفر
+async function checkServerStatus() {
+    const indicator = document.getElementById("server-status");
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const res = await fetch(API_BASE + "/api/config", { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (res.ok) {
+            indicator.className = "status-pill status-online";
+            indicator.textContent = "متصل";
+        } else {
+            throw new Error("offline");
+        }
+    } catch (e) {
+        indicator.className = "status-pill status-offline";
+        indicator.textContent = "غير متصل";
+    }
+}
+
 function switchTab(index, tabName) {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
@@ -403,13 +468,15 @@ function switchTab(index, tabName) {
     document.getElementById(`tab-${tabName}`).classList.add("active");
     
     const indicator = document.getElementById("tab-indicator");
-    // تعديل اتجاه المؤشر لأن الموقع عربي (RTL)
     indicator.style.transform = `translateX(-${index * 100}%)`;
     
     if (tabName === "purchases") loadPurchases();
 }
 
 async function initApp() {
+    checkServerStatus();
+    setInterval(checkServerStatus, 30000); // تحديث حالة السيرفر كل 30 ثانية
+
     try {
         const cfg = await api("/api/config");
         document.getElementById("asia-price").textContent = cfg.asia_price_per_1000.toFixed(2);
@@ -424,7 +491,6 @@ async function initApp() {
             document.getElementById("user-bar").classList.remove("hidden");
             loadShop(null);
             
-            // تحديث تلقائي صامت
             setInterval(async () => {
                 if(document.hidden) return;
                 try {
@@ -457,9 +523,12 @@ document.getElementById("login-btn").onclick = async () => {
     }
 };
 
+// تسجيل الخروج
 document.getElementById("logout-btn").onclick = () => {
-    localStorage.removeItem("token");
-    location.reload();
+    if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
+        localStorage.removeItem("token");
+        location.reload();
+    }
 };
 
 // المتجر
@@ -516,7 +585,6 @@ async function buyNumber(item) {
         state.user.balance = res.new_balance;
         document.getElementById("user-balance").textContent = res.new_balance.toFixed(2);
         
-        // إظهار مودال النجاح
         state.lastPurchasedId = res.number_id;
         document.getElementById("succ-phone").textContent = res.phone;
         
@@ -572,8 +640,8 @@ async function loadPurchases() {
                     <div style="font-size:0.8rem; color:var(--gold); margin-top:6px;">${p.country} - ${p.price.toFixed(2)}$</div>
                 </div>
                 <div class="actions">
-                    <button class="btn" onclick="openChat(${p.number_id})">📩 الكود</button>
-                    <button class="btn danger" onclick="logoutNumber(${p.number_id})">🚪 خروج</button>
+                    <button class="btn" onclick="openChat(${p.number_id})">الكود</button>
+                    <button class="btn danger" onclick="logoutNumber(${p.number_id})">تسجيل خروج</button>
                 </div>
             `;
             list.appendChild(div);
@@ -671,4 +739,4 @@ document.getElementById("asia-confirm-submit").onclick = async () => {
 initApp();
 </script>
 </body>
-</html>
+    </html>
