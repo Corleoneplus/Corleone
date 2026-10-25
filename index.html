@@ -72,10 +72,17 @@ padding:22px;margin-bottom:16px;box-shadow:var(--shadow)
 .muted a:hover{text-decoration:underline}
 
 /* ===== Login ===== */
-#tg-widget-container{margin:24px 0;display:flex;justify-content:center;min-height:50px;align-items:center}
+.login-box{margin:20px 0;display:flex;flex-direction:column;gap:12px}
+.login-box input{
+width:100%;padding:14px;background:var(--bg);
+border:2px solid var(--border);border-radius:10px;color:var(--gold);
+font-size:1.1rem;font-family:'Courier New',monospace;letter-spacing:2px;
+text-align:center;font-weight:700;transition:border-color .2s
+}
+.login-box input:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 4px rgba(212,175,55,.1)}
 .login-hint{
 margin-top:20px;padding:14px;background:rgba(47,129,247,.08);
-border:1px dashed var(--primary);border-radius:10px;font-size:.85rem
+border:1px dashed var(--primary);border-radius:10px;font-size:.85rem;text-align:right
 }
 
 /* ===== Tabs ===== */
@@ -281,15 +288,10 @@ header{padding:10px 12px}
 .purchase-item{flex-direction:column;align-items:stretch}
 .purchase-item .actions{justify-content:flex-end}
 }
-
-/* ===== Animations ===== */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.pulse{animation:pulse 1.5s ease infinite}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ HEADER ═══════════════ -->
 <header>
   <div class="logo">CORLEONE STORE</div>
   <div id="user-bar" class="hidden">
@@ -299,24 +301,25 @@ header{padding:10px 12px}
   </div>
 </header>
 
-<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
 <div id="login-screen" class="screen">
   <div class="card center">
     <h1>مرحباً بك 💎</h1>
-    <p class="muted">سجّل دخولك بحساب تيليجرام للوصول إلى رصيدك ومشترياتك</p>
-    <div id="tg-widget-container">
-      <div class="loader"></div>
+    <p class="muted">أدخل <b>كلمة سر الموقع</b> التي حصلت عليها من البوت للوصول إلى حسابك</p>
+    
+    <div class="login-box">
+      <input id="login-password" type="text" placeholder="jwvz7g@$7wv" autocomplete="off" spellcheck="false">
+      <button id="login-btn" class="btn wide">🔓 دخول</button>
     </div>
+    
     <div class="login-hint">
       <p class="muted">
-        💡 <b>ملاحظة:</b> إذا لم يظهر زر تسجيل الدخول، تأكد من فتح الموقع عبر
-        <b>HTTPS</b> وأنك لا تستخدم وضع التصفح المتخفي.
+        💡 <b>ما هي كلمة السر؟</b><br>
+        افتح البوت، وأرسل <code>/start</code> أو <code>/myid</code>، وستجد كلمة سر خاصة بك مكونة من 10 رموز (مثل <code>jwvz7g@$7wv</code>). انسخها والصقها هنا.
       </p>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ MAIN SCREEN ═══════════════ -->
 <div id="main-screen" class="screen hidden">
 
   <div class="tabs">
@@ -326,7 +329,6 @@ header{padding:10px 12px}
     <button data-tab="support"><span>🆘</span><span>الدعم</span></button>
   </div>
 
-  <!-- ════ TAB: SHOP ════ -->
   <section id="tab-shop" class="tab-content active">
     <div id="breadcrumb" class="breadcrumb hidden"></div>
     <div id="shop-grid" class="grid">
@@ -334,17 +336,13 @@ header{padding:10px 12px}
     </div>
   </section>
 
-  <!-- ════ TAB: PURCHASES ════ -->
   <section id="tab-purchases" class="tab-content">
     <div id="purchases-list">
       <div class="loading-center"><div class="loader"></div></div>
     </div>
   </section>
 
-  <!-- ════ TAB: RECHARGE ════ -->
   <section id="tab-recharge" class="tab-content">
-
-    <!-- Crypto -->
     <div class="card">
       <h3>🪙 شحن بالكريبتو (TON / USDT)</h3>
       <p class="muted small" style="margin-bottom:12px">
@@ -361,7 +359,6 @@ header{padding:10px 12px}
       <div id="crypto-result" class="hidden"></div>
     </div>
 
-    <!-- Asia Cell -->
     <div class="card">
       <h3>📱 شحن آسيا سيل</h3>
       <p class="muted small" style="margin-bottom:12px">
@@ -391,10 +388,8 @@ header{padding:10px 12px}
 
       <div id="asia-msg" class="hidden"></div>
     </div>
-
   </section>
 
-  <!-- ════ TAB: SUPPORT ════ -->
   <section id="tab-support" class="tab-content">
     <div class="card center">
       <h3 style="justify-content:center">🆘 الدعم الفني</h3>
@@ -408,7 +403,6 @@ header{padding:10px 12px}
 
 </div>
 
-<!-- ═══════════════ CHAT MODAL (OTP) ═══════════════ -->
 <div id="chat-modal" class="modal hidden">
   <div class="modal-content">
     <div class="modal-header">
@@ -424,11 +418,10 @@ header{padding:10px 12px}
 
 <script>
 /* ═══════════════════════════════════════════════════════
-   ⚠️⚠️⚠️  غيّر هذا السطر إلى رابط خادمك (الباك اند)  ⚠️⚠️⚠️
-   مثال: "https://corleone-api.up.railway.app"
+   ⚠️ غيّر هذا السطر إلى رابط خادمك (الباك اند)
    ═══════════════════════════════════════════════════════ */
 const API_BASE = "https://corleonestore.wisp.uno";
-/* ═══════════════ STATE ═══════════════ */
+
 const state = {
   token: localStorage.getItem("token") || null,
   user: null,
@@ -439,7 +432,6 @@ const state = {
   initialized: false
 };
 
-/* ═══════════════ API CLIENT ═══════════════ */
 async function api(path, method = "GET", body = null) {
   const headers = { "Content-Type": "application/json" };
   if (state.token) headers["Authorization"] = "Bearer " + state.token;
@@ -458,7 +450,7 @@ async function api(path, method = "GET", body = null) {
   let data = {};
   try { data = await res.json(); } catch (e) {}
 
-  if (res.status === 401 && path !== "/api/auth") {
+  if (res.status === 401 && path !== "/api/login") {
     localStorage.removeItem("token");
     state.token = null;
     state.user = null;
@@ -472,9 +464,7 @@ async function api(path, method = "GET", body = null) {
   return data;
 }
 
-/* ═══════════════ UI HELPERS ═══════════════ */
 function $(id) { return document.getElementById(id); }
-
 function show(el) { if (typeof el === "string") el = $(el); if (el) el.classList.remove("hidden"); }
 function hide(el) { if (typeof el === "string") el = $(el); if (el) el.classList.add("hidden"); }
 
@@ -488,54 +478,16 @@ function toast(msg, type = "info") {
   setTimeout(() => t.remove(), 3400);
 }
 
-/* ═══════════════ CONFIG LOAD ═══════════════ */
 async function loadConfig(retries = 15) {
   try {
     const cfg = await api("/api/config");
-    if (!cfg.bot_username) {
-      if (retries > 0) {
-        await new Promise(r => setTimeout(r, 2000));
-        return loadConfig(retries - 1);
-      }
-      throw new Error("البوت لم يجهز بعد");
-    }
     state.config = cfg;
     $("asia-price").textContent = cfg.asia_price_per_1000.toFixed(2);
-
-    // Insert Telegram Login Widget
-    const container = $("tg-widget-container");
-    container.innerHTML = "";
-    const s = document.createElement("script");
-    s.async = true;
-    s.src = "https://telegram.org/js/telegram-widget.js?22";
-    s.setAttribute("data-telegram-login", cfg.bot_username);
-    s.setAttribute("data-size", "large");
-    s.setAttribute("data-onauth", "onTelegramAuth(user)");
-    s.setAttribute("data-request-access", "write");
-    s.setAttribute("data-userpic", "true");
-    container.appendChild(s);
   } catch (e) {
-    const container = $("tg-widget-container");
-    container.innerHTML = `<div class="msg error" style="width:100%">⚠️ ${e.message}<br><br>
-      <button class="btn sm" onclick="location.reload()">🔄 إعادة المحاولة</button></div>`;
+    // تجاهل الخطأ في شاشة الدخول
   }
 }
 
-/* ═══════════════ TELEGRAM AUTH ═══════════════ */
-window.onTelegramAuth = async function(user) {
-  try {
-    const res = await api("/api/auth", "POST", user);
-    state.token = res.token;
-    state.user = res.user;
-    localStorage.setItem("token", res.token);
-    showMain();
-    toast("✅ تم تسجيل الدخول بنجاح", "success");
-  } catch (e) {
-    toast("❌ فشل تسجيل الدخول: " + e.message, "error");
-  }
-};
-
-/* ═══════════════ MAIN SCREEN ═══════════════ */
 function showMain() {
   hide("login-screen");
   show("main-screen");
@@ -559,7 +511,28 @@ function updateBalance(newBalance) {
   $("user-balance").textContent = newBalance.toFixed(2);
 }
 
-/* ═══════════════ SHOP ═══════════════ */
+async function loginWithPassword() {
+  const input = $("login-password");
+  const btn = $("login-btn");
+  const pwd = input.value.trim();
+  if (!pwd) { toast("أدخل كلمة المرور أولاً", "warning"); return; }
+  
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loader"></div> جاري...';
+  try {
+    const res = await api("/api/login", "POST", { password: pwd });
+    state.token = res.token;
+    state.user = res.user;
+    localStorage.setItem("token", res.token);
+    showMain();
+    toast("✅ تم تسجيل الدخول بنجاح", "success");
+  } catch (e) {
+    toast("❌ " + e.message, "error");
+    btn.disabled = false;
+    btn.innerHTML = '🔓 دخول';
+  }
+}
+
 async function loadShop(parentId) {
   const grid = $("shop-grid");
   grid.innerHTML = '<div class="loading-center" style="grid-column:1/-1"><div class="loader"></div><p style="margin-top:12px">جاري التحميل...</p></div>';
@@ -650,7 +623,6 @@ async function buyNumber(item) {
   }
 }
 
-/* ═══════════════ PURCHASES ═══════════════ */
 async function loadPurchases() {
   const list = $("purchases-list");
   list.innerHTML = '<div class="loading-center"><div class="loader"></div></div>';
@@ -684,7 +656,6 @@ async function loadPurchases() {
   }
 }
 
-/* ═══════════════ CHAT MODAL (OTP) ═══════════════ */
 function openChat(numberId, phone) {
   state.chatNumberId = numberId;
   state.chatPhone = phone;
@@ -732,7 +703,6 @@ async function requestOTP() {
   }
 }
 
-/* ═══════════════ CRYPTO RECHARGE ═══════════════ */
 async function createCryptoInvoice() {
   const amount = parseFloat($("crypto-amount").value);
   const asset = $("crypto-asset").value;
@@ -786,7 +756,6 @@ async function checkCrypto(invoiceId) {
   }
 }
 
-/* ═══════════════ ASIA CELL RECHARGE ═══════════════ */
 function showAsiaStep(step) {
   ["otp", "amount", "confirm"].forEach(s => hide("asia-step-" + s));
   show("asia-steps");
@@ -877,7 +846,6 @@ async function asiaConfirmSubmit() {
   }
 }
 
-/* ═══════════════ UTILS ═══════════════ */
 function escapeHtml(str) {
   if (!str) return "";
   return String(str)
@@ -891,7 +859,6 @@ function escapeAttr(str) {
   return escapeHtml(str).replace(/\n/g, " ");
 }
 
-/* ═══════════════ EVENT LISTENERS ═══════════════ */
 document.querySelectorAll(".tabs button").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
@@ -912,31 +879,19 @@ $("asia-otp-submit").onclick = asiaOtpSubmit;
 $("asia-amount-submit").onclick = asiaAmountSubmit;
 $("asia-confirm-submit").onclick = asiaConfirmSubmit;
 
-// Close modal on backdrop click
+$("login-btn").onclick = loginWithPassword;
+$("login-password").addEventListener("keydown", e => {
+  if (e.key === "Enter") loginWithPassword();
+});
+
 $("chat-modal").addEventListener("click", (e) => {
   if (e.target.id === "chat-modal") closeChat();
 });
 
-// Close modal on Escape
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !$("chat-modal").classList.contains("hidden")) closeChat();
 });
 
-// Enter key submits in Asia inputs
-["asia-phone"].forEach(id => {
-  $(id).addEventListener("keydown", e => { if (e.key === "Enter") asiaStart(); });
-});
-["asia-otp"].forEach(id => {
-  $(id).addEventListener("keydown", e => { if (e.key === "Enter") asiaOtpSubmit(); });
-});
-["asia-amount"].forEach(id => {
-  $(id).addEventListener("keydown", e => { if (e.key === "Enter") asiaAmountSubmit(); });
-});
-["asia-confirm"].forEach(id => {
-  $(id).addEventListener("keydown", e => { if (e.key === "Enter") asiaConfirmSubmit(); });
-});
-
-/* ═══════════════ INIT ═══════════════ */
 (async function init() {
   await loadConfig();
 
@@ -952,7 +907,6 @@ document.addEventListener("keydown", (e) => {
   state.initialized = true;
 })();
 
-// Auto-refresh balance every 30 seconds while on shop
 setInterval(async () => {
   if (!state.token || !state.initialized) return;
   if (document.hidden) return;
@@ -963,4 +917,4 @@ setInterval(async () => {
 }, 30000);
 </script>
 </body>
-   </html>
+</html>
