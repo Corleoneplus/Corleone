@@ -3,918 +3,633 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0a0e14">
-<title>Corleone Store</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+<meta name="theme-color" content="#050505">
+<title>CORLEONE PLUS</title>
+
+<!-- الخطوط الملكية النادرة -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Outfit:wght@300;400;600;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,'Cairo',sans-serif;-webkit-tap-highlight-color:transparent}
-:root{
---bg:#0a0e14;--bg2:#0d1320;--card:#141a23;--card2:#1a2230;--border:#2a3441;
---text:#e6edf3;--muted:#8b949e;--gold:#d4af37;--gold2:#e8c655;
---primary:#2f81f7;--success:#238636;--success2:#2ea043;--danger:#da3633;
---accent:#58a6ff;--warning:#d29922;
---radius:14px;--shadow:0 4px 20px rgba(0,0,0,.4)
-}
-html,body{height:100%}
-body{
-background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
-background-attachment:fixed;color:var(--text);min-height:100vh;
-padding-bottom:40px;overflow-x:hidden
-}
-body::before{
-content:'';position:fixed;top:0;left:0;right:0;bottom:0;
-background:radial-gradient(circle at 20% 20%,rgba(212,175,55,.08) 0%,transparent 50%),
-           radial-gradient(circle at 80% 80%,rgba(47,129,247,.06) 0%,transparent 50%);
-pointer-events:none;z-index:-1
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+    --bg-main: #050505;
+    --bg-card: rgba(15, 15, 15, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.06);
+    --gold: #d4af37;
+    --gold-light: #f3e5ab;
+    --gold-dark: #997a00;
+    --text-main: #f5f5f5;
+    --text-muted: #888;
+    --success: #28a745;
+    --danger: #dc3545;
+    --font-ar: 'Tajawal', sans-serif;
+    --font-en: 'Outfit', sans-serif;
+    --font-brand: 'Cinzel', serif;
+    --smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* ===== Header ===== */
-header{
-display:flex;justify-content:space-between;align-items:center;
-padding:14px 18px;background:rgba(20,26,35,.95);backdrop-filter:blur(10px);
-border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:100;
-box-shadow:0 2px 10px rgba(0,0,0,.3)
-}
-.logo{
-font-weight:900;font-size:1.35rem;color:var(--gold);
-letter-spacing:1.5px;text-shadow:0 0 20px rgba(212,175,55,.4);
-display:flex;align-items:center;gap:8px
-}
-.logo::before{content:'💎';font-size:1.3rem}
-#user-bar{display:flex;gap:12px;align-items:center}
-#user-name{color:var(--muted);font-size:.88rem;font-weight:600}
-.balance{
-background:linear-gradient(135deg,var(--success),var(--success2));
-padding:6px 14px;border-radius:20px;font-size:.9rem;font-weight:700;
-box-shadow:0 2px 8px rgba(35,134,54,.4);display:flex;align-items:center;gap:4px
-}
-.balance b{color:#fff}
-
-/* ===== Screens ===== */
-.screen{max-width:900px;margin:20px auto;padding:0 16px;animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.hidden{display:none!important}
-
-/* ===== Cards ===== */
-.card{
-background:linear-gradient(135deg,var(--card),var(--card2));
-border:1px solid var(--border);border-radius:var(--radius);
-padding:22px;margin-bottom:16px;box-shadow:var(--shadow)
-}
-.card.center{text-align:center}
-.card h1{color:var(--gold);margin-bottom:12px;font-size:1.5rem}
-.card h3{color:var(--accent);margin-bottom:14px;font-size:1.1rem;display:flex;align-items:center;gap:8px}
-
-/* ===== Typography ===== */
-.muted{color:var(--muted);font-size:.9rem;line-height:1.7}
-.small{font-size:.8rem;margin-top:10px}
-.muted a{color:var(--accent);text-decoration:none;font-weight:600}
-.muted a:hover{text-decoration:underline}
-
-/* ===== Login ===== */
-.login-box{margin:20px 0;display:flex;flex-direction:column;gap:12px}
-.login-box input{
-width:100%;padding:14px;background:var(--bg);
-border:2px solid var(--border);border-radius:10px;color:var(--gold);
-font-size:1.1rem;font-family:'Courier New',monospace;letter-spacing:2px;
-text-align:center;font-weight:700;transition:border-color .2s
-}
-.login-box input:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 4px rgba(212,175,55,.1)}
-.login-hint{
-margin-top:20px;padding:14px;background:rgba(47,129,247,.08);
-border:1px dashed var(--primary);border-radius:10px;font-size:.85rem;text-align:right
+html, body {
+    height: 100%;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-ar);
+    overflow-x: hidden;
+    overscroll-behavior: none;
 }
 
-/* ===== Tabs ===== */
-.tabs{
-display:flex;gap:5px;margin-bottom:18px;background:var(--card);
-padding:6px;border-radius:14px;border:1px solid var(--border);
-box-shadow:var(--shadow);position:sticky;top:70px;z-index:50
-}
-.tabs button{
-flex:1;padding:11px 5px;background:transparent;border:none;
-color:var(--muted);font-size:.85rem;cursor:pointer;
-border-radius:9px;transition:all .25s;font-weight:600;
-display:flex;flex-direction:column;align-items:center;gap:3px
-}
-.tabs button.active{
-background:linear-gradient(135deg,var(--gold),var(--gold2));
-color:#000;box-shadow:0 2px 10px rgba(212,175,55,.3);transform:scale(1.02)
-}
-.tabs button:not(.active):hover{background:rgba(212,175,55,.08);color:var(--gold)}
-.tab-content{display:none;animation:fadeIn .3s ease}
-.tab-content.active{display:block}
-
-/* ===== Shop Grid ===== */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.shop-item{
-background:linear-gradient(135deg,var(--card),var(--card2));
-border:1px solid var(--border);border-radius:12px;padding:16px;
-cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:10px;
-position:relative;overflow:hidden
-}
-.shop-item::before{
-content:'';position:absolute;top:0;right:0;width:3px;height:100%;
-background:var(--gold);opacity:0;transition:opacity .2s
-}
-.shop-item:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 6px 20px rgba(212,175,55,.15)}
-.shop-item:hover::before{opacity:1}
-.shop-item:active{transform:translateY(-1px)}
-.shop-item.sold{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
-.shop-item.sold:hover{transform:none;border-color:var(--border)}
-.shop-item .title{font-weight:700;font-size:1.02rem;line-height:1.4;word-break:break-word}
-.shop-item .meta{display:flex;justify-content:space-between;font-size:.85rem;gap:8px;flex-wrap:wrap}
-.shop-item .price{color:var(--gold);font-weight:800;font-size:1rem}
-.shop-item .stock{color:var(--accent);font-weight:600}
-.shop-item .stock.empty{color:var(--danger)}
-.shop-item .folder-badge{
-color:var(--muted);font-size:.8rem;padding:2px 8px;
-background:rgba(139,148,158,.1);border-radius:6px;display:inline-block;width:fit-content
+/* خلفية متحركة هادئة وفخمة */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 10% 90%, rgba(212, 175, 55, 0.05) 0%, transparent 30%);
+    z-index: -1;
+    animation: bgPulse 15s ease-in-out infinite alternate;
 }
 
-/* ===== Breadcrumb ===== */
-.breadcrumb{
-margin-bottom:14px;padding:10px 14px;
-background:var(--card);border:1px solid var(--border);
-border-radius:10px;font-size:.88rem;display:flex;align-items:center;gap:8px;
-flex-wrap:wrap
+@keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(5deg); }
 }
-.breadcrumb a{color:var(--gold);cursor:pointer;text-decoration:none;font-weight:600}
-.breadcrumb a:hover{text-decoration:underline}
-.breadcrumb .sep{color:var(--muted)}
 
-/* ===== Purchases ===== */
-.purchase-item{
-background:var(--card);border:1px solid var(--border);
-border-radius:12px;padding:15px;margin-bottom:12px;
-display:flex;justify-content:space-between;align-items:center;
-flex-wrap:wrap;gap:12px;transition:border-color .2s
-}
-.purchase-item:hover{border-color:var(--gold)}
-.purchase-item .info{display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px}
-.purchase-item .phone{
-font-weight:800;color:var(--gold);font-family:'Courier New',monospace;
-font-size:1.05rem;letter-spacing:.5px
-}
-.purchase-item .actions{display:flex;gap:8px}
+.hidden { display: none !important; }
+.loader { display: inline-block; width: 24px; height: 24px; border: 2px solid rgba(212, 175, 55, 0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ===== Buttons ===== */
-.btn{
-background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;
-border:none;padding:11px 20px;border-radius:9px;cursor:pointer;
-font-size:.92rem;font-weight:700;transition:all .2s;
-display:inline-flex;align-items:center;justify-content:center;gap:6px;
-text-decoration:none;white-space:nowrap
+/* ===== الشريط العلوي ===== */
+header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px; position: sticky; top: 0; z-index: 100;
+    background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-glass);
+    transition: var(--smooth);
 }
-.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,175,55,.3)}
-.btn:active{transform:translateY(0)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
-.btn.sm{padding:6px 13px;font-size:.8rem;background:var(--border);color:var(--text)}
-.btn.red{background:linear-gradient(135deg,var(--danger),#b02a26);color:#fff}
-.btn.blue{background:linear-gradient(135deg,var(--primary),#1f6feb);color:#fff}
-.btn.green{background:linear-gradient(135deg,var(--success),var(--success2));color:#fff}
-.btn.wide{width:100%}
 
-/* ===== Inputs ===== */
-input,select,textarea{
-width:100%;padding:12px;margin:6px 0;
-background:var(--bg);border:1px solid var(--border);
-border-radius:9px;color:var(--text);font-size:.92rem;
-font-family:inherit;transition:border-color .2s;outline:none
+.brand-logo {
+    height: 40px; width: auto; max-width: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+    animation: logoFadeIn 1s ease-out;
 }
-input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.1)}
-input::placeholder{color:var(--muted)}
-select{cursor:pointer;appearance:none;
-background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-background-repeat:no-repeat;background-position:left 12px center;padding-left:34px}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row>*{flex:1;min-width:130px}
 
-/* ===== Chat Modal ===== */
-.modal{
-position:fixed;inset:0;background:rgba(0,0,0,.85);
-backdrop-filter:blur(4px);display:flex;align-items:center;
-justify-content:center;z-index:1000;padding:16px;
-animation:fadeIn .2s ease
-}
-.modal-content{
-background:var(--card);border:1px solid var(--gold);
-border-radius:16px;width:100%;max-width:500px;max-height:88vh;
-display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.7);
-animation:slideUp .3s ease
-}
-@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-header{
-display:flex;justify-content:space-between;align-items:center;
-padding:15px 18px;border-bottom:1px solid var(--border);
-background:linear-gradient(180deg,rgba(212,175,55,.08),transparent)
-}
-.modal-header h3{color:var(--gold);margin:0;font-size:1.05rem}
-.chat-body{
-flex:1;overflow-y:auto;padding:16px;
-display:flex;flex-direction:column;gap:10px;
-min-height:220px;max-height:400px;
-scroll-behavior:smooth
-}
-.chat-body::-webkit-scrollbar{width:6px}
-.chat-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.chat-msg{
-padding:11px 15px;border-radius:14px;max-width:85%;
-word-wrap:break-word;font-size:.9rem;line-height:1.5;
-animation:msgIn .25s ease
-}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.chat-msg.system{background:var(--border);align-self:flex-start;border-bottom-right-radius:4px}
-.chat-msg.user{background:linear-gradient(135deg,var(--primary),#1f6feb);align-self:flex-end;color:#fff;border-bottom-left-radius:4px}
-.chat-msg.otp{
-background:linear-gradient(135deg,var(--success),var(--success2));
-align-self:flex-start;font-weight:700;font-size:1.02rem;
-border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 12px rgba(35,134,54,.3)
-}
-.chat-msg.error{background:linear-gradient(135deg,var(--danger),#b02a26);align-self:flex-start}
-.chat-footer{padding:13px;border-top:1px solid var(--border);display:flex;gap:8px}
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ===== Messages ===== */
-.msg{
-margin-top:12px;padding:12px 14px;border-radius:10px;
-font-size:.9rem;line-height:1.6;animation:fadeIn .2s ease
+#user-bar { display: flex; gap: 12px; align-items: center; }
+.balance {
+    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 6px 14px; border-radius: 30px; font-size: 0.9rem; font-weight: 700;
+    color: var(--gold-light); font-family: var(--font-en);
+    display: flex; align-items: center; gap: 6px;
 }
-.msg.error{background:rgba(218,54,51,.15);color:#ff8888;border:1px solid rgba(218,54,51,.3)}
-.msg.success{background:rgba(35,134,54,.15);color:#6fdb7c;border:1px solid rgba(35,134,54,.3)}
-.msg.info{background:rgba(47,129,247,.12);color:var(--accent);border:1px solid rgba(47,129,247,.3)}
-.msg.warning{background:rgba(210,153,34,.12);color:#f0b429;border:1px solid rgba(210,153,34,.3)}
 
-/* ===== Loader ===== */
-.loader{
-display:inline-block;width:18px;height:18px;
-border:3px solid rgba(212,175,55,.2);border-top-color:var(--gold);
-border-radius:50%;animation:spin .8s linear infinite
+/* ===== شاشة تسجيل الدخول ===== */
+#login-screen {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    height: 100vh; padding: 20px;
+    animation: fadeIn 0.6s ease-out;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-center{text-align:center;padding:40px 20px;color:var(--muted)}
-.loading-center .loader{width:28px;height:28px;border-width:4px}
 
-/* ===== Empty State ===== */
-.empty-state{
-text-align:center;padding:50px 20px;color:var(--muted)
+.login-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
 }
-.empty-state .icon{font-size:3rem;margin-bottom:14px;opacity:.5}
-.empty-state p{font-size:.92rem}
 
-/* ===== Support ===== */
-.support-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
-
-/* ===== Steps ===== */
-.step{
-padding:14px;background:rgba(47,129,247,.08);
-border:1px solid rgba(47,129,247,.25);border-radius:10px;
-margin-top:12px;animation:fadeIn .3s ease
+.brand-title {
+    font-family: var(--font-brand); font-size: 2rem; font-weight: 700;
+    color: var(--gold); letter-spacing: 2px; margin-bottom: 8px;
+    text-transform: uppercase;
 }
-.step h4{color:var(--accent);margin-bottom:10px;font-size:.9rem;font-weight:700}
+.brand-subtitle { font-family: var(--font-ar); color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
 
-/* ===== Responsive ===== */
-@media(max-width:600px){
-header{padding:10px 12px}
-.logo{font-size:1.05rem;letter-spacing:.8px}
-.logo::before{font-size:1rem}
-.balance{font-size:.78rem;padding:4px 10px}
-#user-name{display:none}
-.grid{grid-template-columns:1fr}
-.tabs{top:58px;padding:5px}
-.tabs button{font-size:.72rem;padding:9px 3px;gap:2px}
-.card{padding:16px}
-.modal-content{max-height:92vh}
-.chat-body{max-height:55vh}
-.purchase-item{flex-direction:column;align-items:stretch}
-.purchase-item .actions{justify-content:flex-end}
+.input-group { position: relative; margin-bottom: 24px; }
+.input-group input {
+    width: 100%; padding: 16px; background: rgba(0,0,0,0.5);
+    border: 1px solid var(--border-glass); border-radius: 12px;
+    color: var(--gold-light); font-size: 1.1rem; font-family: var(--font-en);
+    text-align: center; letter-spacing: 3px; font-weight: 600;
+    transition: var(--smooth); outline: none;
+}
+.input-group input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+/* ===== الأزرار ===== */
+.btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 16px; border: none; border-radius: 12px;
+    font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
+    cursor: pointer; transition: var(--smooth);
+    background: linear-gradient(135deg, var(--gold), #a8861d);
+    color: #000;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+.btn:active { transform: scale(0.97); box-shadow: 0 2px 5px rgba(212, 175, 55, 0.2); }
+.btn.outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); box-shadow: none; }
+.btn.outline:active { background: rgba(255,255,255,0.05); }
+
+/* ===== الشاشة الرئيسية ===== */
+#main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; animation: slideUp 0.5s ease-out; }
+
+/* التبويبات (Tabs) */
+.tabs {
+    display: flex; position: relative; background: var(--bg-card);
+    border: 1px solid var(--border-glass); border-radius: 16px; padding: 6px;
+    margin-bottom: 24px; backdrop-filter: blur(10px);
+}
+.tab-btn {
+    flex: 1; padding: 12px 0; background: transparent; border: none;
+    color: var(--text-muted); font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: var(--smooth); z-index: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.tab-btn.active { color: #000; }
+.tab-indicator {
+    position: absolute; top: 6px; bottom: 6px; width: calc(25% - 3px);
+    background: linear-gradient(135deg, var(--gold), #c59b27);
+    border-radius: 12px; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 0; box-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
+}
+
+.tab-content { display: none; animation: fadeIn 0.4s ease-out; }
+.tab-content.active { display: block; }
+
+/* كروت المتجر */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+.shop-item {
+    background: var(--bg-card); border: 1px solid var(--border-glass);
+    border-radius: 16px; padding: 16px; cursor: pointer;
+    transition: var(--smooth); position: relative; overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+.shop-item:active { transform: scale(0.96); }
+.shop-item:hover { border-color: rgba(212, 175, 55, 0.4); transform: translateY(-4px); }
+.shop-item .title { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+.shop-item .meta { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.shop-item .price { color: var(--gold-light); font-family: var(--font-en); font-weight: 700; }
+.shop-item .stock { color: var(--text-muted); }
+.shop-item.sold { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+.shop-item.sold:active { transform: none; }
+
+/* المشتريات */
+.purchase-card {
+    background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px;
+    padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(10px);
+}
+.purchase-card .phone { font-family: var(--font-en); font-size: 1.1rem; font-weight: 700; color: var(--gold-light); }
+.purchase-card .btn { width: auto; padding: 10px 16px; font-size: 0.85rem; }
+
+/* الكروت العامة للشحن */
+.card {
+    background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;
+    padding: 24px; margin-bottom: 20px; backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.card-title { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+/* الحقول */
+.form-control {
+    width: 100%; padding: 14px; background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border-glass); border-radius: 12px;
+    color: var(--text-main); font-size: 0.95rem; font-family: var(--font-ar);
+    transition: var(--smooth); outline: none; margin-bottom: 12px;
+}
+.form-control:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.1); }
+
+/* النوافذ المنبثقة (المودال) */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+    display: flex; justify-content: center; align-items: center; z-index: 1000;
+    padding: 20px; opacity: 0; pointer-events: none; transition: var(--smooth);
+}
+.modal.show { opacity: 1; pointer-events: auto; }
+.modal-content {
+    background: #0f0f0f; border: 1px solid var(--gold-dark); border-radius: 20px;
+    width: 100%; max-width: 450px; padding: 24px;
+    transform: scale(0.9); transition: var(--smooth);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+}
+.modal.show .modal-content { transform: scale(1); }
+
+/* إشعارات */
+.toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--gold); color: #000; padding: 12px 24px; border-radius: 30px;
+    font-weight: 700; font-size: 0.9rem; opacity: 0; transition: var(--smooth); z-index: 2000;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.error { background: var(--danger); color: #fff; }
+
+/* أنيميشن الدخول */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== استجابة الجوال ===== */
+@media (max-width: 600px) {
+    .brand-title { font-size: 1.6rem; }
+    .tab-btn { font-size: 0.8rem; flex-direction: column; gap: 4px; padding: 10px 0; }
+    .tab-indicator { width: calc(25% - 3px); }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .purchase-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .purchase-card .btn { width: 100%; }
 }
 </style>
 </head>
 <body>
 
+<!-- الشريط العلوي -->
 <header>
-  <div class="logo">CORLEONE STORE</div>
-  <div id="user-bar" class="hidden">
-    <span id="user-name"></span>
-    <span class="balance">💰 <b id="user-balance">0.00</b>$</span>
-    <button id="logout-btn" class="btn sm">خروج</button>
-  </div>
+    <!-- هنا يتم عرض اللوكو الخاص بك. تأكد من رفع صورة باسم logo.png بجانب ملف الـ html -->
+    <img src="logo.png" alt="CORLEONE PLUS" class="brand-logo" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
+    <h1 id="fallback-logo" style="display:none; font-family:var(--font-brand); color:var(--gold); font-size:1.2rem;">CORLEONE PLUS</h1>
+    
+    <div id="user-bar" class="hidden">
+        <div class="balance">💰 <span id="user-balance">0.00</span>$</div>
+        <button id="logout-btn" class="btn outline" style="width:auto; padding:8px 12px; font-size:0.8rem;">خروج</button>
+    </div>
 </header>
 
-<div id="login-screen" class="screen">
-  <div class="card center">
-    <h1>مرحباً بك 💎</h1>
-    <p class="muted">أدخل <b>كلمة سر الموقع</b> التي حصلت عليها من البوت للوصول إلى حسابك</p>
+<!-- شاشة الدخول -->
+<div id="login-screen">
+    <div class="login-card">
+        <div class="brand-title">CORLEONE PLUS</div>
+        <div class="brand-subtitle">مرحباً بك في عالم الفخامة</div>
+        
+        <div class="input-group">
+            <input type="text" id="login-password" placeholder="كلمة السر" autocomplete="off" spellcheck="false">
+        </div>
+        <button id="login-btn" class="btn">تسجيل الدخول</button>
+    </div>
+</div>
+
+<!-- الشاشة الرئيسية -->
+<div id="main-screen" class="hidden">
     
-    <div class="login-box">
-      <input id="login-password" type="text" placeholder="jwvz7g@$7wv" autocomplete="off" spellcheck="false">
-      <button id="login-btn" class="btn wide">🔓 دخول</button>
-    </div>
-    
-    <div class="login-hint">
-      <p class="muted">
-        💡 <b>ما هي كلمة السر؟</b><br>
-        افتح البوت، وأرسل <code>/start</code> أو <code>/myid</code>، وستجد كلمة سر خاصة بك مكونة من 10 رموز (مثل <code>jwvz7g@$7wv</code>). انسخها والصقها هنا.
-      </p>
-    </div>
-  </div>
-</div>
-
-<div id="main-screen" class="screen hidden">
-
-  <div class="tabs">
-    <button data-tab="shop" class="active"><span>🛍️</span><span>المتجر</span></button>
-    <button data-tab="purchases"><span>📦</span><span>مشترياتي</span></button>
-    <button data-tab="recharge"><span>💳</span><span>شحن</span></button>
-    <button data-tab="support"><span>🆘</span><span>الدعم</span></button>
-  </div>
-
-  <section id="tab-shop" class="tab-content active">
-    <div id="breadcrumb" class="breadcrumb hidden"></div>
-    <div id="shop-grid" class="grid">
-      <div class="loading-center"><div class="loader"></div><p style="margin-top:12px">جاري التحميل...</p></div>
-    </div>
-  </section>
-
-  <section id="tab-purchases" class="tab-content">
-    <div id="purchases-list">
-      <div class="loading-center"><div class="loader"></div></div>
-    </div>
-  </section>
-
-  <section id="tab-recharge" class="tab-content">
-    <div class="card">
-      <h3>🪙 شحن بالكريبتو (TON / USDT)</h3>
-      <p class="muted small" style="margin-bottom:12px">
-        ادفع عبر CryptoBot — يضاف الرصيد تلقائياً بعد الدفع
-      </p>
-      <div class="row">
-        <select id="crypto-asset">
-          <option value="TON">TON</option>
-          <option value="USDT">USDT</option>
-        </select>
-        <input id="crypto-amount" type="number" min="1" step="0.5" placeholder="المبلغ بالدولار">
-      </div>
-      <button id="crypto-create" class="btn wide" style="margin-top:8px">💳 إنشاء فاتورة</button>
-      <div id="crypto-result" class="hidden"></div>
+    <div class="tabs">
+        <div class="tab-indicator" id="tab-indicator"></div>
+        <button class="tab-btn active" data-tab="shop" onclick="switchTab(0, 'shop')">🛍️ المتجر</button>
+        <button class="tab-btn" data-tab="purchases" onclick="switchTab(1, 'purchases')">📦 مشترياتي</button>
+        <button class="tab-btn" data-tab="recharge" onclick="switchTab(2, 'recharge')">💳 شحن</button>
+        <button class="tab-btn" data-tab="support" onclick="switchTab(3, 'support')">🆘 الدعم</button>
     </div>
 
-    <div class="card">
-      <h3>📱 شحن آسيا سيل</h3>
-      <p class="muted small" style="margin-bottom:12px">
-        السعر: <b style="color:var(--gold)" id="asia-price">0.60</b>$ لكل 1000 دينار
-      </p>
-      <input id="asia-phone" type="tel" inputmode="numeric" placeholder="رقم آسيا (مثال: 07701234567)">
-      <button id="asia-start" class="btn wide" style="margin-top:8px">📲 بدء الشحن</button>
-
-      <div id="asia-steps" class="hidden">
-        <div id="asia-step-otp" class="step hidden">
-          <h4>الخطوة 1: كود التحقق</h4>
-          <input id="asia-otp" inputmode="numeric" placeholder="كود التحقق من آسيا سيل">
-          <button id="asia-otp-submit" class="btn wide" style="margin-top:8px">✅ تأكيد الكود</button>
+    <!-- تبويب المتجر -->
+    <div id="tab-shop" class="tab-content active">
+        <div id="breadcrumb" class="hidden" style="margin-bottom: 15px; font-size: 0.9rem;">
+            <span style="color: var(--gold); cursor: pointer;" onclick="loadShop(null)">🏠 الرئيسية</span> / <span id="bc-current"></span>
         </div>
-        <div id="asia-step-amount" class="step hidden">
-          <h4>الخطوة 2: المبلغ</h4>
-          <input id="asia-amount" type="number" inputmode="numeric" placeholder="المبلغ بالدينار (حد أدنى 1000)">
-          <button id="asia-amount-submit" class="btn wide" style="margin-top:8px">➡️ متابعة</button>
+        <div id="shop-grid" class="grid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px;"><div class="loader"></div></div>
         </div>
-        <div id="asia-step-confirm" class="step hidden">
-          <h4>الخطوة 3: تأكيد التحويل</h4>
-          <p class="muted" id="asia-confirm-info" style="margin-bottom:10px"></p>
-          <input id="asia-confirm" inputmode="numeric" placeholder="كود تأكيد التحويل">
-          <button id="asia-confirm-submit" class="btn green wide" style="margin-top:8px">🎉 تأكيد نهائي</button>
+    </div>
+
+    <!-- تبويب المشتريات -->
+    <div id="tab-purchases" class="tab-content">
+        <div id="purchases-list"></div>
+    </div>
+
+    <!-- تبويب الشحن -->
+    <div id="tab-recharge" class="tab-content">
+        <div class="card">
+            <div class="card-title">🪙 شحن بالكريبتو</div>
+            <select id="crypto-asset" class="form-control">
+                <option value="TON">TON</option>
+                <option value="USDT">USDT</option>
+            </select>
+            <input type="number" id="crypto-amount" class="form-control" placeholder="المبلغ بالدولار" min="1" step="0.5">
+            <button id="crypto-create" class="btn">إنشاء فاتورة</button>
+            <div id="crypto-result" class="hidden" style="margin-top: 15px;"></div>
         </div>
-      </div>
 
-      <div id="asia-msg" class="hidden"></div>
+        <div class="card">
+            <div class="card-title">📱 شحن آسيا سيل</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
+            <input type="tel" id="asia-phone" class="form-control" placeholder="رقم الآسيا (مثال: 07701234567)">
+            <button id="asia-start" class="btn">بدء الشحن</button>
+            
+            <div id="asia-steps" class="hidden">
+                <div id="asia-step-otp" class="hidden" style="margin-top: 15px;">
+                    <input type="text" id="asia-otp" class="form-control" placeholder="كود التحقق">
+                    <button id="asia-otp-submit" class="btn outline">تأكيد الكود</button>
+                </div>
+                <div id="asia-step-amount" class="hidden" style="margin-top: 15px;">
+                    <input type="number" id="asia-amount" class="form-control" placeholder="المبلغ بالدينار (حد أدنى 1000)">
+                    <button id="asia-amount-submit" class="btn outline">متابعة</button>
+                </div>
+                <div id="asia-step-confirm" class="hidden" style="margin-top: 15px;">
+                    <p id="asia-confirm-info" style="font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted);"></p>
+                    <input type="text" id="asia-confirm" class="form-control" placeholder="كود تأكيد التحويل">
+                    <button id="asia-confirm-submit" class="btn" style="background: var(--success); color: white;">تأكيد نهائي</button>
+                </div>
+            </div>
+            <div id="asia-msg" class="hidden" style="margin-top: 15px; font-size: 0.9rem;"></div>
+        </div>
     </div>
-  </section>
 
-  <section id="tab-support" class="tab-content">
-    <div class="card center">
-      <h3 style="justify-content:center">🆘 الدعم الفني</h3>
-      <p class="muted">فريقنا جاهز لمساعدتك في أي وقت</p>
-      <div class="support-btns">
-        <a class="btn blue" href="https://t.me/Z_5_F6" target="_blank" rel="noopener">📩 @Z_5_F6</a>
-        <a class="btn blue" href="https://t.me/nhnhhnhn" target="_blank" rel="noopener">📩 @nhnhhnhn</a>
-      </div>
+    <!-- تبويب الدعم -->
+    <div id="tab-support" class="tab-content">
+        <div class="card" style="text-align: center;">
+            <div class="card-title" style="justify-content: center;">🆘 الدعم الفني</div>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">فريقنا جاهز لخدمتك في أي وقت</p>
+            <div style="display: flex; gap: 10px; flex-direction: column;">
+                <a href="https://t.me/Z_5_F6" target="_blank" class="btn outline" style="text-decoration: none;">@Z_5_F6</a>
+                <a href="https://t.me/nhnhhnhn" target="_blank" class="btn outline" style="text-decoration: none;">@nhnhhnhn</a>
+            </div>
+        </div>
     </div>
-  </section>
 
 </div>
 
-<div id="chat-modal" class="modal hidden">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="chat-title">🔑 كود الدخول</h3>
-      <button id="chat-close" class="btn sm" aria-label="إغلاق">✖</button>
+<!-- نافذة الكود (المودال) -->
+<div id="chat-modal" class="modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="font-weight: 700; color: var(--gold);" id="chat-title">🔑 الكود</div>
+            <button onclick="closeChat()" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✖</button>
+        </div>
+        <div id="chat-body" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;"></div>
+        <button id="chat-request-otp" class="btn">🔄 طلب كود OTP</button>
     </div>
-    <div id="chat-body" class="chat-body"></div>
-    <div class="chat-footer">
-      <button id="chat-request-otp" class="btn wide">🔄 طلب كود OTP</button>
-    </div>
-  </div>
 </div>
+
+<!-- إشعارات -->
+<div id="toast" class="toast"></div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   ⚠️ غيّر هذا السطر إلى رابط خادمك (الباك اند)
-   ═══════════════════════════════════════════════════════ */
 const API_BASE = "https://corleonestore.wisp.uno";
 
 const state = {
   token: localStorage.getItem("token") || null,
   user: null,
-  config: null,
   currentParent: null,
-  chatNumberId: null,
-  chatPhone: null,
-  initialized: false
+  chatNumberId: null
 };
 
+function showToast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = `toast show ${type}`;
+    setTimeout(() => { t.classList.remove("show"); }, 3000);
+}
+
 async function api(path, method = "GET", body = null) {
-  const headers = { "Content-Type": "application/json" };
-  if (state.token) headers["Authorization"] = "Bearer " + state.token;
-
-  let res;
-  try {
-    res = await fetch(API_BASE + path, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : null
-    });
-  } catch (e) {
-    throw new Error("تعذر الاتصال بالخادم — تأكد من الإنترنت");
-  }
-
-  let data = {};
-  try { data = await res.json(); } catch (e) {}
-
-  if (res.status === 401 && path !== "/api/login") {
-    localStorage.removeItem("token");
-    state.token = null;
-    state.user = null;
-    setTimeout(() => location.reload(), 800);
-    throw new Error("انتهت الجلسة، يرجى إعادة تسجيل الدخول");
-  }
-
-  if (!res.ok) {
-    throw new Error(data.detail || data.error || "خطأ " + res.status);
-  }
-  return data;
-}
-
-function $(id) { return document.getElementById(id); }
-function show(el) { if (typeof el === "string") el = $(el); if (el) el.classList.remove("hidden"); }
-function hide(el) { if (typeof el === "string") el = $(el); if (el) el.classList.add("hidden"); }
-
-function toast(msg, type = "info") {
-  const t = document.createElement("div");
-  t.className = "msg " + type;
-  t.textContent = msg;
-  t.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:2000;max-width:90%;animation:fadeIn .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.5)";
-  document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; }, 3000);
-  setTimeout(() => t.remove(), 3400);
-}
-
-async function loadConfig(retries = 15) {
-  try {
-    const cfg = await api("/api/config");
-    state.config = cfg;
-    $("asia-price").textContent = cfg.asia_price_per_1000.toFixed(2);
-  } catch (e) {
-    // تجاهل الخطأ في شاشة الدخول
-  }
-}
-
-function showMain() {
-  hide("login-screen");
-  show("main-screen");
-  show("user-bar");
-  $("user-name").textContent = state.user.first_name || "";
-  $("user-balance").textContent = state.user.balance.toFixed(2);
-  loadShop(null);
-  loadPurchases();
-}
-
-function logout() {
-  state.token = null;
-  state.user = null;
-  localStorage.removeItem("token");
-  location.reload();
-}
-
-function updateBalance(newBalance) {
-  if (typeof newBalance !== "number") return;
-  state.user.balance = newBalance;
-  $("user-balance").textContent = newBalance.toFixed(2);
-}
-
-async function loginWithPassword() {
-  const input = $("login-password");
-  const btn = $("login-btn");
-  const pwd = input.value.trim();
-  if (!pwd) { toast("أدخل كلمة المرور أولاً", "warning"); return; }
-  
-  btn.disabled = true;
-  btn.innerHTML = '<div class="loader"></div> جاري...';
-  try {
-    const res = await api("/api/login", "POST", { password: pwd });
-    state.token = res.token;
-    state.user = res.user;
-    localStorage.setItem("token", res.token);
-    showMain();
-    toast("✅ تم تسجيل الدخول بنجاح", "success");
-  } catch (e) {
-    toast("❌ " + e.message, "error");
-    btn.disabled = false;
-    btn.innerHTML = '🔓 دخول';
-  }
-}
-
-async function loadShop(parentId) {
-  const grid = $("shop-grid");
-  grid.innerHTML = '<div class="loading-center" style="grid-column:1/-1"><div class="loader"></div><p style="margin-top:12px">جاري التحميل...</p></div>';
-
-  try {
-    const url = "/api/shop" + (parentId ? "?parent=" + parentId : "");
-    const res = await api(url);
-    state.currentParent = parentId;
-    renderBreadcrumb(res.parent);
-
-    if (!res.items || res.items.length === 0) {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">📭</div><p>لا توجد عناصر هنا</p></div>';
-      return;
+    const headers = { "Content-Type": "application/json" };
+    if (state.token) headers["Authorization"] = "Bearer " + state.token;
+    const res = await fetch(API_BASE + path, { method, headers, body: body ? JSON.stringify(body) : null });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401 && path !== "/api/login") {
+        localStorage.removeItem("token");
+        location.reload();
+        throw new Error("انتهت الجلسة");
     }
+    if (!res.ok) throw new Error(data.detail || "حدث خطأ");
+    return data;
+}
 
-    grid.innerHTML = "";
-    for (const item of res.items) {
-      const div = document.createElement("div");
-      div.className = "shop-item";
-      const isCategory = item.type === "category";
-      if (isCategory && item.stock <= 0) div.classList.add("sold");
+function switchTab(index, tabName) {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
+    document.getElementById(`tab-${tabName}`).classList.add("active");
+    
+    const indicator = document.getElementById("tab-indicator");
+    indicator.style.transform = `translateX(${index * 100}%)`;
+    
+    if (tabName === "purchases") loadPurchases();
+}
 
-      const emoji = item.emoji ? item.emoji + " " : "";
-      const title = escapeHtml(item.title);
+async function initApp() {
+    try {
+        const cfg = await api("/api/config");
+        document.getElementById("asia-price").textContent = cfg.asia_price_per_1000.toFixed(2);
+    } catch (e) {}
 
-      if (isCategory) {
-        div.innerHTML = `
-          <div class="title">${emoji}${title}</div>
-          <div class="meta">
-            <span class="price">${item.price.toFixed(2)}$</span>
-            <span class="stock ${item.stock <= 0 ? "empty" : ""}">
-              ${item.stock > 0 ? "📦 متوفر: " + item.stock : "❌ نفدت"}
-            </span>
-          </div>
-        `;
-      } else {
-        div.innerHTML = `
-          <div class="title">${emoji}${title}</div>
-          <div class="folder-badge">📁 مجلد</div>
-        `;
-      }
-
-      div.onclick = () => {
-        if (isCategory) {
-          if (item.stock > 0) buyNumber(item);
-          else toast("نفدت الكمية من هذا القسم", "warning");
-        } else {
-          loadShop(item.id);
+    if (state.token) {
+        try {
+            state.user = await api("/api/me");
+            document.getElementById("user-balance").textContent = state.user.balance.toFixed(2);
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("main-screen").classList.remove("hidden");
+            document.getElementById("user-bar").classList.remove("hidden");
+            loadShop(null);
+        } catch (e) {
+            localStorage.removeItem("token");
         }
-      };
-      grid.appendChild(div);
     }
-  } catch (e) {
-    grid.innerHTML = `<div class="msg error" style="grid-column:1/-1">❌ ${e.message}</div>`;
-  }
 }
 
-function renderBreadcrumb(parent) {
-  const bc = $("breadcrumb");
-  if (!parent) { hide(bc); return; }
-  show(bc);
-  bc.innerHTML = `<a onclick="loadShop(null)">🏠 المتجر</a>
-    <span class="sep">/</span>
-    <span>${parent.emoji || ""} ${escapeHtml(parent.title)}</span>`;
+// تسجيل الدخول
+document.getElementById("login-btn").onclick = async () => {
+    const pwd = document.getElementById("login-password").value.trim();
+    if (!pwd) return showToast("أدخل كلمة السر", "error");
+    const btn = document.getElementById("login-btn");
+    btn.innerHTML = '<div class="loader"></div>';
+    try {
+        const res = await api("/api/login", "POST", { password: pwd });
+        state.token = res.token; state.user = res.user;
+        localStorage.setItem("token", res.token);
+        initApp();
+    } catch (e) {
+        showToast(e.message, "error");
+        btn.innerHTML = 'تسجيل الدخول';
+    }
+};
+
+document.getElementById("logout-btn").onclick = () => {
+    localStorage.removeItem("token");
+    location.reload();
+};
+
+// المتجر
+async function loadShop(parentId) {
+    const grid = document.getElementById("shop-grid");
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><div class="loader"></div></div>';
+    
+    const bc = document.getElementById("breadcrumb");
+    if (!parentId) bc.classList.add("hidden"); else bc.classList.remove("hidden");
+
+    try {
+        const url = "/api/shop" + (parentId ? "?parent=" + parentId : "");
+        const res = await api(url);
+        state.currentParent = parentId;
+
+        if (res.parent) document.getElementById("bc-current").textContent = res.parent.title;
+
+        if (res.items.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">لا توجد عناصر</div>';
+            return;
+        }
+
+        grid.innerHTML = "";
+        res.items.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "shop-item" + (item.type === "category" && item.stock <= 0 ? " sold" : "");
+            div.innerHTML = `
+                <div class="title">${item.emoji || ""} ${item.title}</div>
+                ${item.type === "category" ? `
+                    <div class="meta">
+                        <span class="price">${item.price.toFixed(2)}$</span>
+                        <span class="stock">${item.stock > 0 ? "متوفر: " + item.stock : "نفذ"}</span>
+                    </div>
+                ` : `<div style="font-size:0.8rem; color:var(--text-muted);">مجلد</div>`}
+            `;
+            div.onclick = () => {
+                if (item.type === "category") {
+                    if (item.stock > 0) buyNumber(item);
+                    else showToast("نفدت الكمية", "error");
+                } else loadShop(item.id);
+            };
+            grid.appendChild(div);
+        });
+    } catch (e) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; color: var(--danger);">${e.message}</div>`;
+    }
 }
 
 async function buyNumber(item) {
-  if (!confirm(`🛒 شراء "${item.title}" مقابل ${item.price.toFixed(2)}$؟`)) return;
-
-  try {
-    toast("⏳ جاري إتمام الشراء...", "info");
-    const res = await api("/api/buy", "POST", { node_id: item.id });
-    updateBalance(res.new_balance);
-
-    const pw = res.password ? `\n🔐 الباسوورد: ${res.password}` : "";
-    alert(
-      `✅ تم الشراء بنجاح!\n\n` +
-      `📱 الرقم: ${res.phone}${pw}\n` +
-      `🌍 الدولة: ${res.country}\n` +
-      `💰 السعر: ${res.price.toFixed(2)}$\n\n` +
-      `اذهب إلى "مشترياتي" للحصول على كود OTP.`
-    );
-
-    loadShop(state.currentParent);
-    loadPurchases();
-  } catch (e) {
-    alert("❌ فشل الشراء: " + e.message);
-  }
-}
-
-async function loadPurchases() {
-  const list = $("purchases-list");
-  list.innerHTML = '<div class="loading-center"><div class="loader"></div></div>';
-
-  try {
-    const res = await api("/api/purchases");
-    if (!res.items || res.items.length === 0) {
-      list.innerHTML = '<div class="empty-state"><div class="icon">📦</div><p>لم تشترِ أي رقم بعد</p></div>';
-      return;
-    }
-
-    list.innerHTML = "";
-    for (const p of res.items) {
-      const div = document.createElement("div");
-      div.className = "purchase-item";
-      const pw = p.password ? `<span class="muted small">🔐 باسوورد: ${escapeHtml(p.password)}</span>` : "";
-      div.innerHTML = `
-        <div class="info">
-          <span class="phone">${p.flag || ""} ${escapeHtml(p.phone)}</span>
-          ${pw}
-          <span class="muted small">🌍 ${escapeHtml(p.country)} · 💰 ${p.price.toFixed(2)}$</span>
-        </div>
-        <div class="actions">
-          <button class="btn" onclick="openChat(${p.number_id}, '${escapeAttr(p.phone)}')">📩 الكود</button>
-        </div>
-      `;
-      list.appendChild(div);
-    }
-  } catch (e) {
-    list.innerHTML = `<div class="msg error">❌ ${e.message}</div>`;
-  }
-}
-
-function openChat(numberId, phone) {
-  state.chatNumberId = numberId;
-  state.chatPhone = phone;
-  $("chat-title").textContent = "🔑 " + phone;
-  $("chat-body").innerHTML = "";
-  show("chat-modal");
-  addChatMsg("system", "اضغط «طلب كود OTP» لاستلام الكود من تيليجرام");
-}
-
-function closeChat() {
-  hide("chat-modal");
-  state.chatNumberId = null;
-  state.chatPhone = null;
-}
-
-function addChatMsg(type, text) {
-  const body = $("chat-body");
-  const div = document.createElement("div");
-  div.className = "chat-msg " + type;
-  div.textContent = text;
-  body.appendChild(div);
-  body.scrollTop = body.scrollHeight;
-  return div;
-}
-
-async function requestOTP() {
-  if (!state.chatNumberId) return;
-
-  addChatMsg("user", "طلبت كود OTP");
-  const loading = addChatMsg("system", "⏳ جاري سحب الكود من تيليجرام...");
-
-  try {
-    const res = await api("/api/otp/" + state.chatNumberId, "POST");
-    loading.remove();
-
-    if (res.code) {
-      addChatMsg("otp", "🔑 كود الدخول: " + res.code);
-      addChatMsg("system", "⏱️ الكود صالح لدقائق فقط — سارع باستخدامه");
-    } else {
-      addChatMsg("error", "❌ " + (res.error || "لم يصل الكود — تأكد أنك طلبته من تيليجرام"));
-    }
-  } catch (e) {
-    loading.remove();
-    addChatMsg("error", "❌ " + e.message);
-  }
-}
-
-async function createCryptoInvoice() {
-  const amount = parseFloat($("crypto-amount").value);
-  const asset = $("crypto-asset").value;
-  const result = $("crypto-result");
-
-  if (!amount || amount <= 0) {
-    toast("أدخل مبلغاً صحيحاً", "warning");
-    return;
-  }
-
-  show(result);
-  result.innerHTML = '<div class="loading-center"><div class="loader"></div><p>جاري إنشاء الفاتورة...</p></div>';
-
-  try {
-    const res = await api("/api/crypto/create", "POST", { amount, asset });
-    result.innerHTML = `
-      <div class="msg success">✅ تم إنشاء الفاتورة</div>
-      <p style="margin:14px 0;font-size:1rem">
-        المبلغ: <b style="color:var(--gold)">${res.amount} ${res.asset}</b>
-      </p>
-      <a href="${res.pay_url}" target="_blank" rel="noopener" class="btn blue wide" style="text-decoration:none">
-        💳 ادفع الآن عبر CryptoBot
-      </a>
-      <button class="btn wide" style="margin-top:8px" onclick="checkCrypto(${res.invoice_id})">
-        🔄 تحقق من الدفع
-      </button>
-      <div id="crypto-check-result"></div>
-    `;
-  } catch (e) {
-    result.innerHTML = `<div class="msg error">❌ ${e.message}</div>`;
-  }
-}
-
-async function checkCrypto(invoiceId) {
-  const el = $("crypto-check-result");
-  if (!el) return;
-  el.innerHTML = '<div class="loading-center"><div class="loader"></div><p>جاري التحقق...</p></div>';
-
-  try {
-    const res = await api("/api/crypto/check/" + invoiceId);
-    if (res.paid) {
-      el.innerHTML = `<div class="msg success">✅ تم استلام الدفع!<br>
-        رصيدك الجديد: <b>${res.new_balance.toFixed(2)}$</b></div>`;
-      updateBalance(res.new_balance);
-    } else {
-      el.innerHTML = `<div class="msg info">⏳ لم يتم الدفع بعد<br>
-        الحالة: <code>${res.status}</code></div>`;
-    }
-  } catch (e) {
-    el.innerHTML = `<div class="msg error">❌ ${e.message}</div>`;
-  }
-}
-
-function showAsiaStep(step) {
-  ["otp", "amount", "confirm"].forEach(s => hide("asia-step-" + s));
-  show("asia-steps");
-  if (step) show("asia-step-" + step);
-}
-
-function asiaMsg(html, type = "info") {
-  const el = $("asia-msg");
-  el.className = "msg " + type;
-  el.innerHTML = html;
-  show(el);
-}
-
-async function asiaStart() {
-  const phone = $("asia-phone").value.trim();
-  if (!phone) { toast("أدخل رقم آسيا أولاً", "warning"); return; }
-
-  asiaMsg("⏳ جاري إرسال كود التحقق...");
-  try {
-    await api("/api/asia/start", "POST", { phone });
-    asiaMsg("✅ تم إرسال كود التحقق — أدخله الآن", "success");
-    showAsiaStep("otp");
-  } catch (e) {
-    asiaMsg("❌ " + e.message, "error");
-  }
-}
-
-async function asiaOtpSubmit() {
-  const code = $("asia-otp").value.trim();
-  if (!code) { toast("أدخل كود التحقق", "warning"); return; }
-
-  asiaMsg("⏳ جاري التحقق من الكود...");
-  try {
-    await api("/api/asia/otp", "POST", { code });
-    asiaMsg("✅ تم التحقق — أدخل المبلغ المراد شحنه", "success");
-    showAsiaStep("amount");
-  } catch (e) {
-    asiaMsg("❌ " + e.message, "error");
-  }
-}
-
-async function asiaAmountSubmit() {
-  const amount = parseInt($("asia-amount").value);
-  if (!amount || amount < 1000) {
-    toast("الحد الأدنى 1000 دينار", "warning");
-    return;
-  }
-
-  asiaMsg("⏳ جاري بدء التحويل...");
-  try {
-    const res = await api("/api/asia/amount", "POST", { amount });
-    asiaMsg(
-      `✅ تم بدء التحويل<br><br>` +
-      `حوّل <b>${res.amount_iqd.toLocaleString()} دينار</b> إلى:<br>` +
-      `<code style="background:var(--bg);padding:4px 8px;border-radius:6px;display:inline-block;margin:6px 0">${res.receiver}</code><br>` +
-      `سيضاف لك: <b style="color:var(--gold)">${res.credit_usd.toFixed(2)}$</b>`,
-      "success"
-    );
-    $("asia-confirm-info").innerHTML =
-      `أدخل كود التأكيد الذي وصلك من آسيا سيل لإتمام العملية`;
-    showAsiaStep("confirm");
-  } catch (e) {
-    asiaMsg("❌ " + e.message, "error");
-  }
-}
-
-async function asiaConfirmSubmit() {
-  const code = $("asia-confirm").value.trim();
-  if (!code) { toast("أدخل كود التأكيد", "warning"); return; }
-
-  asiaMsg("⏳ جاري تأكيد التحويل...");
-  try {
-    const res = await api("/api/asia/confirm", "POST", { code });
-    asiaMsg(
-      `🎉 <b>تم شحن رصيدك بنجاح!</b><br><br>` +
-      `أضيف لك: <b>${res.credit_usd.toFixed(2)}$</b><br>` +
-      `رصيدك الجديد: <b style="color:var(--gold)">${res.new_balance.toFixed(2)}$</b>`,
-      "success"
-    );
-    updateBalance(res.new_balance);
-    hide("asia-steps");
-    $("asia-phone").value = "";
-    $("asia-otp").value = "";
-    $("asia-amount").value = "";
-    $("asia-confirm").value = "";
-  } catch (e) {
-    asiaMsg("❌ " + e.message, "error");
-  }
-}
-
-function escapeHtml(str) {
-  if (!str) return "";
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-function escapeAttr(str) {
-  return escapeHtml(str).replace(/\n/g, " ");
-}
-
-document.querySelectorAll(".tabs button").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-    btn.classList.add("active");
-    $("tab-" + btn.dataset.tab).classList.add("active");
-
-    if (btn.dataset.tab === "purchases") loadPurchases();
-  };
-});
-
-$("logout-btn").onclick = logout;
-$("chat-close").onclick = closeChat;
-$("chat-request-otp").onclick = requestOTP;
-$("crypto-create").onclick = createCryptoInvoice;
-$("asia-start").onclick = asiaStart;
-$("asia-otp-submit").onclick = asiaOtpSubmit;
-$("asia-amount-submit").onclick = asiaAmountSubmit;
-$("asia-confirm-submit").onclick = asiaConfirmSubmit;
-
-$("login-btn").onclick = loginWithPassword;
-$("login-password").addEventListener("keydown", e => {
-  if (e.key === "Enter") loginWithPassword();
-});
-
-$("chat-modal").addEventListener("click", (e) => {
-  if (e.target.id === "chat-modal") closeChat();
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !$("chat-modal").classList.contains("hidden")) closeChat();
-});
-
-(async function init() {
-  await loadConfig();
-
-  if (state.token) {
+    if (!confirm(`هل تريد شراء ${item.title} بـ ${item.price}$؟`)) return;
     try {
-      state.user = await api("/api/me");
-      showMain();
+        const res = await api("/api/buy", "POST", { node_id: item.id });
+        state.user.balance = res.new_balance;
+        document.getElementById("user-balance").textContent = res.new_balance.toFixed(2);
+        showToast("تم الشراء بنجاح");
+        loadShop(state.currentParent);
     } catch (e) {
-      localStorage.removeItem("token");
-      state.token = null;
+        showToast(e.message, "error");
     }
-  }
-  state.initialized = true;
-})();
+}
 
-setInterval(async () => {
-  if (!state.token || !state.initialized) return;
-  if (document.hidden) return;
-  try {
-    const me = await api("/api/me");
-    updateBalance(me.balance);
-  } catch (e) {}
-}, 30000);
+// المشتريات
+async function loadPurchases() {
+    const list = document.getElementById("purchases-list");
+    list.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="loader"></div></div>';
+    try {
+        const res = await api("/api/purchases");
+        if (res.items.length === 0) {
+            list.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 40px;">لا توجد مشتريات</div>';
+            return;
+        }
+        list.innerHTML = "";
+        res.items.forEach(p => {
+            const div = document.createElement("div");
+            div.className = "purchase-card";
+            div.innerHTML = `
+                <div>
+                    <div class="phone">${p.phone}</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">${p.country} - ${p.price.toFixed(2)}$</div>
+                </div>
+                <button class="btn" onclick="openChat(${p.number_id})">📩 الكود</button>
+            `;
+            list.appendChild(div);
+        });
+    } catch (e) {
+        list.innerHTML = `<div style="color: var(--danger);">${e.message}</div>`;
+    }
+}
+
+// المودال (OTP)
+function openChat(numberId) {
+    state.chatNumberId = numberId;
+    document.getElementById("chat-body").innerHTML = "";
+    document.getElementById("chat-modal").classList.add("show");
+}
+function closeChat() {
+    document.getElementById("chat-modal").classList.remove("show");
+    state.chatNumberId = null;
+}
+
+document.getElementById("chat-request-otp").onclick = async () => {
+    if (!state.chatNumberId) return;
+    const body = document.getElementById("chat-body");
+    body.innerHTML = '<div style="text-align: center;"><div class="loader"></div></div>';
+    try {
+        const res = await api("/api/otp/" + state.chatNumberId, "POST");
+        if (res.code) {
+            body.innerHTML = `<div style="text-align: center; font-size: 1.5rem; font-weight: 700; color: var(--success);">${res.code}</div>`;
+        } else {
+            body.innerHTML = `<div style="text-align: center; color: var(--danger);">${res.error}</div>`;
+        }
+    } catch (e) {
+        body.innerHTML = `<div style="text-align: center; color: var(--danger);">${e.message}</div>`;
+    }
+};
+
+// الشحن (كريبتو وآسيا)
+document.getElementById("crypto-create").onclick = async () => {
+    const amount = parseFloat(document.getElementById("crypto-amount").value);
+    const asset = document.getElementById("crypto-asset").value;
+    if (!amount) return showToast("أدخل المبلغ", "error");
+    const resDiv = document.getElementById("crypto-result");
+    resDiv.classList.remove("hidden");
+    resDiv.innerHTML = '<div class="loader"></div>';
+    try {
+        const res = await api("/api/crypto/create", "POST", { amount, asset });
+        resDiv.innerHTML = `<a href="${res.pay_url}" target="_blank" class="btn" style="text-decoration:none;">💳 ادفع الآن</a>`;
+    } catch (e) {
+        resDiv.innerHTML = `<div style="color:var(--danger);">${e.message}</div>`;
+    }
+};
+
+document.getElementById("asia-start").onclick = async () => {
+    const phone = document.getElementById("asia-phone").value;
+    if (!phone) return showToast("أدخل الرقم", "error");
+    const msg = document.getElementById("asia-msg");
+    msg.classList.remove("hidden");
+    msg.innerHTML = '<div class="loader"></div>';
+    try {
+        await api("/api/asia/start", "POST", { phone });
+        msg.innerHTML = "تم إرسال الكود";
+        document.getElementById("asia-steps").classList.remove("hidden");
+        document.getElementById("asia-step-otp").classList.remove("hidden");
+    } catch (e) {
+        msg.innerHTML = `<span style="color:var(--danger);">${e.message}</span>`;
+    }
+};
+
+document.getElementById("asia-otp-submit").onclick = async () => {
+    const code = document.getElementById("asia-otp").value;
+    try {
+        await api("/api/asia/otp", "POST", { code });
+        document.getElementById("asia-step-otp").classList.add("hidden");
+        document.getElementById("asia-step-amount").classList.remove("hidden");
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+document.getElementById("asia-amount-submit").onclick = async () => {
+    const amount = parseInt(document.getElementById("asia-amount").value);
+    try {
+        const res = await api("/api/asia/amount", "POST", { amount });
+        document.getElementById("asia-confirm-info").innerHTML = `حول إلى: ${res.receiver} <br> سيضاف: ${res.credit_usd}$`;
+        document.getElementById("asia-step-amount").classList.add("hidden");
+        document.getElementById("asia-step-confirm").classList.remove("hidden");
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+document.getElementById("asia-confirm-submit").onclick = async () => {
+    const code = document.getElementById("asia-confirm").value;
+    try {
+        const res = await api("/api/asia/confirm", "POST", { code });
+        showToast("تم الشحن بنجاح");
+        document.getElementById("user-balance").textContent = res.new_balance.toFixed(2);
+        document.getElementById("asia-steps").classList.add("hidden");
+        document.getElementById("asia-msg").classList.add("hidden");
+    } catch (e) { showToast(e.message, "error"); }
+};
+
+initApp();
 </script>
 </body>
 </html>
