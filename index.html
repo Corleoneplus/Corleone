@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#07090f">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
 <title>CORLEONE PLUS</title>
 
 <!-- إعدادات تطبيق الويب (PWA) -->
@@ -12,962 +12,833 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<!-- الخطوط الملكية -->
+<!-- الخطوط الملكية (Cairo للعربي، Space Grotesk للأرقام والانجليزي) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
+/* ═══════════════ الإعدادات الأساسية ═══════════════ */
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 :root {
-    --bg-main: #07090f;
-    --bg-card: rgba(20, 25, 35, 0.4);
-    --border-glass: rgba(255, 255, 255, 0.08);
-    --gold: #d4af37;
-    --gold-light: #f3e5ab;
-    --text-main: #f5f5f5;
-    --text-muted: #9ba1a6;
-    --success: #2ea043;
-    --danger: #da3633;
+    --bg: #050505;
+    --surface: rgba(20, 20, 20, 0.6);
+    --surface-solid: #121212;
+    --border: rgba(255, 255, 255, 0.08);
+    --gold: #E5B84B;
+    --gold-dim: #9c7825;
+    --text: #ffffff;
+    --muted: #888888;
+    --success: #30d158;
+    --danger: #ff453a;
     --font-ar: 'Cairo', sans-serif;
-    --font-en: 'Outfit', sans-serif;
-    --smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --font-en: 'Space Grotesk', sans-serif;
+    --spring: cubic-bezier(0.25, 1, 0.3, 1);
 }
 
 html, body {
     height: 100%;
-    background-color: var(--bg-main);
-    color: var(--text-main);
+    background-color: var(--bg);
+    color: var(--text);
     font-family: var(--font-ar);
-    overflow-x: hidden;
+    overflow: hidden; /* منع التمرير العشوائي للجسم */
     overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* ===== خلفية الشفق الذهبي (Aurora) ===== */
-body::before {
-    content: '';
-    position: fixed;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
+/* خلفية ديناميكية فخمة (Mesh Gradient) */
+.bg-mesh {
+    position: fixed; inset: -50%; z-index: -2;
     background: 
-        radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(155, 161, 166, 0.05) 0%, transparent 50%);
-    z-index: -1;
-    animation: auroraMove 20s ease-in-out infinite alternate;
+        radial-gradient(circle at 20% 30%, rgba(229, 184, 75, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(229, 184, 75, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+    animation: meshMove 20s infinite alternate ease-in-out;
 }
-@keyframes auroraMove {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(-5%, 5%) scale(1.1); }
+@keyframes meshMove {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.1) translate(-5%, 5%); }
+}
+
+/* طبقة النويز (تعطي إحساس الفخامة) */
+.noise-overlay {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 .hidden { display: none !important; }
 
-/* ===== تأثير الموجة عند اللمس (Ripple) ===== */
-.ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(212, 175, 55, 0.4);
-    transform: scale(0);
-    animation: rippleAnim 0.6s linear;
-    pointer-events: none;
-}
-@keyframes rippleAnim {
-    to { transform: scale(4); opacity: 0; }
-}
-
-/* ===== شاشة الافتتاح ===== */
-#splash-screen {
-    position: fixed; inset: 0; background: var(--bg-main); z-index: 9999;
+/* ═══════════════ شاشة الافتتاح (Splash) ═══════════════ */
+#splash {
+    position: fixed; inset: 0; background: var(--bg); z-index: 9999;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.5s ease;
 }
 .splash-logo {
-    width: 130px; height: 130px; border-radius: 28px; object-fit: cover; margin-bottom: 20px;
-    border: 2px solid rgba(212, 175, 55, 0.4); padding: 2px; background: #000;
-    box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
-    animation: pulseGlow 2.5s infinite alternate;
+    width: 100px; height: 100px; border-radius: 22px;
+    object-fit: cover; margin-bottom: 24px; border: 1px solid rgba(229, 184, 75, 0.3);
+    box-shadow: 0 0 40px rgba(229, 184, 75, 0.2);
+    animation: pulseLogo 2s infinite alternate var(--spring);
 }
-.splash-title {
-    display: flex; gap: 4px; justify-content: center;
-    font-family: var(--font-en); font-size: 2rem; font-weight: 900;
-    color: var(--gold); letter-spacing: 2px;
-    direction: ltr;
-    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+.splash-text {
+    font-family: var(--font-en); font-size: 1.5rem; font-weight: 700;
+    color: var(--gold); letter-spacing: 2px; direction: ltr;
+    animation: slideUp 0.8s var(--spring) forwards; opacity: 0;
 }
-.splash-title span {
-    display: inline-block; opacity: 0; transform: translateY(20px);
-    animation: letterDrop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.splash-title .space { width: 15px; }
-
-@keyframes letterDrop {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-@keyframes pulseGlow {
-    0% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); transform: scale(1); }
-    100% { box-shadow: 0 0 50px rgba(212, 175, 55, 0.7); transform: scale(1.05); }
+@keyframes pulseLogo {
+    0% { transform: scale(1); box-shadow: 0 0 20px rgba(229, 184, 75, 0.1); }
+    100% { transform: scale(1.05); box-shadow: 0 0 60px rgba(229, 184, 75, 0.4); }
 }
 
-/* ===== هياكل التحميل ===== */
-.skeleton {
-    background: #141a23;
-    background-image: linear-gradient(90deg, #141a23 0px, #2a3441 40px, #141a23 80px);
-    background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 12px;
+/* ═══════════════ هيكل التطبيق ═══════════════ */
+#app {
+    display: flex; flex-direction: column;
+    height: 100%; width: 100%; max-width: 600px; margin: 0 auto;
+    position: relative; transition: opacity 0.3s;
 }
-@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-.loader { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(212, 175, 55, 0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ===== الشريط العلوي ===== */
+/* الهيدر العلوي */
 header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 20px; position: sticky; top: 0; z-index: 100;
-    background: rgba(7, 9, 15, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-    border-bottom: 1px solid var(--border-glass);
+    padding: 16px 20px; padding-top: calc(16px + env(safe-area-inset-top));
+    background: rgba(5, 5, 5, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border);
 }
-
-.header-right { display: flex; align-items: center; gap: 12px; }
-.header-logo { height: 35px; width: auto; object-fit: contain; border-radius: 6px; }
-.header-title { font-family: var(--font-en); font-weight: 900; color: var(--gold); font-size: 1.1rem; letter-spacing: 1px; display: none; }
-
-#user-bar { display: flex; gap: 10px; align-items: center; }
-.balance {
-    background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3);
-    padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 700;
-    color: var(--gold-light); font-family: var(--font-en); display: flex; align-items: center; gap: 4px;
+.header-brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-en); font-weight: 700; font-size: 1.1rem; color: var(--gold); }
+.header-brand img { height: 28px; width: 28px; border-radius: 6px; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.balance-pill {
+    background: rgba(229, 184, 75, 0.1); border: 1px solid rgba(229, 184, 75, 0.2);
+    padding: 6px 12px; border-radius: 100px; font-family: var(--font-en);
+    font-size: 0.9rem; font-weight: 700; color: var(--gold);
+    display: flex; align-items: center; gap: 4px;
 }
-
-.status-pill { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: flex; align-items: center; gap: 6px; transition: var(--smooth); }
-.status-pill::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
-.status-checking { background: rgba(155, 161, 166, 0.1); color: var(--text-muted); border: 1px solid var(--text-muted); }
-.status-checking::before { background: var(--text-muted); animation: pulse 1.5s infinite; }
-.status-online { background: rgba(46, 160, 67, 0.1); color: var(--success); border: 1px solid var(--success); }
-.status-online::before { background: var(--success); }
-.status-offline { background: rgba(218, 54, 51, 0.1); color: var(--danger); border: 1px solid var(--danger); }
-.status-offline::before { background: var(--danger); }
-@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
-/* شاشة تسجيل الدخول */
-#login-screen {
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    height: calc(100vh - 60px); padding: 20px; position: relative; z-index: 10;
-    animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.status-indicator {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--muted);
+    transition: background 0.3s;
 }
+.status-online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+.status-offline { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
 
-/* الزجاج التفاعلي */
-.glass-panel {
-    background: var(--bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+/* منطقة المحتوى القابلة للتمرير */
+main {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    padding: 24px 20px; padding-bottom: 100px; /* مساحة للأسفل */
+    scroll-behavior: smooth;
+}
+main::-webkit-scrollbar { width: 0; } /* إخفاء شريط التمرير */
+
+/* ═══════════════ شاشة تسجيل الدخول ═══════════════ */
+#view-login {
+    height: 100%; display: flex; flex-direction: column; justify-content: center;
+    padding: 20px; text-align: center; animation: slideUp 0.5s var(--spring);
+}
+.login-logo { width: 90px; height: 90px; border-radius: 20px; margin: 0 auto 20px; object-fit: cover; border: 1px solid var(--border); }
+.login-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; }
+.login-subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 30px; }
+
+.input-wrapper {
+    position: relative; margin-bottom: 16px;
+}
+.input-wrapper input {
+    width: 100%; padding: 18px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; color: var(--gold); font-family: var(--font-en); font-size: 1.1rem;
+    text-align: center; font-weight: 700; letter-spacing: 1px; outline: none; transition: 0.3s;
+}
+.input-wrapper input:focus { border-color: var(--gold); background: rgba(229, 184, 75, 0.05); }
+.input-wrapper input::placeholder { font-family: var(--font-ar); color: var(--muted); font-weight: 400; letter-spacing: 0; }
+
+.btn-main {
+    width: 100%; padding: 18px; background: linear-gradient(135deg, var(--gold), #b08d2b);
+    color: #000; border: none; border-radius: 16px; font-family: var(--font-ar);
+    font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: transform 0.2s var(--spring);
+    box-shadow: 0 10px 20px rgba(229, 184, 75, 0.15);
+}
+.btn-main:active { transform: scale(0.96); }
+
+/* ═══════════════ المتجر (Bento Grid) ═══════════════ */
+.bento-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    animation: fadeIn 0.4s ease;
+}
+.bento-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 20px; cursor: pointer;
+    transition: 0.3s var(--spring); display: flex; flex-direction: column; justify-content: space-between;
     position: relative; overflow: hidden;
 }
-
-.login-card {
-    border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 400px;
-    text-align: center; display: flex; flex-direction: column; align-items: center;
+.bento-item:active { transform: scale(0.97); }
+.bento-item:hover { border-color: rgba(229, 184, 75, 0.4); background: rgba(30, 30, 30, 0.8); }
+.bento-item.wide { grid-column: span 2; flex-direction: row; align-items: center; }
+.bento-item .item-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 2; }
+.bento-item .item-meta { font-family: var(--font-en); font-size: 0.85rem; color: var(--muted); display: flex; gap: 10px; position: relative; z-index: 2; }
+.bento-item .item-price { color: var(--gold); font-weight: 700; }
+.bento-item.wide .item-title { margin-bottom: 0; }
+.bento-item.wide .item-meta { margin-top: 4px; }
+.badge {
+    position: absolute; top: 12px; left: 12px; background: rgba(229, 184, 75, 0.15);
+    color: var(--gold); padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; z-index: 2;
 }
 
-/* إضاءة الزجاج اللي تتبع الماوس */
-.login-card::before, .shop-item::before, .purchase-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(212, 175, 55, 0.15), transparent 80%);
-    opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 0;
-}
-.login-card:hover::before, .shop-item:hover::before, .purchase-card:hover::before {
-    opacity: 1;
-}
-
-.logo-img {
-    width: 120px; height: 120px; border-radius: 24px; object-fit: cover; margin-bottom: 20px;
-    border: 2px solid rgba(212, 175, 55, 0.4); box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
-    padding: 2px; background: #000; position: relative; z-index: 1;
-}
-
-.brand-title { font-family: var(--font-en); font-size: 1.8rem; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 8px; position: relative; z-index: 1; }
-
-.input-group { position: relative; margin-bottom: 24px; width: 100%; z-index: 1; }
-.input-group input {
-    width: 100%; padding: 16px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-glass);
-    border-radius: 14px; color: var(--gold-light); font-size: 1.1rem; font-family: var(--font-en);
-    text-align: center; letter-spacing: 2px; font-weight: 600; transition: var(--smooth); outline: none;
-}
-.input-group input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
-.input-group input::placeholder { font-family: var(--font-ar); letter-spacing: normal; color: var(--text-muted); font-size: 0.95rem; }
-
-/* الأزرار المغناطيسية */
-.btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; padding: 14px; border: none; border-radius: 12px;
-    font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
-    cursor: pointer; position: relative; z-index: 1; overflow: hidden;
-    background: linear-gradient(135deg, var(--gold), #b8952b); color: #000;
-    transition: transform 0.1s ease, box-shadow 0.3s ease;
-    will-change: transform;
-}
-.btn:hover { box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4); }
-.btn:active { transform: scale(0.96) !important; }
-.btn.outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); }
-.btn.danger { background: linear-gradient(135deg, var(--danger), #b02a26); color: #fff; }
-
-#main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; position: relative; z-index: 10; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-.tabs {
-    display: flex; position: relative; background: rgba(20, 25, 35, 0.4);
-    border: 1px solid var(--border-glass); border-radius: 16px; padding: 6px;
-    margin-bottom: 24px; backdrop-filter: blur(10px); direction: rtl;
-}
-.tab-btn {
-    flex: 1; padding: 14px 0; background: transparent; border: none;
-    color: var(--text-muted); font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
-    cursor: pointer; transition: var(--smooth); z-index: 2; display: flex; align-items: center; justify-content: center;
-}
-.tab-btn.active { color: #000; }
-.tab-indicator {
-    position: absolute; top: 6px; bottom: 6px; width: calc(33.333% - 4px);
-    background: linear-gradient(135deg, var(--gold), #c59b27);
-    border-radius: 12px; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 1; right: 6px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-}
-
-.tab-content { display: none; }
-.tab-content.active { display: block; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; perspective: 1000px; }
-.shop-item {
-    background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border-radius: 16px; padding: 16px; cursor: pointer;
-    position: relative; transform-style: preserve-3d; overflow: hidden;
-    transition: transform 0.1s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    opacity: 0; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.shop-item:hover { border-color: rgba(212, 175, 55, 0.5); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-.shop-item:active { transform: scale(0.97) !important; }
-.shop-item .title { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; transform: translateZ(20px); position: relative; z-index: 1; }
-.shop-item .meta { display: flex; justify-content: space-between; font-size: 0.85rem; transform: translateZ(10px); position: relative; z-index: 1; }
-.shop-item .price { color: var(--gold-light); font-family: var(--font-en); font-weight: 700; }
-.shop-item .stock { color: var(--text-muted); }
-.shop-item.sold { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
-
-.back-nav { margin-bottom: 15px; display: flex; align-items: center; }
-.btn-back {
-    background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass);
-    color: var(--text-main); padding: 8px 16px; border-radius: 10px;
-    font-family: var(--font-ar); font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; transition: var(--smooth); display: flex; align-items: center; gap: 8px;
-}
-.btn-back:hover { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); }
-.btn-back::before { content: '\2192'; font-family: Arial, sans-serif; font-size: 1.1rem; color: var(--gold); }
-
+/* ═══════════════ المشتريات ═══════════════ */
+.purchase-list { display: flex; flex-direction: column; gap: 12px; animation: fadeIn 0.4s ease; }
 .purchase-card {
-    background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px;
-    position: relative; opacity: 0; animation: slideUpFade 0.4s ease-out forwards;
-    transition: transform 0.1s ease, box-shadow 0.3s ease;
-    transform-style: preserve-3d; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    padding: 20px; display: flex; flex-direction: column; gap: 12px;
 }
-.purchase-card .phone { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; color: var(--gold-light); text-align: right; transform: translateZ(15px); position: relative; z-index: 1; }
-.purchase-card .pwd { font-family: var(--font-en); font-size: 1rem; color: var(--text-main); direction: ltr; text-align: right; transform: translateZ(10px); position: relative; z-index: 1; }
-.purchase-card .actions { display: flex; gap: 8px; margin-top: 5px; transform: translateZ(20px); position: relative; z-index: 1; }
-.purchase-card .actions .btn { padding: 10px 16px; font-size: 0.9rem; }
+.pc-header { display: flex; justify-content: space-between; align-items: center; }
+.pc-phone { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; color: var(--gold); direction: ltr; }
+.pc-date { font-size: 0.8rem; color: var(--muted); }
+.pc-details { display: flex; gap: 15px; font-size: 0.9rem; }
+.pc-actions { display: flex; gap: 10px; }
+.btn-outline {
+    flex: 1; padding: 12px; background: transparent; border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text); font-family: var(--font-ar); font-weight: 600;
+    font-size: 0.9rem; cursor: pointer; transition: 0.2s;
+}
+.btn-outline:active { background: rgba(255, 255, 255, 0.05); }
+.btn-danger { color: var(--danger); border-color: rgba(255, 69, 58, 0.3); }
 
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center; color: var(--text-muted); }
-.empty-state svg { width: 80px; height: 80px; margin-bottom: 15px; opacity: 0.5; color: var(--gold); }
-.empty-state p { font-size: 1rem; font-weight: 600; }
+/* ═══════════════ الشحن (Wizard) ═══════════════ */
+.wizard-container { animation: fadeIn 0.4s ease; }
+.wizard-step { display: none; flex-direction: column; animation: slideRight 0.4s var(--spring); }
+.wizard-step.active { display: flex; }
+.step-header { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; }
+.step-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.6; }
 
-.card { border-radius: 20px; padding: 24px; margin-bottom: 20px; position: relative; }
-.card-title { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; position: relative; z-index: 1;}
+/* ═══════════════ شريط التنقل السفلي ═══════════════ */
+.bottom-nav {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 10px 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border); z-index: 100;
+    border-radius: 24px 24px 0 0;
+}
+.nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--muted); cursor: pointer; transition: 0.3s var(--spring);
+    padding: 8px 16px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;
+}
+.nav-item.active { color: var(--gold); background: rgba(229, 184, 75, 0.1); }
+.nav-icon { font-size: 1.2rem; margin-bottom: 2px; }
 
-.form-control { width: 100%; padding: 14px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: 12px; color: var(--text-main); font-size: 0.95rem; font-family: var(--font-ar); outline: none; margin-bottom: 12px; transition: var(--smooth); }
-.form-control:focus { border-color: var(--gold); }
+/* ═══════════════ المودالات ═══════════════ */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+    display: flex; justify-content: center; align-items: flex-end; z-index: 1000;
+    opacity: 0; pointer-events: none; transition: 0.3s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-sheet {
+    background: var(--surface-solid); width: 100%; max-width: 600px;
+    border-radius: 24px 24px 0 0; padding: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    transform: translateY(100%); transition: 0.4s var(--spring);
+    border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+}
+.modal-overlay.active .modal-sheet { transform: translateY(0); }
+.modal-handle { width: 40px; height: 5px; background: #333; border-radius: 10px; margin: 0 auto 20px; }
+.modal-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; text-align: center; }
+.modal-content { text-align: center; margin-bottom: 24px; }
 
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: var(--smooth); }
-.modal.show { opacity: 1; pointer-events: auto; }
-.modal-content { border-radius: 24px; width: 100%; max-width: 400px; padding: 24px; transform: scale(0.95) translateY(10px); transition: var(--smooth); }
-.modal.show .modal-content { transform: scale(1) translateY(0); }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-title { font-weight: 700; color: var(--gold); font-size: 1.1rem; }
+.otp-code-display {
+    font-family: var(--font-en); font-size: 2.5rem; font-weight: 700;
+    color: var(--success); letter-spacing: 4px; background: rgba(48, 209, 88, 0.1);
+    padding: 15px; border-radius: 16px; border: 1px dashed rgba(48, 209, 88, 0.3);
+}
 
-.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; opacity: 0; transition: var(--smooth); z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 90%; max-width: 400px; }
+/* ═══════════════ الإشعارات (Toast) ═══════════════ */
+.toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+    background: var(--surface-solid); color: #fff; padding: 14px 24px;
+    border-radius: 100px; font-weight: 700; font-size: 0.9rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border: 1px solid var(--border);
+    z-index: 2000; opacity: 0; transition: 0.4s var(--spring);
+    display: flex; align-items: center; gap: 8px; pointer-events: none;
+}
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-.toast.error { background: var(--danger); }
-.toast.success { background: var(--success); }
+.toast.error { border-color: var(--danger); }
+.toast.success { border-color: var(--success); }
 
-@media (max-width: 600px) {
-    .brand-title { font-size: 1.5rem; }
-    .tab-btn { font-size: 0.9rem; padding: 12px 0; }
-    .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-    .purchase-card .actions { flex-direction: column; }
-    .header-title { display: none; }
-    .status-pill { font-size: 0.7rem; padding: 4px 8px; }
-    .splash-title { font-size: 1.6rem; }
+/* ═══════════════ هياكل التحميل ═══════════════ */
+.skeleton {
+    background: #1a1a1a; background-image: linear-gradient(90deg, #1a1a1a 0px, #2a2a2a 40px, #1a1a1a 80px);
+    background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 16px;
 }
-@media (min-width: 601px) {
-    .header-title { display: block; }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.sk-card { height: 120px; width: 100%; }
+.sk-row { height: 60px; width: 100%; margin-bottom: 12px; }
+
+/* ═══════════════ حالة الفراغ ═══════════════ */
+.empty-state { text-align: center; padding: 40px 20px; animation: fadeIn 0.5s ease; }
+.empty-icon { font-size: 3rem; color: var(--muted); margin-bottom: 16px; opacity: 0.5; }
+.empty-text { color: var(--muted); font-size: 1rem; }
+
+/* ═══════════════ الأنيميشن ═══════════════ */
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ═══════════════ الشاشات الكبيرة (لابتوب/تابلت) ═══════════════ */
+@media (min-width: 768px) {
+    #app {
+        height: 90vh; margin-top: 5vh; border-radius: 24px;
+        border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        overflow: hidden;
+    }
+    .bento-grid { grid-template-columns: repeat(3, 1fr); }
+    .bottom-nav { border-radius: 0 0 24px 24px; }
 }
 </style>
 </head>
 <body>
 
+<!-- خلفيات ديناميكية -->
+<div class="bg-mesh"></div>
+<div class="noise-overlay"></div>
+
 <!-- شاشة الافتتاح -->
-<div id="splash-screen">
-    <img src="logo.png" alt="CORLEONE PLUS" class="splash-logo" onerror="this.style.display='none';">
-    <div class="splash-title" id="splash-title-text" dir="ltr"></div>
+<div id="splash">
+    <img src="logo.png" alt="Logo" class="splash-logo" onerror="this.style.display='none';">
+    <div class="splash-text">CORLEONE PLUS</div>
 </div>
 
-<header class="hidden" id="main-header">
-    <div class="header-right">
-        <img src="logo.png" alt="Logo" class="header-logo" onerror="this.style.display='none';">
-        <span class="header-title">CORLEONE PLUS</span>
-    </div>
+<!-- هيكل التطبيق -->
+<div id="app" class="hidden">
     
-    <div id="user-bar" class="hidden">
-        <div class="status-pill status-checking" id="server-status">جاري الفحص</div>
-        <div class="balance">$ <span id="user-balance">0.00</span></div>
-        <button id="logout-btn" class="btn outline" style="width:auto; padding:6px 12px; font-size:0.8rem;" onclick="vibrate()">تسجيل الخروج</button>
-    </div>
-</header>
-
-<!-- الدخول -->
-<div id="login-screen" class="hidden">
-    <div class="login-card glass-panel">
-        <img src="logo.png" alt="CORLEONE PLUS" class="logo-img" onerror="this.style.display='none';">
-        <div class="brand-title">CORLEONE PLUS</div>
-        <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; font-weight:600; position:relative; z-index:1;">أدخل كلمة المرور الخاصة بك</div>
-        
-        <div class="input-group">
-            <input type="password" id="login-password" placeholder="أدخل كلمة المرور هنا" autocomplete="off" spellcheck="false">
+    <!-- الهيدر -->
+    <header id="header" class="hidden">
+        <div class="header-brand">
+            <img src="logo.png" alt="Logo" onerror="this.style.display='none';">
+            <span>CORLEONE</span>
         </div>
-        <button id="login-btn" class="btn magnetic" onclick="vibrate()">دخول</button>
-    </div>
-</div>
-
-<!-- الرئيسية -->
-<div id="main-screen" class="hidden">
-    
-    <div class="tabs">
-        <div class="tab-indicator" id="tab-indicator"></div>
-        <button class="tab-btn active" data-tab="shop" onclick="switchTab(0, 'shop')">المتجر</button>
-        <button class="tab-btn" data-tab="purchases" onclick="switchTab(1, 'purchases')">مشترياتي</button>
-        <button class="tab-btn" data-tab="recharge" onclick="switchTab(2, 'recharge')">شحن</button>
-    </div>
-
-    <div id="tab-shop" class="tab-content active">
-        <div id="breadcrumb" class="hidden back-nav">
-            <button class="btn-back" onclick="loadShop(null); vibrate();">رجوع</button>
-            <span id="bc-current" style="color:var(--gold); font-weight:700; margin-right:10px;"></span>
+        <div class="header-actions">
+            <div class="status-indicator" id="server-status" title="حالة السيرفر"></div>
+            <div class="balance-pill">$ <span id="user-balance">0.00</span></div>
         </div>
-        <div id="shop-grid" class="grid"></div>
-    </div>
+    </header>
 
-    <div id="tab-purchases" class="tab-content">
-        <div id="purchases-list"></div>
-    </div>
-
-    <div id="tab-recharge" class="tab-content">
-        <div class="card glass-panel">
-            <div class="card-title">شحن آسيا سيل</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; position:relative; z-index:1;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
-            <input type="tel" id="asia-phone" class="form-control" placeholder="رقم الآسيا (مثال: 07701234567)">
-            <button id="asia-start" class="btn magnetic" onclick="vibrate()">بدء الشحن</button>
+    <!-- منطقة المحتوى -->
+    <main>
+        <!-- شاشة تسجيل الدخول -->
+        <div id="view-login" class="hidden">
+            <img src="logo.png" alt="Logo" class="login-logo" onerror="this.style.display='none';">
+            <div class="login-title">مرحباً بك</div>
+            <div class="login-subtitle">أدخل كلمة السر الخاصة بك للدخول إلى حسابك</div>
             
-            <div id="asia-steps" class="hidden">
-                <div id="asia-step-otp" class="hidden" style="margin-top: 15px;">
-                    <input type="text" id="asia-otp" class="form-control" placeholder="كود التحقق">
-                    <button id="asia-otp-submit" class="btn outline" onclick="vibrate()">تأكيد الكود</button>
+            <div class="input-wrapper">
+                <input type="password" id="login-password" placeholder="كلمة السر (من البوت)" autocomplete="off" spellcheck="false">
+            </div>
+            <button id="login-btn" class="btn-main">تسجيل الدخول</button>
+        </div>
+
+        <!-- شاشة المتجر -->
+        <div id="view-shop" class="hidden">
+            <div id="breadcrumb" class="hidden" style="margin-bottom:16px; display:flex; align-items:center; gap:10px;">
+                <button onclick="loadShop(null)" style="background:var(--surface); border:1px solid var(--border); color:#fff; padding:8px 16px; border-radius:12px; cursor:pointer; font-family:var(--font-ar); font-weight:700;">رجوع</button>
+                <span id="bc-title" style="color:var(--gold); font-weight:700;"></span>
+            </div>
+            <div id="shop-container" class="bento-grid"></div>
+        </div>
+
+        <!-- شاشة المشتريات -->
+        <div id="view-purchases" class="hidden">
+            <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:20px;">مشترياتي</h2>
+            <div id="purchases-container" class="purchase-list"></div>
+        </div>
+
+        <!-- شاشة الشحن -->
+        <div id="view-recharge" class="hidden">
+            <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:20px;">شحن الرصيد</h2>
+            
+            <div class="wizard-container">
+                <!-- الخطوة 1: الرقم -->
+                <div id="step-phone" class="wizard-step active">
+                    <div class="step-header">شحن آسيا سيل</div>
+                    <div class="step-desc">أدخل رقم الآسيا سيل الخاص بك. سيصلك كود تحقق لإتمام العملية. (السعر: كل 1000 دينار = <span id="asia-rate">0.60</span>$)</div>
+                    <div class="input-wrapper">
+                        <input type="tel" id="asia-phone" placeholder="07XXXXXXXXX" style="font-family:var(--font-en); text-align:right; direction:ltr;">
+                    </div>
+                    <button id="asia-btn-phone" class="btn-main">إرسال كود التحقق</button>
                 </div>
-                <div id="asia-step-amount" class="hidden" style="margin-top: 15px;">
-                    <input type="number" id="asia-amount" class="form-control" placeholder="المبلغ بالدينار (حد أدنى 1000)">
-                    <button id="asia-amount-submit" class="btn outline" onclick="vibrate()">متابعة</button>
+
+                <!-- الخطوة 2: الكود -->
+                <div id="step-otp" class="wizard-step">
+                    <div class="step-header">كود التحقق</div>
+                    <div class="step-desc">أدخل كود التحقق الذي وصلك من آسيا سيل.</div>
+                    <div class="input-wrapper">
+                        <input type="text" id="asia-otp" placeholder="أدخل الكود هنا" style="font-family:var(--font-en); text-align:center; letter-spacing:2px;">
+                    </div>
+                    <button id="asia-btn-otp" class="btn-main">تأكيد الكود</button>
                 </div>
-                <div id="asia-step-confirm" class="hidden" style="margin-top: 15px;">
-                    <p id="asia-confirm-info" style="font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted);"></p>
-                    <input type="text" id="asia-confirm" class="form-control" placeholder="كود تأكيد التحويل">
-                    <button id="asia-confirm-submit" class="btn magnetic" style="background: var(--success); color: white;" onclick="vibrate()">تأكيد نهائي</button>
+
+                <!-- الخطوة 3: المبلغ -->
+                <div id="step-amount" class="wizard-step">
+                    <div class="step-header">المبلغ المطلوب</div>
+                    <div class="step-desc">أدخل المبلغ بالدينار العراقي (الحد الأدنى 1000).</div>
+                    <div class="input-wrapper">
+                        <input type="number" id="asia-amount" placeholder="مثال: 1000" style="font-family:var(--font-en); text-align:right;">
+                    </div>
+                    <button id="asia-btn-amount" class="btn-main">متابعة</button>
+                </div>
+
+                <!-- الخطوة 4: التأكيد -->
+                <div id="step-confirm" class="wizard-step">
+                    <div class="step-header">تأكيد التحويل</div>
+                    <div class="step-desc" id="asia-confirm-info">يرجى تحويل المبلغ إلى الرقم المحدد، ثم إدخال كود التأكيد الذي وصلك.</div>
+                    <div class="input-wrapper">
+                        <input type="text" id="asia-confirm" placeholder="كود تأكيد التحويل" style="font-family:var(--font-en); text-align:center;">
+                    </div>
+                    <button id="asia-btn-confirm" class="btn-main" style="background:var(--success); color:#fff;">تأكيد نهائي</button>
                 </div>
             </div>
-            <div id="asia-msg" class="hidden" style="margin-top: 15px; font-size: 0.9rem;"></div>
-        </div>
-    </div>
-
-</div>
-
-<div id="chat-modal" class="modal">
-    <div class="modal-content glass-panel">
-        <div class="modal-header">
-            <div class="modal-title" id="chat-title">الكود</div>
-            <button onclick="closeChat(); vibrate();" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✖</button>
-        </div>
-        <div id="chat-body" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; min-height: 100px;"></div>
-        <button id="chat-request-otp" class="btn magnetic" onclick="vibrate()">طلب كود OTP</button>
-        <button class="btn outline" style="margin-top: 10px;" onclick="closeChat(); vibrate();">رجوع</button>
-    </div>
-</div>
-
-<div id="success-modal" class="modal">
-    <div class="modal-content glass-panel" style="text-align:center;">
-        <div style="font-weight: 900; color: var(--gold); font-size:1.3rem; margin-bottom: 15px;">تم الشراء بنجاح!</div>
-        
-        <div style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px; margin-bottom:20px;">
-            <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:5px;">الرقم</div>
-            <div style="font-size:1.4rem; font-family:var(--font-en); font-weight:700; color:var(--gold-light); direction:ltr; margin-bottom:10px;" id="succ-phone"></div>
             
-            <div id="succ-pwd-container">
-                <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:5px;">الباسوورد</div>
-                <div style="font-size:1.1rem; font-family:var(--font-en); font-weight:700; color:#fff; direction:ltr;" id="succ-pwd"></div>
-            </div>
+            <div id="asia-msg" style="margin-top:20px; font-size:0.9rem; text-align:center;"></div>
         </div>
-        
-        <div style="display:flex; gap:10px;">
-            <button class="btn magnetic" onclick="requestOtpFromSuccess(); vibrate();" id="succ-otp-btn">طلب الكود</button>
-            <button class="btn outline" onclick="closeSuccess(); vibrate();">إغلاق</button>
+    </main>
+
+    <!-- شريط التنقل السفلي -->
+    <nav id="bottom-nav" class="bottom-nav hidden">
+        <div class="nav-item active" onclick="switchView('shop')" id="nav-shop">
+            <div class="nav-icon">🛍️</div>
+            <span>المتجر</span>
         </div>
+        <div class="nav-item" onclick="switchView('purchases')" id="nav-purchases">
+            <div class="nav-icon">📦</div>
+            <span>مشترياتي</span>
+        </div>
+        <div class="nav-item" onclick="switchView('recharge')" id="nav-recharge">
+            <div class="nav-icon">💳</div>
+            <span>شحن</span>
+        </div>
+        <div class="nav-item" onclick="logout()" id="nav-logout">
+            <div class="nav-icon">🚪</div>
+            <span>خروج</span>
+        </div>
+    </nav>
+</div>
+
+<!-- مودال الكود -->
+<div id="modal-otp" class="modal-overlay">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-title">كود الدخول (OTP)</div>
+        <div class="modal-content" id="otp-content">
+            <div class="empty-text">اضغط على الزر بالأسفل لسحب الكود</div>
+        </div>
+        <button id="btn-request-otp" class="btn-main">طلب كود OTP</button>
+        <button class="btn-outline" style="margin-top:10px; width:100%;" onclick="closeModal('modal-otp')">إغلاق</button>
     </div>
 </div>
 
+<!-- مودال نجاح الشراء -->
+<div id="modal-success" class="modal-overlay">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div style="text-align:center; font-size:2rem; margin-bottom:10px;">🎉</div>
+        <div class="modal-title" style="color:var(--gold);">تم الشراء بنجاح!</div>
+        <div class="modal-content" style="background:rgba(0,0,0,0.3); border-radius:16px; padding:20px; text-align:right;">
+            <div style="margin-bottom:10px;"><span style="color:var(--muted); font-size:0.9rem;">الرقم:</span> <span id="succ-phone" style="font-family:var(--font-en); font-weight:700; color:var(--gold); font-size:1.2rem; float:left; direction:ltr;"></span></div>
+            <div id="succ-pwd-row"><span style="color:var(--muted); font-size:0.9rem;">الباسوورد:</span> <span id="succ-pwd" style="font-family:var(--font-en); font-weight:700; float:left; direction:ltr;"></span></div>
+        </div>
+        <button class="btn-main" id="succ-btn-otp">طلب كود OTP</button>
+        <button class="btn-outline" style="margin-top:10px; width:100%;" onclick="closeModal('modal-success')">إغلاق</button>
+    </div>
+</div>
+
+<!-- إشعارات -->
 <div id="toast" class="toast"></div>
 
 <script>
 const API_BASE = "https://corleonestore.wisp.uno";
-
-const state = {
-  token: localStorage.getItem("token") || null,
-  user: null,
-  currentParent: null,
-  chatNumberId: null,
-  lastPurchasedId: null,
-  displayedBalance: 0
+let state = {
+    token: localStorage.getItem("token") || null,
+    user: null,
+    currentParent: null,
+    chatNumberId: null,
+    lastPurchasedId: null
 };
 
-function vibrate() {
-    if (navigator.vibrate) navigator.vibrate(20);
-}
-
-function showToast(msg, type = "success") {
-    const t = document.getElementById("toast");
+// ═══════════════ دوال مساعدة ═══════════════
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = `toast show ${type}`;
-    setTimeout(() => { t.classList.remove("show"); }, 3500);
+    setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// حركة الأرقام الحية (Count-Up)
-function animateValue(obj, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const easeOutProgress = 1 - Math.pow(1 - progress, 3);
-        const current = start + (end - start) * easeOutProgress;
-        obj.textContent = current.toFixed(2);
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
-    };
-    window.requestAnimationFrame(step);
+function vibrate() { if (navigator.vibrate) navigator.vibrate(15); }
+
+function switchView(viewName) {
+    vibrate();
+    document.querySelectorAll('main > div').forEach(el => el.classList.add('hidden'));
+    document.getElementById(`view-${viewName}`).classList.remove('hidden');
+    
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById(`nav-${viewName}`).classList.add('active');
+    
+    if (viewName === 'purchases') loadPurchases();
 }
 
-function updateBalanceDisplay(newBalance) {
-    const el = document.getElementById("user-balance");
-    if (state.displayedBalance === 0 && newBalance > 0) {
-        state.displayedBalance = newBalance;
-        el.textContent = newBalance.toFixed(2);
-    } else if (state.displayedBalance !== newBalance) {
-        animateValue(el, state.displayedBalance, newBalance, 800);
-        state.displayedBalance = newBalance;
-    }
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
 }
 
+// ═══════════════ الاتصال بالسيرفر ═══════════════
 async function api(path, method = "GET", body = null) {
     const headers = { "Content-Type": "application/json" };
     if (state.token) headers["Authorization"] = "Bearer " + state.token;
     
     try {
         const res = await fetch(API_BASE + path, { method, headers, body: body ? JSON.stringify(body) : null });
-        let data;
-        try { data = await res.json(); } catch(e) { data = {}; }
+        let data; try { data = await res.json(); } catch(e) { data = {}; }
         
         if (res.status === 401 && path !== "/api/login") {
-            localStorage.removeItem("token");
-            state.token = null;
-            throw new Error("انتهت الجلسة");
+            localStorage.removeItem("token"); state.token = null;
+            throw new Error("انتهت الجلسة، يرجى إعادة الدخول");
         }
-        if (!res.ok) {
-            let errMsg = data.detail || "حدث خطأ";
-            if (typeof errMsg === 'string') {
-                try { errMsg = decodeURIComponent(errMsg); } catch(e) {}
-            }
-            throw new Error(errMsg);
-        }
+        if (!res.ok) throw new Error(data.detail || data.error || "حدث خطأ");
         return data;
     } catch (err) {
-        if(err.message === "Failed to fetch") throw new Error("تعذر الاتصال بالخادم، تأكد من الإنترنت");
+        if(err.message === "Failed to fetch") throw new Error("تعذر الاتصال بالخادم");
         throw err;
     }
 }
 
-async function checkServerStatus() {
+async function checkServer() {
     const indicator = document.getElementById("server-status");
     try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        const res = await fetch(API_BASE + "/api/config", { signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-            indicator.className = "status-pill status-online";
-            indicator.textContent = "متصل";
-        } else { throw new Error("offline"); }
+        const res = await fetch(API_BASE + "/api/config");
+        if (res.ok) indicator.className = "status-indicator status-online";
+        else throw new Error();
     } catch (e) {
-        indicator.className = "status-pill status-offline";
-        indicator.textContent = "غير متصل";
+        indicator.className = "status-indicator status-offline";
     }
 }
 
-// حركة دخول الحروف لشاشة الافتتاح
-function initSplashText() {
-    const title = "CORLEONE PLUS";
-    const container = document.getElementById("splash-title-text");
-    container.innerHTML = "";
-    for (let i = 0; i < title.length; i++) {
-        let span = document.createElement("span");
-        if (title[i] === " ") {
-            span.className = "space";
+// ═══════════════ حركة الأرقام (Count-Up) ═══════════════
+let currentBalance = 0;
+function animateBalance(target) {
+    const el = document.getElementById("user-balance");
+    let start = currentBalance;
+    let duration = 600;
+    let startTime = null;
+    
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let progress = Math.min((timestamp - startTime) / duration, 1);
+        let eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = (start + (target - start) * eased).toFixed(2);
+        if (progress < 1) window.requestAnimationFrame(step);
+        else currentBalance = target;
+    }
+    window.requestAnimationFrame(step);
+}
+
+// ═══════════════ تسجيل الدخول ═══════════════
+async function initApp() {
+    // 1. فحص السيرفر
+    checkServer();
+    setInterval(checkServer, 30000);
+
+    // 2. إخفاء السبلاش بعد 2 ثانية
+    setTimeout(() => {
+        const splash = document.getElementById("splash");
+        splash.style.opacity = "0";
+        setTimeout(() => splash.style.display = "none", 500);
+        
+        document.getElementById("app").classList.remove("hidden");
+
+        // 3. التحقق من التوكن
+        if (state.token) {
+            api("/api/me").then(user => {
+                state.user = user;
+                currentBalance = user.balance;
+                document.getElementById("user-balance").textContent = user.balance.toFixed(2);
+                document.getElementById("header").classList.remove("hidden");
+                document.getElementById("bottom-nav").classList.remove("hidden");
+                switchView("shop");
+                loadShop(null);
+                
+                // تحديث تلقائي للرصيد
+                setInterval(async () => {
+                    if(document.hidden) return;
+                    try {
+                        const me = await api("/api/me");
+                        if (me.balance !== currentBalance) {
+                            state.user = me;
+                            animateBalance(me.balance);
+                        }
+                    } catch(e){}
+                }, 10000);
+                
+            }).catch(() => {
+                localStorage.removeItem("token"); state.token = null;
+                document.getElementById("view-login").classList.remove("hidden");
+            });
         } else {
-            span.textContent = title[i];
-            span.style.animationDelay = (i * 0.05) + "s";
+            document.getElementById("view-login").classList.remove("hidden");
         }
-        container.appendChild(span);
-    }
-}
-
-// 1. الأزرار المغناطيسية (Magnetic)
-function initMagneticButtons() {
-    if (!window.matchMedia("(hover: hover)").matches) return; // للكمبيوتر فقط
-    document.querySelectorAll('.magnetic').forEach(btn => {
-        btn.addEventListener('mousemove', e => {
-            const rect = btn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            // سحب الزر بنسبة 30% من المسافة
-            btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) scale(1.05)`;
-        });
-        btn.addEventListener('mouseleave', () => {
-            btn.style.transform = `translate(0px, 0px) scale(1)`;
-        });
-    });
-}
-
-// 2. إضاءة الزجاج التفاعلية (Interactive Glass Light) + 3D Tilt
-function addCardEffects(element) {
-    if (!window.matchMedia("(hover: hover)").matches) return;
-    
-    element.addEventListener("mousemove", e => {
-        const rect = element.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        // إضاءة الزجاج
-        element.style.setProperty('--mouse-x', `${x}px`);
-        element.style.setProperty('--mouse-y', `${y}px`);
-        
-        // الميلان 3D
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-        element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    });
-    
-    element.addEventListener("mouseleave", () => {
-        element.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-    });
-}
-
-// 3. تأثير الموجة عند اللمس (Ripple Effect)
-function initRipple() {
-    document.body.addEventListener('click', function(e) {
-        const target = e.target.closest('.btn, .shop-item, .purchase-card, .tab-btn');
-        if (!target) return;
-        
-        const rect = target.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const ripple = document.createElement('span');
-        ripple.className = 'ripple';
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        
-        // حجم الموجة يعتمد على حجم الزر
-        const size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = `${size}px`;
-        ripple.style.transform = `translate(-50%, -50%) scale(0)`;
-        
-        target.appendChild(ripple);
-        
-        setTimeout(() => { ripple.remove(); }, 600);
-    });
-}
-
-function getShopSkeleton() {
-    let html = "";
-    for(let i=0; i<6; i++) {
-        html += `
-            <div class="skeleton" style="height: 100px; border-radius: 16px; padding: 16px;">
-                <div class="skeleton-text" style="height: 16px; width: 60%; margin-bottom: 8px;"></div>
-                <div class="skeleton-text-sm" style="height: 12px; width: 40%; margin-top: 20px;"></div>
-            </div>
-        `;
-    }
-    return html;
-}
-
-function getPurchasesSkeleton() {
-    let html = "";
-    for(let i=0; i<3; i++) {
-        html += `
-            <div class="skeleton" style="height: 120px; border-radius: 16px; margin-bottom: 12px; padding: 16px;">
-                <div class="skeleton-text" style="height: 16px; width: 40%; margin-bottom: 8px;"></div>
-                <div class="skeleton-text-sm" style="height: 12px; width: 60%; margin-top: 15px;"></div>
-                <div class="skeleton" style="height: 30px; width: 100px; margin-top: 20px; border-radius: 8px;"></div>
-            </div>
-        `;
-    }
-    return html;
-}
-
-function switchTab(index, tabName) {
-    vibrate();
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-    
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
-    document.getElementById(`tab-${tabName}`).classList.add("active");
-    
-    const indicator = document.getElementById("tab-indicator");
-    indicator.style.transform = `translateX(-${index * 100}%)`;
-    
-    if (tabName === "purchases") loadPurchases();
-}
-
-async function bootApp() {
-    initSplashText();
-    initMagneticButtons();
-    initRipple();
-    
-    await checkServerStatus();
-    setInterval(checkServerStatus, 30000);
-
-    let targetScreen = 'login';
-    
-    if (state.token) {
-        try {
-            state.user = await api("/api/me");
-            targetScreen = 'main';
-        } catch (e) {
-            localStorage.removeItem("token");
-            state.token = null;
-            targetScreen = 'login';
-        }
-    }
-
-    await new Promise(r => setTimeout(r, 2500));
-
-    const splash = document.getElementById("splash-screen");
-    splash.style.opacity = "0"; 
-
-    document.getElementById("main-header").classList.remove("hidden");
-    if (targetScreen === 'main') {
-        document.getElementById("login-screen").classList.add("hidden");
-        document.getElementById("main-screen").classList.remove("hidden");
-        document.getElementById("user-bar").classList.remove("hidden");
-        
-        state.displayedBalance = 0;
-        updateBalanceDisplay(state.user.balance);
-        
-        try {
-            const cfg = await api("/api/config");
-            document.getElementById("asia-price").textContent = cfg.asia_price_per_1000.toFixed(2);
-        } catch(e) {}
-        
-        loadShop(null);
-        
-        setInterval(async () => {
-            if(document.hidden) return;
-            try {
-                const me = await api("/api/me");
-                state.user = me;
-                updateBalanceDisplay(me.balance);
-            } catch(e){}
-        }, 15000);
-        
-    } else {
-        document.getElementById("login-screen").classList.remove("hidden");
-        document.getElementById("main-screen").classList.add("hidden");
-        document.getElementById("user-bar").classList.add("hidden");
-    }
-
-    setTimeout(() => { splash.style.display = "none"; }, 600);
+    }, 2000);
 }
 
 document.getElementById("login-btn").onclick = async () => {
     const pwd = document.getElementById("login-password").value.trim();
     if (!pwd) return showToast("أدخل كلمة السر", "error");
     const btn = document.getElementById("login-btn");
-    btn.innerHTML = '<div class="loader"></div>';
+    btn.textContent = "جاري الدخول...";
     try {
         const res = await api("/api/login", "POST", { password: pwd });
         state.token = res.token; state.user = res.user;
         localStorage.setItem("token", res.token);
+        currentBalance = res.user.balance;
+        document.getElementById("user-balance").textContent = res.user.balance.toFixed(2);
         
-        document.getElementById("login-screen").classList.add("hidden");
-        document.getElementById("main-screen").classList.remove("hidden");
-        document.getElementById("user-bar").classList.remove("hidden");
+        document.getElementById("view-login").classList.add("hidden");
+        document.getElementById("header").classList.remove("hidden");
+        document.getElementById("bottom-nav").classList.remove("hidden");
         
-        state.displayedBalance = 0;
-        updateBalanceDisplay(state.user.balance);
+        const cfg = await api("/api/config");
+        document.getElementById("asia-rate").textContent = cfg.asia_price_per_1000.toFixed(2);
         
-        try {
-            const cfg = await api("/api/config");
-            document.getElementById("asia-price").textContent = cfg.asia_price_per_1000.toFixed(2);
-        } catch(e) {}
-        
+        switchView("shop");
         loadShop(null);
     } catch (e) {
         showToast(e.message, "error");
-        btn.innerHTML = 'دخول';
+        btn.textContent = "تسجيل الدخول";
     }
 };
 
-document.getElementById("logout-btn").onclick = () => {
-    if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
+function logout() {
+    if(confirm("هل أنت متأكد من تسجيل الخروج؟")) {
         localStorage.removeItem("token");
         location.reload();
     }
-};
+}
 
+// ═══════════════ المتجر (Bento) ═══════════════
 async function loadShop(parentId) {
-    const grid = document.getElementById("shop-grid");
-    grid.innerHTML = getShopSkeleton();
+    const grid = document.getElementById("shop-container");
+    grid.innerHTML = '<div class="skeleton sk-card" style="grid-column:span 2;"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>';
     
     const bc = document.getElementById("breadcrumb");
     if (!parentId) bc.classList.add("hidden"); else bc.classList.remove("hidden");
 
     try {
-        const url = "/api/shop" + (parentId ? "?parent=" + parentId : "");
-        const res = await api(url);
+        const res = await api("/api/shop" + (parentId ? "?parent=" + parentId : ""));
         state.currentParent = parentId;
-
-        if (res.parent) document.getElementById("bc-current").textContent = res.parent.title;
+        if (res.parent) document.getElementById("bc-title").textContent = res.parent.title;
 
         setTimeout(() => {
             if (res.items.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                        <p>لا توجد عناصر متاحة هنا حالياً</p>
-                    </div>
-                `;
+                grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📭</div><div class="empty-text">لا توجد عناصر هنا حالياً</div></div>`;
                 return;
             }
-
             grid.innerHTML = "";
-            res.items.forEach((item, index) => {
+            res.items.forEach((item, idx) => {
                 const div = document.createElement("div");
-                div.className = "shop-item" + (item.type === "category" && item.stock <= 0 ? " sold" : "");
-                div.style.animationDelay = `${index * 0.05}s`;
+                // أول عنصر يكون عريض للفخامة
+                div.className = "bento-item" + (idx === 0 && !parentId ? " wide" : "") + (item.type === "category" && item.stock <= 0 ? " sold" : "");
+                
                 div.innerHTML = `
-                    <div class="title">${item.emoji || ""} ${item.title}</div>
-                    ${item.type === "category" ? `
-                        <div class="meta">
-                            <span class="price">${item.price.toFixed(2)}$</span>
-                            <span class="stock">${item.stock > 0 ? "متوفر: " + item.stock : "نفذ"}</span>
-                        </div>
-                    ` : `<div style="font-size:0.8rem; color:var(--text-muted); position:relative; z-index:1;">مجلد</div>`}
+                    ${item.type === "category" && item.stock > 0 ? `<div class="badge">${item.stock} متوفر</div>` : ""}
+                    <div>
+                        <div class="item-title">${item.emoji || ""} ${item.title}</div>
+                        ${item.type === "category" ? `<div class="item-meta"><span class="item-price">${item.price.toFixed(2)}$</span></div>` : `<div class="item-meta">مجلد</div>`}
+                    </div>
                 `;
                 div.onclick = () => {
                     vibrate();
                     if (item.type === "category") {
-                        if (item.stock > 0) buyNumber(item);
-                        else showToast("نفدت الكمية", "error");
+                        if (item.stock > 0) buyItem(item);
+                        else showToast("نفذت الكمية", "error");
                     } else loadShop(item.id);
                 };
-                addCardEffects(div); // تفعيل إضاءة الزجاج
                 grid.appendChild(div);
             });
-            initMagneticButtons(); // إعادة تفعيل الأزرار للمحتوى الجديد
         }, 300);
-        
     } catch (e) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; color: var(--danger); text-align: center; padding: 20px;">${e.message}</div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1; color:var(--danger);">${e.message}</div>`;
     }
 }
 
-async function buyNumber(item) {
-    if (!confirm(`هل تريد شراء ${item.title} بـ ${item.price}$؟`)) return;
+async function buyItem(item) {
+    if (!confirm(`شراء ${item.title} مقابل ${item.price}$؟`)) return;
     try {
-        showToast("جاري إتمام الشراء...", "success");
+        showToast("جاري الشراء...");
         const res = await api("/api/buy", "POST", { node_id: item.id });
-        
         state.user.balance = res.new_balance;
-        updateBalanceDisplay(res.new_balance);
+        animateBalance(res.new_balance);
         
         state.lastPurchasedId = res.number_id;
         document.getElementById("succ-phone").textContent = res.phone;
-        
-        const pwdContainer = document.getElementById("succ-pwd-container");
         if (res.password) {
-            pwdContainer.style.display = "block";
+            document.getElementById("succ-pwd-row").style.display = "block";
             document.getElementById("succ-pwd").textContent = res.password;
         } else {
-            pwdContainer.style.display = "none";
+            document.getElementById("succ-pwd-row").style.display = "none";
         }
         
-        document.getElementById("success-modal").classList.add("show");
+        document.getElementById("modal-success").classList.add("active");
         loadShop(state.currentParent);
         
-    } catch (e) {
-        showToast(e.message, "error");
-    }
+        document.getElementById("succ-btn-otp").onclick = () => {
+            closeModal("modal-success");
+            openOtpModal(state.lastPurchasedId);
+        };
+    } catch (e) { showToast(e.message, "error"); }
 }
 
-function closeSuccess() { document.getElementById("success-modal").classList.remove("show"); }
-function requestOtpFromSuccess() { const id = state.lastPurchasedId; closeSuccess(); if (id) openChat(id); }
-
+// ═══════════════ المشتريات ═══════════════
 async function loadPurchases() {
-    const list = document.getElementById("purchases-list");
-    list.innerHTML = getPurchasesSkeleton();
+    const list = document.getElementById("purchases-container");
+    list.innerHTML = '<div class="skeleton sk-row"></div><div class="skeleton sk-row"></div>';
     
     try {
         const res = await api("/api/purchases");
-        
         setTimeout(() => {
             if (res.items.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                        <p>لم تقم بأي عمليات شراء حتى الآن</p>
-                    </div>
-                `;
+                list.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">لم تشترِ أي رقم بعد</div></div>`;
                 return;
             }
             list.innerHTML = "";
-            res.items.forEach((p, index) => {
-                const div = document.createElement("div");
-                div.className = "purchase-card";
-                div.style.animationDelay = `${index * 0.05}s`;
-                
-                const pwdHtml = p.password ? 
-                    `<div style="font-size:0.85rem; color:var(--text-muted);">الباسوورد: <span class="pwd">${p.password}</span></div>` 
-                    : `<div style="font-size:0.85rem; color:var(--text-muted);">لا يوجد باسوورد</div>`;
-
-                div.innerHTML = `
-                    <div>
-                        <div class="phone">${p.flag || ""} ${p.phone}</div>
-                        ${pwdHtml}
-                        <div style="font-size:0.8rem; color:var(--gold); margin-top:6px;">${p.country} - ${p.price.toFixed(2)}$</div>
+            res.items.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "purchase-card";
+                card.innerHTML = `
+                    <div class="pc-header">
+                        <div class="pc-phone">${p.phone}</div>
+                        <div class="pc-date">${p.country}</div>
                     </div>
-                    <div class="actions">
-                        <button class="btn magnetic" onclick="openChat(${p.number_id}); vibrate();">الكود</button>
-                        <button class="btn danger" onclick="logoutNumber(${p.number_id}); vibrate();">تسجيل خروج</button>
+                    <div class="pc-details">
+                        ${p.password ? `<span style="color:var(--muted); font-size:0.85rem;">الباسوورد: <b style="color:#fff; font-family:var(--font-en);">${p.password}</b></span>` : `<span style="color:var(--muted); font-size:0.85rem;">لا يوجد باسوورد</span>`}
+                    </div>
+                    <div class="pc-actions">
+                        <button class="btn-outline" onclick="openOtpModal(${p.number_id})" style="border-color:var(--gold); color:var(--gold);">طلب الكود</button>
+                        <button class="btn-outline btn-danger" onclick="logoutNumber(${p.number_id})">خروج</button>
                     </div>
                 `;
-                addCardEffects(div);
-                list.appendChild(div);
+                list.appendChild(card);
             });
-            initMagneticButtons();
         }, 300);
-
     } catch (e) {
-        list.innerHTML = `<div style="color: var(--danger); text-align: center; padding: 20px;">${e.message}</div>`;
+        list.innerHTML = `<div style="color:var(--danger);">${e.message}</div>`;
     }
 }
 
-async function logoutNumber(numberId) {
+async function logoutNumber(id) {
     if (!confirm("هل أنت متأكد من تسجيل الخروج من هذا الرقم؟ لن تتمكن من طلب كود OTP له بعد الآن.")) return;
     try {
-        await api("/api/logout/" + numberId, "POST");
-        showToast("تم تسجيل الخروج بنجاح", "success");
+        await api("/api/logout/" + id, "POST");
+        showToast("تم تسجيل الخروج بنجاح");
         loadPurchases();
     } catch (e) { showToast(e.message, "error"); }
 }
 
-function openChat(numberId) {
+// ═══════════════ مودال الكود ═══════════════
+function openOtpModal(numberId) {
     state.chatNumberId = numberId;
-    document.getElementById("chat-body").innerHTML = "";
-    document.getElementById("chat-modal").classList.add("show");
+    const content = document.getElementById("otp-content");
+    content.innerHTML = `<div class="empty-text">اضغط على الزر بالأسفل لسحب الكود</div>`;
+    document.getElementById("modal-otp").classList.add("active");
 }
-function closeChat() { document.getElementById("chat-modal").classList.remove("show"); state.chatNumberId = null; }
 
-document.getElementById("chat-request-otp").onclick = async () => {
+document.getElementById("btn-request-otp").onclick = async () => {
     if (!state.chatNumberId) return;
-    const body = document.getElementById("chat-body");
-    body.innerHTML = '<div class="loader"></div>';
+    const content = document.getElementById("otp-content");
+    content.innerHTML = `<div class="loader" style="margin:0 auto;"></div>`;
     try {
         const res = await api("/api/otp/" + state.chatNumberId, "POST");
         if (res.code) {
-            body.innerHTML = `<div style="font-size: 2rem; font-weight: 900; color: var(--success); letter-spacing: 4px; font-family:var(--font-en);">${res.code}</div>`;
+            content.innerHTML = `<div class="otp-code-display">${res.code}</div><div style="font-size:0.8rem; color:var(--muted); margin-top:10px;">الكود صالح لدقائق فقط</div>`;
         } else {
-            body.innerHTML = `<div style="color: var(--danger); text-align:center;">${res.error}</div>`;
+            content.innerHTML = `<div style="color:var(--danger);">${res.error}</div>`;
         }
-    } catch (e) { body.innerHTML = `<div style="color: var(--danger); text-align:center;">${e.message}</div>`; }
+    } catch (e) {
+        content.innerHTML = `<div style="color:var(--danger);">${e.message}</div>`;
+    }
 };
 
-document.getElementById("asia-start").onclick = async () => {
-    const phone = document.getElementById("asia-phone").value;
-    if (!phone) return showToast("أدخل الرقم", "error");
-    const msg = document.getElementById("asia-msg");
-    msg.classList.remove("hidden");
-    msg.innerHTML = '<div class="loader"></div>';
-    try {
-        await api("/api/asia/start", "POST", { phone });
-        msg.innerHTML = "تم إرسال الكود";
-        document.getElementById("asia-steps").classList.remove("hidden");
-        document.getElementById("asia-step-otp").classList.remove("hidden");
-    } catch (e) { msg.innerHTML = `<span style="color:var(--danger);">${e.message}</span>`; }
-};
-
-document.getElementById("asia-otp-submit").onclick = async () => {
-    const code = document.getElementById("asia-otp").value;
-    try {
-        await api("/api/asia/otp", "POST", { code });
-        document.getElementById("asia-step-otp").classList.add("hidden");
-        document.getElementById("asia-step-amount").classList.remove("hidden");
-    } catch (e) { showToast(e.message, "error"); }
-};
-
-document.getElementById("asia-amount-submit").onclick = async () => {
-    const amount = parseInt(document.getElementById("asia-amount").value);
-    try {
-        const res = await api("/api/asia/amount", "POST", { amount });
-        document.getElementById("asia-confirm-info").innerHTML = `حول إلى: ${res.receiver} <br> سيضاف: ${res.credit_usd}$`;
-        document.getElementById("asia-step-amount").classList.add("hidden");
-        document.getElementById("asia-step-confirm").classList.remove("hidden");
-    } catch (e) { showToast(e.message, "error"); }
-};
-
-document.getElementById("asia-confirm-submit").onclick = async () => {
-    const code = document.getElementById("asia-confirm").value;
-    try {
-        const res = await api("/api/asia/confirm", "POST", { code });
-        showToast("تم الشحن بنجاح");
-        state.user.balance = res.new_balance;
-        updateBalanceDisplay(res.new_balance);
-        document.getElementById("asia-steps").classList.add("hidden");
-        document.getElementById("asia-msg").classList.add("hidden");
-    } catch (e) { showToast(e.message, "error"); }
-};
-
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+// ═══════════════ الشحن (Wizard) ═══════════════
+function showStep(stepId) {
+    document.querySelectorAll(".wizard-step").forEach(el => el.classList.remove("active"));
+    document.getElementById(stepId).classList.add("active");
 }
 
-bootApp();
+document.getElementById("asia-btn-phone").onclick = async () => {
+    const phone = document.getElementById("asia-phone").value;
+    if (!phone) return showToast("أدخل الرقم", "error");
+    const btn = document.getElementById("asia-btn-phone");
+    btn.textContent = "جاري الإرسال...";
+    try {
+        await api("/api/asia/start", "POST", { phone });
+        showStep("step-otp");
+        btn.textContent = "إرسال كود التحقق";
+    } catch (e) {
+        showToast(e.message, "error");
+        btn.textContent = "إرسال كود التحقق";
+    }
+};
+
+document.getElementById("asia-btn-otp").onclick = async () => {
+    const code = document.getElementById("asia-otp").value;
+    if (!code) return showToast("أدخل الكود", "error");
+    const btn = document.getElementById("asia-btn-otp");
+    btn.textContent = "جاري التأكيد...";
+    try {
+        await api("/api/asia/otp", "POST", { code });
+        showStep("step-amount");
+        btn.textContent = "تأكيد الكود";
+    } catch (e) {
+        showToast(e.message, "error");
+        btn.textContent = "تأكيد الكود";
+    }
+};
+
+document.getElementById("asia-btn-amount").onclick = async () => {
+    const amount = parseInt(document.getElementById("asia-amount").value);
+    if (!amount || amount < 1000) return showToast("الحد الأدنى 1000 دينار", "error");
+    const btn = document.getElementById("asia-btn-amount");
+    btn.textContent = "جاري المعالجة...";
+    try {
+        const res = await api("/api/asia/amount", "POST", { amount });
+        document.getElementById("asia-confirm-info").innerHTML = `يرجى تحويل <b>${res.amount_iqd} دينار</b> إلى الرقم: <br><b style="font-family:var(--font-en); font-size:1.2rem; color:var(--gold);">${res.receiver}</b><br>سيضاف لك: <b>${res.credit_usd}$</b>`;
+        showStep("step-confirm");
+        btn.textContent = "متابعة";
+    } catch (e) {
+        showToast(e.message, "error");
+        btn.textContent = "متابعة";
+    }
+};
+
+document.getElementById("asia-btn-confirm").onclick = async () => {
+    const code = document.getElementById("asia-confirm").value;
+    if (!code) return showToast("أدخل كود التأكيد", "error");
+    const btn = document.getElementById("asia-btn-confirm");
+    btn.textContent = "جاري التأكيد...";
+    try {
+        const res = await api("/api/asia/confirm", "POST", { code });
+        showToast("تم شحن الرصيد بنجاح");
+        animateBalance(res.new_balance);
+        showStep("step-phone");
+        document.getElementById("asia-phone").value = "";
+        document.getElementById("asia-otp").value = "";
+        document.getElementById("asia-amount").value = "";
+        document.getElementById("asia-confirm").value = "";
+        btn.textContent = "تأكيد نهائي";
+        switchView("shop");
+    } catch (e) {
+        showToast(e.message, "error");
+        btn.textContent = "تأكيد نهائي";
+    }
+};
+
+// تشغيل التطبيق
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+initApp();
 </script>
 </body>
 </html>
