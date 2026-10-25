@@ -3,8 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0a0e14">
+<meta name="theme-color" content="#07090f">
 <title>CORLEONE PLUS</title>
+
+<!-- إعدادات تطبيق الويب (PWA) -->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <!-- الخطوط الملكية -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,10 +54,30 @@ body::before {
 }
 
 .hidden { display: none !important; }
+
+/* ===== اللمعة الذهبية (Shine Effect) ===== */
+@keyframes shine {
+    100% { left: 200%; }
+}
+
+/* ===== هياكل التحميل (Skeleton Loading) ===== */
+.skeleton {
+    background: #141a23;
+    background-image: linear-gradient(90deg, #141a23 0px, #2a3441 40px, #141a23 80px);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 12px;
+}
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ===== مؤشرات التحميل ===== */
 .loader { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(212, 175, 55, 0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* الشريط العلوي */
+/* ===== الشريط العلوي ===== */
 header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 12px 20px; position: sticky; top: 0; z-index: 100;
@@ -102,6 +128,14 @@ header {
     box-shadow: 0 20px 40px rgba(0,0,0,0.8);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative; overflow: hidden;
+}
+
+/* لمعة ذهبية لكارد الدخول */
+.login-card::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.1), transparent);
+    animation: shine 3s infinite; transform: skewX(-20deg);
 }
 
 .logo-img {
@@ -109,15 +143,15 @@ header {
     object-fit: cover; margin-bottom: 20px;
     border: 2px solid rgba(212, 175, 55, 0.4);
     box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
-    padding: 2px; background: #000;
+    padding: 2px; background: #000; position: relative; z-index: 1;
 }
 
 .brand-title {
     font-family: var(--font-en); font-size: 1.8rem; font-weight: 900;
-    color: var(--gold); letter-spacing: 2px; margin-bottom: 8px;
+    color: var(--gold); letter-spacing: 2px; margin-bottom: 8px; position: relative; z-index: 1;
 }
 
-.input-group { position: relative; margin-bottom: 24px; width: 100%; }
+.input-group { position: relative; margin-bottom: 24px; width: 100%; z-index: 1; }
 .input-group input {
     width: 100%; padding: 16px; background: rgba(0,0,0,0.6);
     border: 1px solid var(--border-glass); border-radius: 14px;
@@ -133,13 +167,21 @@ header {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%; padding: 14px; border: none; border-radius: 12px;
     font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
-    cursor: pointer; transition: var(--smooth);
+    cursor: pointer; transition: var(--smooth); position: relative; z-index: 1;
     background: linear-gradient(135deg, var(--gold), #b8952b);
-    color: #000;
+    color: #000; overflow: hidden;
 }
 .btn:active { transform: scale(0.96); }
+/* اللمعة الذهبية للأزرار */
+.btn::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg); animation: shine 4s infinite;
+}
 .btn.outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); }
+.btn.outline::before { display: none; }
 .btn.danger { background: linear-gradient(135deg, var(--danger), #b02a26); color: #fff; }
+.btn.danger::before { display: none; }
 
 /* الشاشة الرئيسية */
 #main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; }
@@ -153,7 +195,7 @@ header {
 .tab-btn {
     flex: 1; padding: 14px 0; background: transparent; border: none;
     color: var(--text-muted); font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
-    cursor: pointer; transition: var(--smooth); z-index: 1;
+    cursor: pointer; transition: var(--smooth); z-index: 2;
     display: flex; align-items: center; justify-content: center;
 }
 .tab-btn.active { color: #000; }
@@ -161,37 +203,43 @@ header {
     position: absolute; top: 6px; bottom: 6px; width: calc(33.333% - 4px);
     background: linear-gradient(135deg, var(--gold), #c59b27);
     border-radius: 12px; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 0; right: 6px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+    z-index: 1; right: 6px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); overflow: hidden;
+}
+/* لمعة للمؤشر */
+.tab-indicator::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg); animation: shine 3s infinite;
 }
 
 /* أنيميشن التنقل */
 .tab-content { display: none; }
 .tab-content.active { display: block; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-@keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+@keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
 /* المتجر */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
 .shop-item {
     background: var(--bg-card); border: 1px solid var(--border-glass);
     border-radius: 16px; padding: 16px; cursor: pointer;
-    transition: var(--smooth); position: relative;
+    transition: var(--smooth); position: relative; overflow: hidden;
 }
 .shop-item:hover { border-color: rgba(212, 175, 55, 0.5); transform: translateY(-2px); }
 .shop-item:active { transform: scale(0.97); }
-.shop-item .title { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
-.shop-item .meta { display: flex; justify-content: space-between; font-size: 0.85rem; }
+/* لمعة لكروت المتجر */
+.shop-item::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(212,175,55,0) 0%, rgba(212,175,55,0.15) 50%, rgba(212,175,55,0) 100%);
+    transform: skewX(-25deg); animation: shine 5s infinite;
+}
+.shop-item .title { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; position: relative; z-index: 1; }
+.shop-item .meta { display: flex; justify-content: space-between; font-size: 0.85rem; position: relative; z-index: 1; }
 .shop-item .price { color: var(--gold-light); font-family: var(--font-en); font-weight: 700; }
 .shop-item .stock { color: var(--text-muted); }
 .shop-item.sold { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
 
 /* زر الرجوع */
-.back-nav {
-    margin-bottom: 15px; display: flex; align-items: center;
-}
+.back-nav { margin-bottom: 15px; display: flex; align-items: center; }
 .btn-back {
     background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass);
     color: var(--text-main); padding: 8px 16px; border-radius: 10px;
@@ -199,25 +247,40 @@ header {
     cursor: pointer; transition: var(--smooth); display: flex; align-items: center; gap: 8px;
 }
 .btn-back:hover { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); }
-.btn-back::before { content: '\2192'; font-family: Arial, sans-serif; font-size: 1.1rem; color: var(--gold); } /* سهم يشير لليمين */
+.btn-back::before { content: '\2192'; font-family: Arial, sans-serif; font-size: 1.1rem; color: var(--gold); }
 
 /* المشتريات */
 .purchase-card {
     background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px;
     padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px;
-    animation: slideUpFade 0.4s ease-out;
+    animation: slideUpFade 0.4s ease-out; position: relative; overflow: hidden;
 }
+/* لمعة للمشتريات */
+.purchase-card::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(212,175,55,0) 0%, rgba(212,175,55,0.05) 50%, rgba(212,175,55,0) 100%);
+    transform: skewX(-25deg); animation: shine 6s infinite;
+}
+.purchase-card > * { position: relative; z-index: 1; }
 .purchase-card .phone { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; color: var(--gold-light); text-align: right; }
 .purchase-card .pwd { font-family: var(--font-en); font-size: 1rem; color: var(--text-main); direction: ltr; text-align: right; }
 .purchase-card .actions { display: flex; gap: 8px; margin-top: 5px; }
 .purchase-card .actions .btn { padding: 10px 16px; font-size: 0.9rem; }
 
+/* حالة الفراغ (Empty State) */
+.empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 50px 20px; text-align: center; color: var(--text-muted);
+}
+.empty-state svg { width: 80px; height: 80px; margin-bottom: 15px; opacity: 0.5; color: var(--gold); }
+.empty-state p { font-size: 1rem; font-weight: 600; }
+
 /* الكروت */
 .card {
     background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;
-    padding: 24px; margin-bottom: 20px;
+    padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden;
 }
-.card-title { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.card-title { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; position: relative; z-index: 1;}
 
 /* الحقول */
 .form-control {
@@ -240,8 +303,15 @@ header {
     background: #0f131a; border: 1px solid rgba(212,175,55,0.4); border-radius: 24px;
     width: 100%; max-width: 400px; padding: 24px;
     transform: scale(0.95) translateY(10px); transition: var(--smooth);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.9); position: relative; overflow: hidden;
 }
+/* لمعة للمودال */
+.modal-content::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(212,175,55,0) 0%, rgba(212,175,55,0.1) 50%, rgba(212,175,55,0) 100%);
+    transform: skewX(-25deg); animation: shine 4s infinite;
+}
+.modal-content > * { position: relative; z-index: 1; }
 .modal.show .modal-content { transform: scale(1) translateY(0); }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .modal-title { font-weight: 700; color: var(--gold); font-size: 1.1rem; }
@@ -266,7 +336,7 @@ header {
     .status-pill { font-size: 0.7rem; padding: 4px 8px; }
 }
 @media (min-width: 601px) {
-    .header-title { display: block; } /* إظهار النص بجانب اللوكو في الشاشات الكبيرة */
+    .header-title { display: block; }
 }
 </style>
 </head>
@@ -281,7 +351,7 @@ header {
     <div id="user-bar" class="hidden">
         <div class="status-pill status-checking" id="server-status">جاري الفحص</div>
         <div class="balance">$ <span id="user-balance">0.00</span></div>
-        <button id="logout-btn" class="btn outline" style="width:auto; padding:6px 12px; font-size:0.8rem;">تسجيل الخروج</button>
+        <button id="logout-btn" class="btn outline" style="width:auto; padding:6px 12px; font-size:0.8rem;" onclick="vibrate()">تسجيل الخروج</button>
     </div>
 </header>
 
@@ -295,7 +365,7 @@ header {
         <div class="input-group">
             <input type="password" id="login-password" placeholder="أدخل كلمة المرور هنا" autocomplete="off" spellcheck="false">
         </div>
-        <button id="login-btn" class="btn">دخول</button>
+        <button id="login-btn" class="btn" onclick="vibrate()">دخول</button>
     </div>
 </div>
 
@@ -312,11 +382,11 @@ header {
     <!-- المتجر -->
     <div id="tab-shop" class="tab-content active">
         <div id="breadcrumb" class="hidden back-nav">
-            <button class="btn-back" onclick="loadShop(null)">رجوع</button>
+            <button class="btn-back" onclick="loadShop(null); vibrate();">رجوع</button>
             <span id="bc-current" style="color:var(--gold); font-weight:700; margin-right:10px;"></span>
         </div>
         <div id="shop-grid" class="grid">
-            <div style="grid-column: 1/-1; text-align: center; padding: 40px;"><div class="loader"></div></div>
+            <!-- سيتم استبداله بـ Skeleton -->
         </div>
     </div>
 
@@ -329,23 +399,23 @@ header {
     <div id="tab-recharge" class="tab-content">
         <div class="card">
             <div class="card-title">شحن آسيا سيل</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; position: relative; z-index: 1;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
             <input type="tel" id="asia-phone" class="form-control" placeholder="رقم الآسيا (مثال: 07701234567)">
-            <button id="asia-start" class="btn">بدء الشحن</button>
+            <button id="asia-start" class="btn" onclick="vibrate()">بدء الشحن</button>
             
             <div id="asia-steps" class="hidden">
                 <div id="asia-step-otp" class="hidden" style="margin-top: 15px;">
                     <input type="text" id="asia-otp" class="form-control" placeholder="كود التحقق">
-                    <button id="asia-otp-submit" class="btn outline">تأكيد الكود</button>
+                    <button id="asia-otp-submit" class="btn outline" onclick="vibrate()">تأكيد الكود</button>
                 </div>
                 <div id="asia-step-amount" class="hidden" style="margin-top: 15px;">
                     <input type="number" id="asia-amount" class="form-control" placeholder="المبلغ بالدينار (حد أدنى 1000)">
-                    <button id="asia-amount-submit" class="btn outline">متابعة</button>
+                    <button id="asia-amount-submit" class="btn outline" onclick="vibrate()">متابعة</button>
                 </div>
                 <div id="asia-step-confirm" class="hidden" style="margin-top: 15px;">
                     <p id="asia-confirm-info" style="font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted);"></p>
                     <input type="text" id="asia-confirm" class="form-control" placeholder="كود تأكيد التحويل">
-                    <button id="asia-confirm-submit" class="btn" style="background: var(--success); color: white;">تأكيد نهائي</button>
+                    <button id="asia-confirm-submit" class="btn" style="background: var(--success); color: white;" onclick="vibrate()">تأكيد نهائي</button>
                 </div>
             </div>
             <div id="asia-msg" class="hidden" style="margin-top: 15px; font-size: 0.9rem;"></div>
@@ -359,11 +429,11 @@ header {
     <div class="modal-content">
         <div class="modal-header">
             <div class="modal-title" id="chat-title">الكود</div>
-            <button onclick="closeChat()" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✖</button>
+            <button onclick="closeChat(); vibrate();" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✖</button>
         </div>
         <div id="chat-body" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; min-height: 100px;"></div>
-        <button id="chat-request-otp" class="btn">طلب كود OTP</button>
-        <button class="btn outline" style="margin-top: 10px;" onclick="closeChat()">رجوع</button>
+        <button id="chat-request-otp" class="btn" onclick="vibrate()">طلب كود OTP</button>
+        <button class="btn outline" style="margin-top: 10px;" onclick="closeChat(); vibrate();">رجوع</button>
     </div>
 </div>
 
@@ -383,8 +453,8 @@ header {
         </div>
         
         <div style="display:flex; gap:10px;">
-            <button class="btn" onclick="requestOtpFromSuccess()" id="succ-otp-btn">طلب الكود</button>
-            <button class="btn outline" onclick="closeSuccess()">إغلاق</button>
+            <button class="btn" onclick="requestOtpFromSuccess(); vibrate();" id="succ-otp-btn">طلب الكود</button>
+            <button class="btn outline" onclick="closeSuccess(); vibrate();">إغلاق</button>
         </div>
     </div>
 </div>
@@ -402,6 +472,11 @@ const state = {
   chatNumberId: null,
   lastPurchasedId: null
 };
+
+// تفعيل الاهتزاز للهواتف
+function vibrate() {
+    if (navigator.vibrate) navigator.vibrate(20);
+}
 
 function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
@@ -444,10 +519,8 @@ async function checkServerStatus() {
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
-        
         const res = await fetch(API_BASE + "/api/config", { signal: controller.signal });
         clearTimeout(timeoutId);
-        
         if (res.ok) {
             indicator.className = "status-pill status-online";
             indicator.textContent = "متصل";
@@ -460,7 +533,37 @@ async function checkServerStatus() {
     }
 }
 
+// توليد الهياكل (Skeleton) للمتجر
+function getShopSkeleton() {
+    let html = "";
+    for(let i=0; i<6; i++) {
+        html += `
+            <div class="skeleton" style="height: 100px; border-radius: 16px; padding: 16px;">
+                <div class="skeleton-text" style="height: 16px; width: 60%; margin-bottom: 8px;"></div>
+                <div class="skeleton-text-sm" style="height: 12px; width: 40%; margin-top: 20px;"></div>
+            </div>
+        `;
+    }
+    return html;
+}
+
+// توليد الهياكل (Skeleton) للمشتريات
+function getPurchasesSkeleton() {
+    let html = "";
+    for(let i=0; i<3; i++) {
+        html += `
+            <div class="skeleton" style="height: 120px; border-radius: 16px; margin-bottom: 12px; padding: 16px;">
+                <div class="skeleton-text" style="height: 16px; width: 40%; margin-bottom: 8px;"></div>
+                <div class="skeleton-text-sm" style="height: 12px; width: 60%; margin-top: 15px;"></div>
+                <div class="skeleton" style="height: 30px; width: 100px; margin-top: 20px; border-radius: 8px;"></div>
+            </div>
+        `;
+    }
+    return html;
+}
+
 function switchTab(index, tabName) {
+    vibrate();
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
     
@@ -475,7 +578,7 @@ function switchTab(index, tabName) {
 
 async function initApp() {
     checkServerStatus();
-    setInterval(checkServerStatus, 30000); // تحديث حالة السيرفر كل 30 ثانية
+    setInterval(checkServerStatus, 30000);
 
     try {
         const cfg = await api("/api/config");
@@ -534,7 +637,7 @@ document.getElementById("logout-btn").onclick = () => {
 // المتجر
 async function loadShop(parentId) {
     const grid = document.getElementById("shop-grid");
-    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><div class="loader"></div></div>';
+    grid.innerHTML = getShopSkeleton(); // إظهار الهياكل
     
     const bc = document.getElementById("breadcrumb");
     if (!parentId) bc.classList.add("hidden"); else bc.classList.remove("hidden");
@@ -547,7 +650,12 @@ async function loadShop(parentId) {
         if (res.parent) document.getElementById("bc-current").textContent = res.parent.title;
 
         if (res.items.length === 0) {
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">لا توجد عناصر</div>';
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    <p>لا توجد عناصر متاحة هنا حالياً</p>
+                </div>
+            `;
             return;
         }
 
@@ -562,9 +670,10 @@ async function loadShop(parentId) {
                         <span class="price">${item.price.toFixed(2)}$</span>
                         <span class="stock">${item.stock > 0 ? "متوفر: " + item.stock : "نفذ"}</span>
                     </div>
-                ` : `<div style="font-size:0.8rem; color:var(--text-muted);">مجلد</div>`}
+                ` : `<div style="font-size:0.8rem; color:var(--text-muted); position:relative; z-index:1;">مجلد</div>`}
             `;
             div.onclick = () => {
+                vibrate();
                 if (item.type === "category") {
                     if (item.stock > 0) buyNumber(item);
                     else showToast("نفدت الكمية", "error");
@@ -617,11 +726,17 @@ function requestOtpFromSuccess() {
 // المشتريات
 async function loadPurchases() {
     const list = document.getElementById("purchases-list");
-    list.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="loader"></div></div>';
+    list.innerHTML = getPurchasesSkeleton(); // إظهار الهياكل
+    
     try {
         const res = await api("/api/purchases");
         if (res.items.length === 0) {
-            list.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 40px;">لا توجد مشتريات</div>';
+            list.innerHTML = `
+                <div class="empty-state">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    <p>لم تقم بأي عمليات شراء حتى الآن</p>
+                </div>
+            `;
             return;
         }
         list.innerHTML = "";
@@ -640,8 +755,8 @@ async function loadPurchases() {
                     <div style="font-size:0.8rem; color:var(--gold); margin-top:6px;">${p.country} - ${p.price.toFixed(2)}$</div>
                 </div>
                 <div class="actions">
-                    <button class="btn" onclick="openChat(${p.number_id})">الكود</button>
-                    <button class="btn danger" onclick="logoutNumber(${p.number_id})">تسجيل خروج</button>
+                    <button class="btn" onclick="openChat(${p.number_id}); vibrate();">الكود</button>
+                    <button class="btn danger" onclick="logoutNumber(${p.number_id}); vibrate();">تسجيل خروج</button>
                 </div>
             `;
             list.appendChild(div);
@@ -736,7 +851,14 @@ document.getElementById("asia-confirm-submit").onclick = async () => {
     } catch (e) { showToast(e.message, "error"); }
 };
 
+// تفعيل الـ PWA (إضافة للشاشة الرئيسية)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+}
+
 initApp();
 </script>
 </body>
-    </html>
+</html>
