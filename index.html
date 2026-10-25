@@ -20,7 +20,6 @@
     --border-glass: rgba(255, 255, 255, 0.08);
     --gold: #d4af37;
     --gold-light: #f3e5ab;
-    --gold-dark: #997a00;
     --text-main: #f5f5f5;
     --text-muted: #888;
     --success: #28a745;
@@ -40,7 +39,7 @@ html, body {
     overscroll-behavior: none;
 }
 
-/* خلفية هادئة */
+/* إضاءة خلفية هادئة */
 body::before {
     content: '';
     position: fixed;
@@ -62,11 +61,6 @@ header {
     border-bottom: 1px solid var(--border-glass);
 }
 
-.brand-logo {
-    height: 40px; width: auto; max-width: 150px;
-    object-fit: contain;
-}
-
 #user-bar { display: flex; gap: 12px; align-items: center; }
 .balance {
     background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.02));
@@ -85,31 +79,46 @@ header {
 .login-card {
     background: var(--bg-card);
     border: 1px solid var(--border-glass);
-    border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 400px;
-    text-align: center;
+    border-radius: 28px; padding: 40px 30px; width: 100%; max-width: 400px;
+    text-align: center; display: flex; flex-direction: column; align-items: center;
     box-shadow: 0 20px 40px rgba(0,0,0,0.8);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* إعدادات اللوكو الفخم */
+.logo-img {
+    width: 130px;
+    height: 130px;
+    border-radius: 24px; /* حواف ناعمة */
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); /* إضاءة ناعمة */
+    padding: 2px;
+    background: #000;
 }
 
 .brand-title {
-    font-family: var(--font-brand); font-size: 2.2rem; font-weight: 900;
-    color: var(--gold); letter-spacing: 2px; margin-bottom: 25px;
+    font-family: var(--font-brand); font-size: 2rem; font-weight: 900;
+    color: var(--gold); letter-spacing: 2px; margin-bottom: 8px;
 }
 
-.input-group { position: relative; margin-bottom: 24px; }
+.input-group { position: relative; margin-bottom: 24px; width: 100%; }
 .input-group input {
     width: 100%; padding: 16px; background: rgba(0,0,0,0.6);
-    border: 1px solid var(--border-glass); border-radius: 12px;
-    color: var(--gold-light); font-size: 1.2rem; font-family: var(--font-en);
+    border: 1px solid var(--border-glass); border-radius: 14px;
+    color: var(--gold-light); font-size: 1.1rem; font-family: var(--font-en);
     text-align: center; letter-spacing: 2px; font-weight: 600;
     transition: var(--smooth); outline: none;
 }
 .input-group input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
+.input-group input::placeholder { font-family: var(--font-ar); letter-spacing: normal; color: var(--text-muted); font-size: 0.95rem; }
 
 /* الأزرار */
 .btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; padding: 16px; border: none; border-radius: 12px;
+    width: 100%; padding: 16px; border: none; border-radius: 14px;
     font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
     cursor: pointer; transition: var(--smooth);
     background: linear-gradient(135deg, var(--gold), #b8952b);
@@ -119,7 +128,7 @@ header {
 .btn.outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); }
 
 /* الشاشة الرئيسية */
-#main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; }
+#main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; animation: slideUp 0.5s ease-out;}
 
 /* التبويبات */
 .tabs {
@@ -192,7 +201,7 @@ header {
 }
 .modal.show { opacity: 1; pointer-events: auto; }
 .modal-content {
-    background: #0f0f0f; border: 1px solid var(--gold-dark); border-radius: 20px;
+    background: #0f0f0f; border: 1px solid rgba(212,175,55,0.3); border-radius: 20px;
     width: 100%; max-width: 400px; padding: 24px;
     transform: scale(0.9); transition: var(--smooth);
 }
@@ -208,9 +217,10 @@ header {
 .toast.error { background: var(--danger); }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 600px) {
-    .brand-title { font-size: 1.8rem; }
+    .brand-title { font-size: 1.6rem; }
     .tab-btn { font-size: 0.75rem; flex-direction: column; padding: 10px 0; }
     .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .purchase-card { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -221,9 +231,8 @@ header {
 <body>
 
 <header>
-    <!-- صورة اللوكو الخاصة بك -->
-    <img src="logo.png" alt="CORLEONE PLUS" class="brand-logo" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
-    <h1 id="fallback-logo" style="display:none; font-family:var(--font-brand); color:var(--gold); font-size:1.2rem;">CORLEONE PLUS</h1>
+    <!-- تم إزالة اللوكو من هنا ونقله للشاشة الرئيسية ليصبح كبيراً وواضحاً -->
+    <h1 style="font-family:var(--font-brand); color:var(--gold); font-size:1.2rem; letter-spacing:1px;">CORLEONE PLUS</h1>
     
     <div id="user-bar" class="hidden">
         <div class="balance">💰 <span id="user-balance">0.00</span>$</div>
@@ -234,11 +243,15 @@ header {
 <!-- الدخول -->
 <div id="login-screen">
     <div class="login-card">
+        <!-- اللوكو الآن كبير، بحواف ناعمة وإضاءة خفيفة -->
+        <img src="logo.png" alt="CORLEONE PLUS" class="logo-img" onerror="this.style.display='none';">
+        
         <div class="brand-title">CORLEONE PLUS</div>
-        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">أدخل كلمة المرور الخاصة بك</div>
+        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">أدخل كلمة المرور الخاصة بك</div>
         
         <div class="input-group">
-            <input type="text" id="login-password" placeholder="bzs1#c220$" autocomplete="off" spellcheck="false">
+            <!-- الخانة فاضية، والنوع password عشان يخفي الحروف -->
+            <input type="password" id="login-password" placeholder="أدخل كلمة المرور هنا" autocomplete="off" spellcheck="false">
         </div>
         <button id="login-btn" class="btn">دخول</button>
     </div>
@@ -328,7 +341,7 @@ header {
             <div style="font-weight: 700; color: var(--gold);" id="chat-title">🔑 الكود</div>
             <button onclick="closeChat()" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✖</button>
         </div>
-        <div id="chat-body" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center;"></div>
+        <div id="chat-body" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; min-height: 100px;"></div>
         <button id="chat-request-otp" class="btn">🔄 طلب كود OTP</button>
     </div>
 </div>
@@ -337,7 +350,6 @@ header {
 <div id="toast" class="toast"></div>
 
 <script>
-// ⚠️ تأكد أن هذا الرابط هو رابط Wispbyte الخاص بك
 const API_BASE = "https://corleonestore.wisp.uno";
 
 const state = {
@@ -369,7 +381,6 @@ async function api(path, method = "GET", body = null) {
         if (!res.ok) throw new Error(data.detail || "حدث خطأ");
         return data;
     } catch (err) {
-        // هنا نعرض الخطأ بالعربي بدل Failed to fetch
         throw new Error("لا يمكن الاتصال بالخادم، تأكد من تشغيل البوت (Wispbyte)");
     }
 }
@@ -536,10 +547,10 @@ document.getElementById("chat-request-otp").onclick = async () => {
         if (res.code) {
             body.innerHTML = `<div style="font-size: 1.8rem; font-weight: 700; color: var(--success); letter-spacing: 3px;">${res.code}</div>`;
         } else {
-            body.innerHTML = `<div style="color: var(--danger);">${res.error}</div>`;
+            body.innerHTML = `<div style="color: var(--danger); text-align: center;">${res.error}</div>`;
         }
     } catch (e) {
-        body.innerHTML = `<div style="color: var(--danger);">${e.message}</div>`;
+        body.innerHTML = `<div style="color: var(--danger); text-align: center;">${e.message}</div>`;
     }
 };
 
@@ -566,7 +577,7 @@ document.getElementById("asia-start").onclick = async () => {
     msg.classList.remove("hidden");
     msg.innerHTML = '<div class="loader"></div>';
     try {
-        await api("/api/asia/start", "POST", { phone });
+        await api("/api/asia/start", { phone });
         msg.innerHTML = "تم إرسال الكود";
         document.getElementById("asia-steps").classList.remove("hidden");
         document.getElementById("asia-step-otp").classList.remove("hidden");
@@ -578,7 +589,7 @@ document.getElementById("asia-start").onclick = async () => {
 document.getElementById("asia-otp-submit").onclick = async () => {
     const code = document.getElementById("asia-otp").value;
     try {
-        await api("/api/asia/otp", "POST", { code });
+        await api("/api/asia/otp", { code });
         document.getElementById("asia-step-otp").classList.add("hidden");
         document.getElementById("asia-step-amount").classList.remove("hidden");
     } catch (e) { showToast(e.message, "error"); }
@@ -587,7 +598,7 @@ document.getElementById("asia-otp-submit").onclick = async () => {
 document.getElementById("asia-amount-submit").onclick = async () => {
     const amount = parseInt(document.getElementById("asia-amount").value);
     try {
-        const res = await api("/api/asia/amount", "POST", { amount });
+        const res = await api("/api/asia/amount", { amount });
         document.getElementById("asia-confirm-info").innerHTML = `حول إلى: ${res.receiver} <br> سيضاف: ${res.credit_usd}$`;
         document.getElementById("asia-step-amount").classList.add("hidden");
         document.getElementById("asia-step-confirm").classList.remove("hidden");
@@ -597,7 +608,7 @@ document.getElementById("asia-amount-submit").onclick = async () => {
 document.getElementById("asia-confirm-submit").onclick = async () => {
     const code = document.getElementById("asia-confirm").value;
     try {
-        const res = await api("/api/asia/confirm", "POST", { code });
+        const res = await api("/api/asia/confirm", { code });
         showToast("تم الشحن بنجاح");
         document.getElementById("user-balance").textContent = res.new_balance.toFixed(2);
         document.getElementById("asia-steps").classList.add("hidden");
