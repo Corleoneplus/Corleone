@@ -119,6 +119,7 @@ header {
 }
 .btn:active { transform: scale(0.96); }
 .btn.outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); }
+.btn.danger { background: linear-gradient(135deg, var(--danger), #b02a26); color: #fff; }
 
 /* الشاشة الرئيسية */
 #main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; }
@@ -127,20 +128,20 @@ header {
 .tabs {
     display: flex; position: relative; background: var(--bg-card);
     border: 1px solid var(--border-glass); border-radius: 16px; padding: 6px;
-    margin-bottom: 24px; backdrop-filter: blur(10px);
+    margin-bottom: 24px; backdrop-filter: blur(10px); direction: rtl;
 }
 .tab-btn {
-    flex: 1; padding: 12px 0; background: transparent; border: none;
-    color: var(--text-muted); font-size: 0.9rem; font-weight: 700;
+    flex: 1; padding: 14px 0; background: transparent; border: none;
+    color: var(--text-muted); font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
     cursor: pointer; transition: var(--smooth); z-index: 1;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    display: flex; align-items: center; justify-content: center;
 }
 .tab-btn.active { color: #000; }
 .tab-indicator {
     position: absolute; top: 6px; bottom: 6px; width: calc(33.333% - 4px);
     background: linear-gradient(135deg, var(--gold), #c59b27);
     border-radius: 12px; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 0; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+    z-index: 0; right: 6px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
 }
 
 /* أنيميشن التنقل */
@@ -176,7 +177,7 @@ header {
 .purchase-card .phone { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; color: var(--gold-light); text-align: right; }
 .purchase-card .pwd { font-family: var(--font-en); font-size: 1rem; color: var(--text-main); direction: ltr; text-align: right; }
 .purchase-card .actions { display: flex; gap: 8px; margin-top: 5px; }
-.purchase-card .btn { padding: 10px 16px; font-size: 0.9rem; }
+.purchase-card .actions .btn { padding: 10px 16px; font-size: 0.9rem; }
 
 /* الكروت */
 .card {
@@ -215,7 +216,7 @@ header {
     position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
     background: #333; color: #fff; padding: 12px 24px; border-radius: 30px;
     font-weight: 700; font-size: 0.9rem; opacity: 0; transition: var(--smooth); z-index: 2000;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 90%; max-width: 400px;
 }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 .toast.error { background: var(--danger); }
@@ -225,8 +226,9 @@ header {
 
 @media (max-width: 600px) {
     .brand-title { font-size: 1.5rem; }
-    .tab-btn { font-size: 0.8rem; flex-direction: column; gap: 4px; padding: 10px 0; }
+    .tab-btn { font-size: 0.9rem; padding: 12px 0; }
     .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    .purchase-card .actions { flex-direction: column; }
 }
 </style>
 </head>
@@ -260,9 +262,9 @@ header {
     
     <div class="tabs">
         <div class="tab-indicator" id="tab-indicator"></div>
-        <button class="tab-btn active" data-tab="shop" onclick="switchTab(0, 'shop')">🛍️ المتجر</button>
-        <button class="tab-btn" data-tab="purchases" onclick="switchTab(1, 'purchases')">📦 مشترياتي</button>
-        <button class="tab-btn" data-tab="recharge" onclick="switchTab(2, 'recharge')">💳 شحن</button>
+        <button class="tab-btn active" data-tab="shop" onclick="switchTab(0, 'shop')">المتجر</button>
+        <button class="tab-btn" data-tab="purchases" onclick="switchTab(1, 'purchases')">مشترياتي</button>
+        <button class="tab-btn" data-tab="recharge" onclick="switchTab(2, 'recharge')">شحن</button>
     </div>
 
     <!-- المتجر -->
@@ -362,7 +364,7 @@ function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.className = `toast show ${type}`;
-    setTimeout(() => { t.classList.remove("show"); }, 3000);
+    setTimeout(() => { t.classList.remove("show"); }, 3500);
 }
 
 async function api(path, method = "GET", body = null) {
@@ -371,16 +373,24 @@ async function api(path, method = "GET", body = null) {
     
     try {
         const res = await fetch(API_BASE + path, { method, headers, body: body ? JSON.stringify(body) : null });
-        const data = await res.json().catch(() => ({}));
+        let data;
+        try { data = await res.json(); } catch(e) { data = {}; }
+        
         if (res.status === 401 && path !== "/api/login") {
             localStorage.removeItem("token");
             location.reload();
             throw new Error("انتهت الجلسة");
         }
-        if (!res.ok) throw new Error(data.detail || "حدث خطأ");
+        if (!res.ok) {
+            let errMsg = data.detail || "حدث خطأ";
+            if (typeof errMsg === 'string') {
+                try { errMsg = decodeURIComponent(errMsg); } catch(e) {}
+            }
+            throw new Error(errMsg);
+        }
         return data;
     } catch (err) {
-        if(err.message === "Failed to fetch") throw new Error("تعذر الاتصال بالخادم");
+        if(err.message === "Failed to fetch") throw new Error("تعذر الاتصال بالخادم، تأكد من الإنترنت");
         throw err;
     }
 }
@@ -393,7 +403,8 @@ function switchTab(index, tabName) {
     document.getElementById(`tab-${tabName}`).classList.add("active");
     
     const indicator = document.getElementById("tab-indicator");
-    indicator.style.transform = `translateX(${index * 100}%)`;
+    // تعديل اتجاه المؤشر لأن الموقع عربي (RTL)
+    indicator.style.transform = `translateX(-${index * 100}%)`;
     
     if (tabName === "purchases") loadPurchases();
 }
@@ -413,7 +424,7 @@ async function initApp() {
             document.getElementById("user-bar").classList.remove("hidden");
             loadShop(null);
             
-            // التحديث التلقائي كل 15 ثانية
+            // تحديث تلقائي صامت
             setInterval(async () => {
                 if(document.hidden) return;
                 try {
@@ -500,6 +511,7 @@ async function loadShop(parentId) {
 async function buyNumber(item) {
     if (!confirm(`هل تريد شراء ${item.title} بـ ${item.price}$؟`)) return;
     try {
+        showToast("جاري إتمام الشراء...", "success");
         const res = await api("/api/buy", "POST", { node_id: item.id });
         state.user.balance = res.new_balance;
         document.getElementById("user-balance").textContent = res.new_balance.toFixed(2);
@@ -561,12 +573,24 @@ async function loadPurchases() {
                 </div>
                 <div class="actions">
                     <button class="btn" onclick="openChat(${p.number_id})">📩 الكود</button>
+                    <button class="btn danger" onclick="logoutNumber(${p.number_id})">🚪 خروج</button>
                 </div>
             `;
             list.appendChild(div);
         });
     } catch (e) {
         list.innerHTML = `<div style="color: var(--danger); text-align: center; padding: 20px;">${e.message}</div>`;
+    }
+}
+
+async function logoutNumber(numberId) {
+    if (!confirm("هل أنت متأكد من تسجيل الخروج من هذا الرقم؟ لن تتمكن من طلب كود OTP له بعد الآن.")) return;
+    try {
+        await api("/api/logout/" + numberId, "POST");
+        showToast("تم تسجيل الخروج بنجاح", "success");
+        loadPurchases();
+    } catch (e) {
+        showToast(e.message, "error");
     }
 }
 
