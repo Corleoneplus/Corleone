@@ -55,24 +55,6 @@ body::before {
 
 .hidden { display: none !important; }
 
-/* ===== خلفية الغبار الذهبي ===== */
-#dust-container {
-    position: fixed; inset: 0; 
-    z-index: 1; /* تم رفع المستوى ليظهر فوق الخلفية السوداء */
-    pointer-events: none; overflow: hidden;
-}
-.dust {
-    position: absolute; background: var(--gold); border-radius: 50%;
-    opacity: 0; box-shadow: 0 0 8px 2px rgba(212, 175, 55, 0.5);
-    animation: floatDust linear infinite;
-}
-@keyframes floatDust {
-    0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
-    20% { opacity: 0.6; }
-    80% { opacity: 0.6; }
-    100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-}
-
 /* ===== شاشة الافتتاح (Splash) ===== */
 #splash-screen {
     position: fixed; inset: 0; background: var(--bg-main); z-index: 9999;
@@ -91,7 +73,7 @@ body::before {
     display: flex; gap: 4px; justify-content: center;
     font-family: var(--font-en); font-size: 2rem; font-weight: 900;
     color: var(--gold); letter-spacing: 2px;
-    direction: ltr; /* تم إصلاح اتجاه النص ليصبح من اليسار لليمين */
+    direction: ltr; /* إصلاح اتجاه النص ليصبح من اليسار لليمين */
 }
 .splash-title span {
     display: inline-block; opacity: 0; transform: translateY(20px);
@@ -300,9 +282,6 @@ header {
 </style>
 </head>
 <body>
-
-<!-- الغبار الذهبي -->
-<div id="dust-container"></div>
 
 <!-- شاشة الافتتاح -->
 <div id="splash-screen">
@@ -517,22 +496,6 @@ async function checkServerStatus() {
     }
 }
 
-// توليد الغبار الذهبي
-function initDust() {
-    const container = document.getElementById("dust-container");
-    for (let i = 0; i < 40; i++) { // زيادة العدد إلى 40
-        let dust = document.createElement("div");
-        dust.className = "dust";
-        let size = Math.random() * 4 + 2; // حجم أكبر بقليل
-        dust.style.width = size + "px";
-        dust.style.height = size + "px";
-        dust.style.left = Math.random() * 100 + "vw";
-        dust.style.animationDuration = (Math.random() * 15 + 10) + "s";
-        dust.style.animationDelay = (Math.random() * -20) + "s";
-        container.appendChild(dust);
-    }
-}
-
 // حركة دخول الحروف لشاشة الافتتاح
 function initSplashText() {
     const title = "CORLEONE PLUS";
@@ -614,7 +577,6 @@ function switchTab(index, tabName) {
 }
 
 async function bootApp() {
-    initDust();
     initSplashText();
     checkServerStatus();
     setInterval(checkServerStatus, 30000);
