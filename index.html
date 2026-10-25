@@ -44,16 +44,37 @@ html, body {
     overscroll-behavior: none;
 }
 
+/* ===== خلفية الشفق الذهبي (Aurora) ===== */
 body::before {
     content: '';
     position: fixed;
     top: -50%; left: -50%;
     width: 200%; height: 200%;
-    background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+    background: 
+        radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(155, 161, 166, 0.05) 0%, transparent 50%);
     z-index: -1;
+    animation: auroraMove 20s ease-in-out infinite alternate;
+}
+@keyframes auroraMove {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-5%, 5%) scale(1.1); }
 }
 
 .hidden { display: none !important; }
+
+/* ===== تأثير الموجة عند اللمس (Ripple) ===== */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.4);
+    transform: scale(0);
+    animation: rippleAnim 0.6s linear;
+    pointer-events: none;
+}
+@keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+}
 
 /* ===== شاشة الافتتاح ===== */
 #splash-screen {
@@ -61,19 +82,18 @@ body::before {
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     transition: opacity 0.6s ease;
 }
-
 .splash-logo {
     width: 130px; height: 130px; border-radius: 28px; object-fit: cover; margin-bottom: 20px;
     border: 2px solid rgba(212, 175, 55, 0.4); padding: 2px; background: #000;
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
     animation: pulseGlow 2.5s infinite alternate;
 }
-
 .splash-title {
     display: flex; gap: 4px; justify-content: center;
     font-family: var(--font-en); font-size: 2rem; font-weight: 900;
     color: var(--gold); letter-spacing: 2px;
     direction: ltr;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
 .splash-title span {
     display: inline-block; opacity: 0; transform: translateY(20px);
@@ -87,7 +107,7 @@ body::before {
 }
 @keyframes pulseGlow {
     0% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); transform: scale(1); }
-    100% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.6); transform: scale(1.05); }
+    100% { box-shadow: 0 0 50px rgba(212, 175, 55, 0.7); transform: scale(1.05); }
 }
 
 /* ===== هياكل التحميل ===== */
@@ -105,7 +125,7 @@ body::before {
 header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 12px 20px; position: sticky; top: 0; z-index: 100;
-    background: rgba(7, 9, 15, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    background: rgba(7, 9, 15, 0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
     border-bottom: 1px solid var(--border-glass);
 }
 
@@ -137,17 +157,28 @@ header {
     animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.login-card, .card, .modal-content {
+/* الزجاج التفاعلي */
+.glass-panel {
     background: var(--bg-card);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    position: relative; overflow: hidden;
 }
 
 .login-card {
     border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 400px;
     text-align: center; display: flex; flex-direction: column; align-items: center;
-    position: relative;
+}
+
+/* إضاءة الزجاج اللي تتبع الماوس */
+.login-card::before, .shop-item::before, .purchase-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(212, 175, 55, 0.15), transparent 80%);
+    opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 0;
+}
+.login-card:hover::before, .shop-item:hover::before, .purchase-card:hover::before {
+    opacity: 1;
 }
 
 .logo-img {
@@ -167,14 +198,18 @@ header {
 .input-group input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
 .input-group input::placeholder { font-family: var(--font-ar); letter-spacing: normal; color: var(--text-muted); font-size: 0.95rem; }
 
+/* الأزرار المغناطيسية */
 .btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%; padding: 14px; border: none; border-radius: 12px;
     font-size: 1rem; font-weight: 700; font-family: var(--font-ar);
-    cursor: pointer; transition: var(--smooth); position: relative; z-index: 1;
-    background: linear-gradient(135deg, var(--gold), #b8952b); color: #000; overflow: hidden;
+    cursor: pointer; position: relative; z-index: 1; overflow: hidden;
+    background: linear-gradient(135deg, var(--gold), #b8952b); color: #000;
+    transition: transform 0.1s ease, box-shadow 0.3s ease;
+    will-change: transform;
 }
-.btn:active { transform: scale(0.96); }
+.btn:hover { box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4); }
+.btn:active { transform: scale(0.96) !important; }
 .btn.outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); }
 .btn.danger { background: linear-gradient(135deg, var(--danger), #b02a26); color: #fff; }
 
@@ -207,14 +242,14 @@ header {
     background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     border-radius: 16px; padding: 16px; cursor: pointer;
-    position: relative; transform-style: preserve-3d;
+    position: relative; transform-style: preserve-3d; overflow: hidden;
     transition: transform 0.1s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     opacity: 0; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .shop-item:hover { border-color: rgba(212, 175, 55, 0.5); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
 .shop-item:active { transform: scale(0.97) !important; }
-.shop-item .title { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; transform: translateZ(20px); }
-.shop-item .meta { display: flex; justify-content: space-between; font-size: 0.85rem; transform: translateZ(10px); }
+.shop-item .title { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; transform: translateZ(20px); position: relative; z-index: 1; }
+.shop-item .meta { display: flex; justify-content: space-between; font-size: 0.85rem; transform: translateZ(10px); position: relative; z-index: 1; }
 .shop-item .price { color: var(--gold-light); font-family: var(--font-en); font-weight: 700; }
 .shop-item .stock { color: var(--text-muted); }
 .shop-item.sold { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
@@ -235,11 +270,11 @@ header {
     border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px;
     position: relative; opacity: 0; animation: slideUpFade 0.4s ease-out forwards;
     transition: transform 0.1s ease, box-shadow 0.3s ease;
-    transform-style: preserve-3d;
+    transform-style: preserve-3d; overflow: hidden;
 }
-.purchase-card .phone { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; color: var(--gold-light); text-align: right; transform: translateZ(15px); }
-.purchase-card .pwd { font-family: var(--font-en); font-size: 1rem; color: var(--text-main); direction: ltr; text-align: right; transform: translateZ(10px); }
-.purchase-card .actions { display: flex; gap: 8px; margin-top: 5px; transform: translateZ(20px); }
+.purchase-card .phone { font-family: var(--font-en); font-size: 1.2rem; font-weight: 700; color: var(--gold-light); text-align: right; transform: translateZ(15px); position: relative; z-index: 1; }
+.purchase-card .pwd { font-family: var(--font-en); font-size: 1rem; color: var(--text-main); direction: ltr; text-align: right; transform: translateZ(10px); position: relative; z-index: 1; }
+.purchase-card .actions { display: flex; gap: 8px; margin-top: 5px; transform: translateZ(20px); position: relative; z-index: 1; }
 .purchase-card .actions .btn { padding: 10px 16px; font-size: 0.9rem; }
 
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center; color: var(--text-muted); }
@@ -247,7 +282,7 @@ header {
 .empty-state p { font-size: 1rem; font-weight: 600; }
 
 .card { border-radius: 20px; padding: 24px; margin-bottom: 20px; position: relative; }
-.card-title { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.card-title { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; position: relative; z-index: 1;}
 
 .form-control { width: 100%; padding: 14px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: 12px; color: var(--text-main); font-size: 0.95rem; font-family: var(--font-ar); outline: none; margin-bottom: 12px; transition: var(--smooth); }
 .form-control:focus { border-color: var(--gold); }
@@ -301,15 +336,15 @@ header {
 
 <!-- الدخول -->
 <div id="login-screen" class="hidden">
-    <div class="login-card">
+    <div class="login-card glass-panel">
         <img src="logo.png" alt="CORLEONE PLUS" class="logo-img" onerror="this.style.display='none';">
         <div class="brand-title">CORLEONE PLUS</div>
-        <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; font-weight:600;">أدخل كلمة المرور الخاصة بك</div>
+        <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; font-weight:600; position:relative; z-index:1;">أدخل كلمة المرور الخاصة بك</div>
         
         <div class="input-group">
             <input type="password" id="login-password" placeholder="أدخل كلمة المرور هنا" autocomplete="off" spellcheck="false">
         </div>
-        <button id="login-btn" class="btn" onclick="vibrate()">دخول</button>
+        <button id="login-btn" class="btn magnetic" onclick="vibrate()">دخول</button>
     </div>
 </div>
 
@@ -336,11 +371,11 @@ header {
     </div>
 
     <div id="tab-recharge" class="tab-content">
-        <div class="card">
+        <div class="card glass-panel">
             <div class="card-title">شحن آسيا سيل</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; position:relative; z-index:1;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
             <input type="tel" id="asia-phone" class="form-control" placeholder="رقم الآسيا (مثال: 07701234567)">
-            <button id="asia-start" class="btn" onclick="vibrate()">بدء الشحن</button>
+            <button id="asia-start" class="btn magnetic" onclick="vibrate()">بدء الشحن</button>
             
             <div id="asia-steps" class="hidden">
                 <div id="asia-step-otp" class="hidden" style="margin-top: 15px;">
@@ -354,7 +389,7 @@ header {
                 <div id="asia-step-confirm" class="hidden" style="margin-top: 15px;">
                     <p id="asia-confirm-info" style="font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted);"></p>
                     <input type="text" id="asia-confirm" class="form-control" placeholder="كود تأكيد التحويل">
-                    <button id="asia-confirm-submit" class="btn" style="background: var(--success); color: white;" onclick="vibrate()">تأكيد نهائي</button>
+                    <button id="asia-confirm-submit" class="btn magnetic" style="background: var(--success); color: white;" onclick="vibrate()">تأكيد نهائي</button>
                 </div>
             </div>
             <div id="asia-msg" class="hidden" style="margin-top: 15px; font-size: 0.9rem;"></div>
@@ -364,19 +399,19 @@ header {
 </div>
 
 <div id="chat-modal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content glass-panel">
         <div class="modal-header">
             <div class="modal-title" id="chat-title">الكود</div>
             <button onclick="closeChat(); vibrate();" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">✖</button>
         </div>
         <div id="chat-body" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; min-height: 100px;"></div>
-        <button id="chat-request-otp" class="btn" onclick="vibrate()">طلب كود OTP</button>
+        <button id="chat-request-otp" class="btn magnetic" onclick="vibrate()">طلب كود OTP</button>
         <button class="btn outline" style="margin-top: 10px;" onclick="closeChat(); vibrate();">رجوع</button>
     </div>
 </div>
 
 <div id="success-modal" class="modal">
-    <div class="modal-content" style="text-align:center;">
+    <div class="modal-content glass-panel" style="text-align:center;">
         <div style="font-weight: 900; color: var(--gold); font-size:1.3rem; margin-bottom: 15px;">تم الشراء بنجاح!</div>
         
         <div style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px; margin-bottom:20px;">
@@ -390,7 +425,7 @@ header {
         </div>
         
         <div style="display:flex; gap:10px;">
-            <button class="btn" onclick="requestOtpFromSuccess(); vibrate();" id="succ-otp-btn">طلب الكود</button>
+            <button class="btn magnetic" onclick="requestOtpFromSuccess(); vibrate();" id="succ-otp-btn">طلب الكود</button>
             <button class="btn outline" onclick="closeSuccess(); vibrate();">إغلاق</button>
         </div>
     </div>
@@ -421,6 +456,7 @@ function showToast(msg, type = "success") {
     setTimeout(() => { t.classList.remove("show"); }, 3500);
 }
 
+// حركة الأرقام الحية (Count-Up)
 function animateValue(obj, start, end, duration) {
     let startTimestamp = null;
     const step = (timestamp) => {
@@ -492,6 +528,7 @@ async function checkServerStatus() {
     }
 }
 
+// حركة دخول الحروف لشاشة الافتتاح
 function initSplashText() {
     const title = "CORLEONE PLUS";
     const container = document.getElementById("splash-title-text");
@@ -508,7 +545,25 @@ function initSplashText() {
     }
 }
 
-function addTiltEffect(element) {
+// 1. الأزرار المغناطيسية (Magnetic)
+function initMagneticButtons() {
+    if (!window.matchMedia("(hover: hover)").matches) return; // للكمبيوتر فقط
+    document.querySelectorAll('.magnetic').forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            // سحب الزر بنسبة 30% من المسافة
+            btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) scale(1.05)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = `translate(0px, 0px) scale(1)`;
+        });
+    });
+}
+
+// 2. إضاءة الزجاج التفاعلية (Interactive Glass Light) + 3D Tilt
+function addCardEffects(element) {
     if (!window.matchMedia("(hover: hover)").matches) return;
     
     element.addEventListener("mousemove", e => {
@@ -518,14 +573,44 @@ function addTiltEffect(element) {
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         
+        // إضاءة الزجاج
+        element.style.setProperty('--mouse-x', `${x}px`);
+        element.style.setProperty('--mouse-y', `${y}px`);
+        
+        // الميلان 3D
         const rotateX = ((y - centerY) / centerY) * -10;
         const rotateY = ((x - centerX) / centerX) * 10;
-        
         element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     });
     
     element.addEventListener("mouseleave", () => {
         element.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    });
+}
+
+// 3. تأثير الموجة عند اللمس (Ripple Effect)
+function initRipple() {
+    document.body.addEventListener('click', function(e) {
+        const target = e.target.closest('.btn, .shop-item, .purchase-card, .tab-btn');
+        if (!target) return;
+        
+        const rect = target.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        
+        // حجم الموجة يعتمد على حجم الزر
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.transform = `translate(-50%, -50%) scale(0)`;
+        
+        target.appendChild(ripple);
+        
+        setTimeout(() => { ripple.remove(); }, 600);
     });
 }
 
@@ -572,6 +657,9 @@ function switchTab(index, tabName) {
 
 async function bootApp() {
     initSplashText();
+    initMagneticButtons();
+    initRipple();
+    
     await checkServerStatus();
     setInterval(checkServerStatus, 30000);
 
@@ -709,9 +797,10 @@ async function loadShop(parentId) {
                         else showToast("نفدت الكمية", "error");
                     } else loadShop(item.id);
                 };
-                addTiltEffect(div);
+                addCardEffects(div); // تفعيل إضاءة الزجاج
                 grid.appendChild(div);
             });
+            initMagneticButtons(); // إعادة تفعيل الأزرار للمحتوى الجديد
         }, 300);
         
     } catch (e) {
@@ -784,13 +873,14 @@ async function loadPurchases() {
                         <div style="font-size:0.8rem; color:var(--gold); margin-top:6px;">${p.country} - ${p.price.toFixed(2)}$</div>
                     </div>
                     <div class="actions">
-                        <button class="btn" onclick="openChat(${p.number_id}); vibrate();">الكود</button>
+                        <button class="btn magnetic" onclick="openChat(${p.number_id}); vibrate();">الكود</button>
                         <button class="btn danger" onclick="logoutNumber(${p.number_id}); vibrate();">تسجيل خروج</button>
                     </div>
                 `;
-                addTiltEffect(div);
+                addCardEffects(div);
                 list.appendChild(div);
             });
+            initMagneticButtons();
         }, 300);
 
     } catch (e) {
