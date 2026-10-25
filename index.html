@@ -22,7 +22,7 @@
 
 :root {
     --bg-main: #07090f;
-    --bg-card: rgba(20, 25, 35, 0.4); /* شفافية الزجاج */
+    --bg-card: rgba(20, 25, 35, 0.4);
     --border-glass: rgba(255, 255, 255, 0.08);
     --gold: #d4af37;
     --gold-light: #f3e5ab;
@@ -50,12 +50,12 @@ body::before {
     top: -50%; left: -50%;
     width: 200%; height: 200%;
     background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
-    z-index: -1; /* الخلفية الثابتة */
+    z-index: -1;
 }
 
 .hidden { display: none !important; }
 
-/* ===== شاشة الافتتاح (Splash) ===== */
+/* ===== شاشة الافتتاح ===== */
 #splash-screen {
     position: fixed; inset: 0; background: var(--bg-main); z-index: 9999;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -73,7 +73,7 @@ body::before {
     display: flex; gap: 4px; justify-content: center;
     font-family: var(--font-en); font-size: 2rem; font-weight: 900;
     color: var(--gold); letter-spacing: 2px;
-    direction: ltr; /* إصلاح اتجاه النص ليصبح من اليسار لليمين */
+    direction: ltr;
 }
 .splash-title span {
     display: inline-block; opacity: 0; transform: translateY(20px);
@@ -137,7 +137,6 @@ header {
     animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* الزجاج الملكي (Glassmorphism) */
 .login-card, .card, .modal-content {
     background: var(--bg-card);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -168,7 +167,6 @@ header {
 .input-group input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
 .input-group input::placeholder { font-family: var(--font-ar); letter-spacing: normal; color: var(--text-muted); font-size: 0.95rem; }
 
-/* الأزرار */
 .btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%; padding: 14px; border: none; border-radius: 12px;
@@ -204,7 +202,6 @@ header {
 .tab-content.active { display: block; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-/* المتجر */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; perspective: 1000px; }
 .shop-item {
     background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.1);
@@ -339,6 +336,23 @@ header {
     </div>
 
     <div id="tab-recharge" class="tab-content">
+        
+        <!-- الدفع بالنجوم والكريبتو -->
+        <div class="card">
+            <div class="card-title">شحن تلقائي (بوت)</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
+                اختر طريقة الدفع، سيتم توجيهك مباشرة إلى تيليجرام الأصلي لإكمال العملية.
+            </div>
+            
+            <button class="btn" style="margin-bottom: 10px;" onclick="openTelegramBot(); vibrate();">
+                الدفع بنجوم تيليجرام
+            </button>
+            
+            <button class="btn" style="background: linear-gradient(135deg, #0088cc, #005f8f); color: white;" onclick="openTelegramBot(); vibrate();">
+                الدفع بالكريبتو (TON / USDT)
+            </button>
+        </div>
+
         <div class="card">
             <div class="card-title">شحن آسيا سيل</div>
             <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
@@ -403,6 +417,7 @@ header {
 
 <script>
 const API_BASE = "https://corleonestore.wisp.uno";
+let BOT_USERNAME = "";
 
 const state = {
   token: localStorage.getItem("token") || null,
@@ -424,7 +439,16 @@ function showToast(msg, type = "success") {
     setTimeout(() => { t.classList.remove("show"); }, 3500);
 }
 
-// حركة الأرقام الحية (Count-Up)
+// فتح البوت في التطبيق الأصلي (يمنع فتح تيليجرام X)
+function openTelegramBot() {
+    if (BOT_USERNAME) {
+        // استخدام tg:// يفتح التطبيق الأصلي فقط
+        window.location.href = `tg://resolve?domain=${BOT_USERNAME}`;
+    } else {
+        showToast("جاري تحميل معلومات البوت...", "error");
+    }
+}
+
 function animateValue(obj, start, end, duration) {
     let startTimestamp = null;
     const step = (timestamp) => {
@@ -487,6 +511,8 @@ async function checkServerStatus() {
         const res = await fetch(API_BASE + "/api/config", { signal: controller.signal });
         clearTimeout(timeoutId);
         if (res.ok) {
+            const cfg = await res.json();
+            BOT_USERNAME = cfg.bot_username; // حفظ اسم البوت
             indicator.className = "status-pill status-online";
             indicator.textContent = "متصل";
         } else { throw new Error("offline"); }
@@ -496,7 +522,6 @@ async function checkServerStatus() {
     }
 }
 
-// حركة دخول الحروف لشاشة الافتتاح
 function initSplashText() {
     const title = "CORLEONE PLUS";
     const container = document.getElementById("splash-title-text");
@@ -513,7 +538,6 @@ function initSplashText() {
     }
 }
 
-// حركة 3D Tilt للكروت
 function addTiltEffect(element) {
     if (!window.matchMedia("(hover: hover)").matches) return;
     
@@ -578,7 +602,7 @@ function switchTab(index, tabName) {
 
 async function bootApp() {
     initSplashText();
-    checkServerStatus();
+    await checkServerStatus();
     setInterval(checkServerStatus, 30000);
 
     let targetScreen = 'login';
@@ -594,7 +618,6 @@ async function bootApp() {
         }
     }
 
-    // انتظار 2.5 ثانية لشاشة الافتتاح
     await new Promise(r => setTimeout(r, 2500));
 
     const splash = document.getElementById("splash-screen");
@@ -887,4 +910,4 @@ if ('serviceWorker' in navigator) {
 bootApp();
 </script>
 </body>
-    </html>
+</html>
