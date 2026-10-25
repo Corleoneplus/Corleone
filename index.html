@@ -336,23 +336,6 @@ header {
     </div>
 
     <div id="tab-recharge" class="tab-content">
-        
-        <!-- الدفع بالنجوم والكريبتو -->
-        <div class="card">
-            <div class="card-title">شحن تلقائي (بوت)</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
-                اختر طريقة الدفع، سيتم توجيهك مباشرة إلى تيليجرام الأصلي لإكمال العملية.
-            </div>
-            
-            <button class="btn" style="margin-bottom: 10px;" onclick="openTelegramBot(); vibrate();">
-                الدفع بنجوم تيليجرام
-            </button>
-            
-            <button class="btn" style="background: linear-gradient(135deg, #0088cc, #005f8f); color: white;" onclick="openTelegramBot(); vibrate();">
-                الدفع بالكريبتو (TON / USDT)
-            </button>
-        </div>
-
         <div class="card">
             <div class="card-title">شحن آسيا سيل</div>
             <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">كل 1000 دينار = <span id="asia-price">0.60</span>$</div>
@@ -417,7 +400,6 @@ header {
 
 <script>
 const API_BASE = "https://corleonestore.wisp.uno";
-let BOT_USERNAME = "";
 
 const state = {
   token: localStorage.getItem("token") || null,
@@ -437,16 +419,6 @@ function showToast(msg, type = "success") {
     t.textContent = msg;
     t.className = `toast show ${type}`;
     setTimeout(() => { t.classList.remove("show"); }, 3500);
-}
-
-// فتح البوت في التطبيق الأصلي (يمنع فتح تيليجرام X)
-function openTelegramBot() {
-    if (BOT_USERNAME) {
-        // استخدام tg:// يفتح التطبيق الأصلي فقط
-        window.location.href = `tg://resolve?domain=${BOT_USERNAME}`;
-    } else {
-        showToast("جاري تحميل معلومات البوت...", "error");
-    }
 }
 
 function animateValue(obj, start, end, duration) {
@@ -511,8 +483,6 @@ async function checkServerStatus() {
         const res = await fetch(API_BASE + "/api/config", { signal: controller.signal });
         clearTimeout(timeoutId);
         if (res.ok) {
-            const cfg = await res.json();
-            BOT_USERNAME = cfg.bot_username; // حفظ اسم البوت
             indicator.className = "status-pill status-online";
             indicator.textContent = "متصل";
         } else { throw new Error("offline"); }
