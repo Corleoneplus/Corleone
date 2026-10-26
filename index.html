@@ -69,7 +69,6 @@ body::before {
     top: 60px;
     z-index: 99;
 }
-@keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
 /* ===== شاشة الافتتاح ===== */
 #splash-screen {
@@ -78,9 +77,8 @@ body::before {
     transition: opacity 0.6s ease;
 }
 
-/* الأيقونة الدائرية */
 .splash-logo {
-    width: 130px; height: 130px; border-radius: 22.5%; /* حواف ناعمة مثل التطبيقات */
+    width: 130px; height: 130px; border-radius: 22.5%; 
     object-fit: cover; margin-bottom: 20px;
     border: 2px solid rgba(212, 175, 55, 0.4); padding: 2px; background: #000;
     animation: pulseGlow 2.5s infinite alternate;
@@ -122,7 +120,7 @@ body::before {
 header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 12px 20px; position: sticky; top: 0; z-index: 100;
-    background: #0a0e14; /* لون صلب خفيف */
+    background: #0a0e14; 
     border-bottom: 1px solid var(--border-glass);
 }
 
@@ -163,7 +161,7 @@ header {
 }
 
 .logo-img {
-    width: 120px; height: 120px; border-radius: 22.5%; /* حواف دائرية */
+    width: 120px; height: 120px; border-radius: 22.5%; 
     object-fit: cover; margin-bottom: 20px;
     border: 2px solid rgba(212, 175, 55, 0.4);
     padding: 2px; background: #000;
@@ -192,6 +190,18 @@ header {
 
 #main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; position: relative; z-index: 10; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
+/* زر التثبيت */
+#install-app-btn {
+    background: rgba(212, 175, 55, 0.15); border: 1px dashed rgba(212, 175, 55, 0.5);
+    color: var(--gold); padding: 14px; border-radius: 12px;
+    font-family: var(--font-ar); font-weight: 800; font-size: 1rem;
+    width: 100%; margin-bottom: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: var(--smooth);
+}
+#install-app-btn:hover { background: rgba(212, 175, 55, 0.25); }
+#install-app-btn:disabled { opacity: 0.6; cursor: not-allowed; background: rgba(255,255,255,0.05); border-color: transparent; color: var(--text-muted); }
+
 /* التبويبات */
 .tabs {
     display: flex; position: relative; background: var(--bg-card);
@@ -214,6 +224,23 @@ header {
 .tab-content { display: none; }
 .tab-content.active { display: block; animation: slideUpFade 0.4s ease-out forwards; }
 @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== زر الرجوع الجديد والمطور ===== */
+.back-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; background: var(--bg-card); padding: 8px 12px;
+    border-radius: 14px; border: 1px solid var(--border-glass);
+}
+.btn-back {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--gold); padding: 8px 16px; border-radius: 10px;
+    font-family: var(--font-ar); font-size: 1rem; font-weight: 800;
+    cursor: pointer; transition: var(--smooth);
+}
+.btn-back:hover { background: rgba(212, 175, 55, 0.2); transform: translateX(4px); }
+.btn-back svg { width: 18px; height: 18px; }
+.bc-title { color: var(--text-main); font-weight: 800; font-size: 1.1rem; }
 
 /* المتجر */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
@@ -238,18 +265,6 @@ header {
 }
 .shop-item.sold .title { color: var(--danger); margin-bottom: 0; text-align: center; margin-top: auto; margin-bottom: auto; font-size: 1.3rem; }
 .shop-item.sold .meta { display: none; }
-
-/* زر التثبيت */
-#install-app-btn {
-    background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3);
-    color: var(--gold); padding: 12px; border-radius: 12px;
-    font-family: var(--font-ar); font-weight: 800; font-size: 1rem;
-    width: 100%; margin-bottom: 20px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: var(--smooth);
-}
-#install-app-btn:hover { background: rgba(212, 175, 55, 0.2); }
-#install-app-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* المشتريات */
 .purchase-card {
@@ -290,17 +305,6 @@ header {
 .toast.error { border-color: var(--danger); color: #ff8888; }
 .toast.success { border-color: var(--success); color: #6fdb7c; }
 
-/* زر الدعم العائم */
-.fab-support {
-    position: fixed; bottom: 30px; left: 30px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-glass);
-    color: var(--gold); border-radius: 50%; width: 60px; height: 60px;
-    display: flex; justify-content: center; align-items: center;
-    cursor: pointer; z-index: 100; transition: transform 0.2s ease;
-}
-.fab-support:active { transform: scale(0.9); }
-
 /* تصميم ساعة الكود */
 .otp-timer-container {
     width: 100%; margin-top: 15px; margin-bottom: 15px;
@@ -324,7 +328,6 @@ header {
     .purchase-card .actions { flex-direction: column; }
     .header-title { display: none; }
     .splash-title { font-size: 1.6rem; }
-    .fab-support { bottom: 20px; left: 20px; width: 50px; height: 50px; }
 }
 @media (min-width: 601px) {
     .header-title { display: block; }
@@ -376,9 +379,9 @@ header {
 <div id="main-screen" class="hidden">
     
     <!-- زر التثبيت -->
-    <button id="install-app-btn" class="hidden" onclick="handleInstallClick()">
+    <button id="install-app-btn" onclick="handleInstallClick()">
         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-        <span id="install-btn-text">تثبيت الآن</span>
+        <span id="install-btn-text">تثبيت التطبيق على شاشتك</span>
     </button>
 
     <div class="tabs">
@@ -389,9 +392,15 @@ header {
     </div>
 
     <div id="tab-shop" class="tab-content active">
+        <!-- زر الرجوع الجديد والمطور -->
         <div id="breadcrumb" class="hidden back-nav">
-            <button class="btn-back" onclick="loadShop(null)">رجوع</button>
-            <span id="bc-current" style="color:var(--gold); font-weight:800; font-size:1.1rem; margin-right:10px;"></span>
+            <button class="btn-back" onclick="loadShop(null)">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span>رجوع</span>
+            </button>
+            <span id="bc-current" class="bc-title"></span>
         </div>
         <div id="shop-grid" class="grid"></div>
     </div>
@@ -426,11 +435,6 @@ header {
         </div>
     </div>
 
-</div>
-
-<!-- زر الدعم العائم -->
-<div class="fab-support" onclick="openSupport()" title="الدعم الفني">
-    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
 </div>
 
 <div id="chat-modal" class="modal">
@@ -497,7 +501,6 @@ header {
 
 <script>
 const API_BASE = "https://corleonestore.wisp.uno";
-let BOT_USERNAME = "";
 let isServerOnline = false;
 let deferredPrompt;
 
@@ -514,7 +517,7 @@ function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.className = `toast show ${type}`;
-    setTimeout(() => { t.classList.remove("show"); }, 3000);
+    setTimeout(() => { t.classList.remove("show"); }, 3500);
 }
 
 function animateValue(obj, start, end, duration) {
@@ -605,8 +608,6 @@ async function checkServerStatus() {
         clearTimeout(timeoutId);
         
         if (res.ok) {
-            const cfg = await res.json();
-            BOT_USERNAME = cfg.bot_username;
             setServerOnline();
         } else {
             throw new Error("offline");
@@ -774,14 +775,6 @@ function closeLogoutModal() {
 function doLogout() {
     localStorage.removeItem("token");
     location.reload();
-}
-
-function openSupport() {
-    if (BOT_USERNAME) {
-        window.location.href = `tg://resolve?domain=${BOT_USERNAME}`;
-    } else {
-        showToast("جاري تحميل معلومات الدعم...", "error");
-    }
 }
 
 // ═══════════════ المتجر ═══════════════
@@ -969,10 +962,6 @@ function closeChat() {
     if (otpTimerInterval) clearInterval(otpTimerInterval);
 }
 
-if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-    Notification.requestPermission();
-}
-
 document.getElementById("chat-request-otp").onclick = async () => {
     if (!state.chatNumberId || !isServerOnline) return;
     const body = document.getElementById("chat-body");
@@ -989,14 +978,12 @@ document.getElementById("chat-request-otp").onclick = async () => {
         if (res.code) {
             body.innerHTML = `<div style="font-size: 2.2rem; font-weight: 900; color: var(--success); letter-spacing: 4px; font-family:var(--font-en);">${res.code}</div>`;
             
-            // إظهار الساعة
             timerContainer.classList.remove("hidden");
             progressFill.style.width = "100%";
             progressFill.style.backgroundColor = "var(--success)";
             timerText.style.color = "var(--success)";
             timerText.textContent = "صالح لمدة: 60 ثانية";
 
-            // تشغيل الإشعار
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("كود الدخول (OTP)", {
                     body: `كودك هو: ${res.code}`,
@@ -1004,25 +991,20 @@ document.getElementById("chat-request-otp").onclick = async () => {
                 });
             }
 
-            // تشغيل العداد التنازلي
             let timeLeft = 60;
             const totalTime = 60;
             
             otpTimerInterval = setInterval(() => {
                 timeLeft--;
-                
-                // تحديث شريط التقدم
                 const percentage = (timeLeft / totalTime) * 100;
                 progressFill.style.width = `${percentage}%`;
                 
-                // تحديث النص
                 if (timeLeft <= 0) {
                     clearInterval(otpTimerInterval);
                     timerText.textContent = "انتهت صلاحية الكود";
                     timerText.style.color = "var(--danger)";
                     progressFill.style.backgroundColor = "var(--danger)";
                 } else if (timeLeft <= 15) {
-                    // تحذير أحمر عند آخر 15 ثانية
                     timerText.textContent = `صالح لمدة: ${timeLeft} ثانية`;
                     timerText.style.color = "var(--danger)";
                     progressFill.style.backgroundColor = "var(--danger)";
@@ -1094,41 +1076,34 @@ const installBtnText = document.getElementById("install-btn-text");
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
 if (isStandalone) {
-    installBtn.classList.remove("hidden");
-    installBtnText.textContent = "أنت مثبته أصلاً";
-    installBtn.disabled = true;
-    installBtn.style.opacity = "0.6";
+    installBtn.style.display = "none"; // نخفيه إذا مثبته
 } else {
+    installBtn.style.display = "flex";
+
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        installBtn.classList.remove("hidden");
-        installBtnText.textContent = "تثبيت الآن";
-        installBtn.disabled = false;
-        installBtn.style.opacity = "1";
+        installBtnText.textContent = "تثبيت التطبيق الآن";
     });
 
     window.addEventListener('appinstalled', () => {
-        installBtn.classList.remove("hidden");
-        installBtnText.textContent = "أنت مثبته أصلاً";
-        installBtn.disabled = true;
-        installBtn.style.opacity = "0.6";
+        installBtn.style.display = "none";
         showToast("تم تثبيت التطبيق بنجاح!");
     });
 }
 
 function handleInstallClick() {
-    if (!deferredPrompt) {
-        showToast("متصفحك لا يدعم التثبيت أو التطبيق مثبت مسبقاً", "error");
-        return;
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                installBtn.style.display = "none";
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        showToast("لتثبيت التطبيق: اضغط على خيارات المتصفح (ثلاث نقاط) ثم اختر 'إضافة إلى الشاشة الرئيسية'.", "error");
     }
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the A2HS prompt');
-        }
-        deferredPrompt = null;
-    });
 }
 
 if ('serviceWorker' in navigator) {
