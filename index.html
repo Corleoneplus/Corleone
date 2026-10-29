@@ -227,6 +227,7 @@ header {
 
 #main-screen { max-width: 800px; margin: 0 auto; padding: 20px 16px 90px; position: relative; z-index: 10; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
+/* التبويبات - معدلة لـ 4 أزرار */
 .tabs {
     display: flex; position: relative; background: var(--bg-card);
     border: 1px solid var(--border-glass); border-radius: 18px; padding: 8px;
@@ -235,12 +236,12 @@ header {
 }
 .tab-btn {
     flex: 1; padding: 14px 0; background: transparent; border: none;
-    color: var(--text-muted); font-size: 1.05rem; font-weight: 800; font-family: var(--font-ar);
+    color: var(--text-muted); font-size: 0.95rem; font-weight: 800; font-family: var(--font-ar);
     cursor: pointer; transition: color 0.3s; z-index: 2; display: flex; align-items: center; justify-content: center;
 }
 .tab-btn.active { color: #000; text-shadow: 0 1px 1px rgba(255,255,255,0.3); }
 .tab-indicator {
-    position: absolute; top: 8px; bottom: 8px; width: calc(33.333% - 5px);
+    position: absolute; top: 8px; bottom: 8px; width: calc(25% - 6px);
     background: linear-gradient(135deg, var(--gold-light), var(--gold));
     border-radius: 12px; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: 1; right: 8px;
@@ -366,16 +367,51 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
     font-weight: 600; 
 }
 
-/* أزرار التواصل الخارجية */
-.social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.social-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-    padding: 16px; border-radius: 14px; background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border-glass); color: var(--text-main); text-decoration: none;
-    font-weight: 800; font-size: 0.9rem; transition: var(--smooth);
+/* تصميم الملف الشخصي */
+.profile-card {
+    background: linear-gradient(145deg, var(--bg-card), #0e1319);
+    border: 1px solid var(--border-glass);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px; padding: 40px 20px; text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; align-items: center;
 }
-.social-btn:hover { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); transform: translateY(-3px); }
-.social-btn svg { width: 28px; height: 28px; }
+.avatar-container {
+    position: relative; width: 120px; height: 120px; margin-bottom: 20px;
+}
+.profile-avatar {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    border: 3px solid var(--gold); position: relative; z-index: 2; background: #000;
+}
+.avatar-glow {
+    position: absolute; inset: -5px; border-radius: 50%;
+    background: var(--gold); filter: blur(15px); opacity: 0.4; z-index: 1;
+    animation: pulseGlow 2s infinite alternate;
+}
+.profile-name {
+    font-size: 1.6rem; font-weight: 900; color: var(--text-main); margin-bottom: 5px;
+    font-family: var(--font-ar);
+}
+.profile-username {
+    font-size: 1rem; color: var(--gold); font-weight: 700; margin-bottom: 25px;
+    font-family: var(--font-en); direction: ltr;
+}
+.profile-info-box {
+    width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass);
+    border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+}
+.profile-id-label { font-weight: 800; color: var(--text-muted); }
+.profile-id-val { font-family: var(--font-en); font-size: 1.2rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+.profile-stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;
+}
+.stat-box {
+    background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 16px; padding: 20px 10px; display: flex; flex-direction: column; gap: 8px;
+}
+.stat-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 700; }
+.stat-value { font-family: var(--font-en); font-size: 1.4rem; font-weight: 900; color: var(--gold-light); }
 
 .form-control { 
     width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); 
@@ -414,7 +450,7 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
 
 @media (max-width: 600px) {
     .brand-title { font-size: 1.6rem; }
-    .tab-btn { font-size: 1rem; padding: 12px 0; }
+    .tab-btn { font-size: 0.85rem; padding: 12px 0; }
     .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .purchase-card .actions { flex-direction: column; }
     .header-title { display: none; }
@@ -465,11 +501,13 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
 </div>
 
 <div id="main-screen" class="hidden">
+    <!-- التبويبات -->
     <div class="tabs">
         <div class="tab-indicator" id="tab-indicator"></div>
         <button class="tab-btn active" data-tab="shop" onclick="switchTab(0, 'shop')">المتجر</button>
         <button class="tab-btn" data-tab="purchases" onclick="switchTab(1, 'purchases')">مشترياتي</button>
         <button class="tab-btn" data-tab="recharge" onclick="switchTab(2, 'recharge')">شحن</button>
+        <button class="tab-btn" data-tab="profile" onclick="switchTab(3, 'profile')">حسابي</button>
     </div>
 
     <div id="tab-shop" class="tab-content active">
@@ -514,25 +552,6 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
             <div id="asia-msg" class="hidden" style="margin-top: 15px; font-size: 0.95rem; font-weight:700;"></div>
         </div>
 
-        <!-- أزرار تواصل خارجية -->
-        <div class="card">
-            <div class="card-title">🌐 تواصل معنا</div>
-            <div class="social-grid">
-                <a href="https://wa.me/9647700000000" target="_blank" class="social-btn">
-                    <svg fill="currentColor" viewBox="0 0 24 24" style="color: #25D366;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                    <span>واتساب</span>
-                </a>
-                <a href="https://instagram.com/yourusername" target="_blank" class="social-btn">
-                    <svg fill="currentColor" viewBox="0 0 24 24" style="color: #E1306C;"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.88z"/></svg>
-                    <span>انستقرام</span>
-                </a>
-                <a href="https://tiktok.com/@yourusername" target="_blank" class="social-btn">
-                    <svg fill="currentColor" viewBox="0 0 24 24" style="color: #fff;"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg>
-                    <span>تيك توك</span>
-                </a>
-            </div>
-        </div>
-
         <!-- قسم الأسئلة الشائعة -->
         <div class="card">
             <div class="card-title">📌 أسئلة شائعة</div>
@@ -561,6 +580,38 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
                 <summary>إذا واجهتني مشكلة شسوي؟</summary>
                 <div class="details-content">تراسل المطور الأساسي أو صاحب المتجر على تليجرام، وراح يساعدك باللي تحتاجه.</div>
             </details>
+        </div>
+    </div>
+
+    <div id="tab-profile" class="tab-content">
+        <div class="profile-card">
+            <div class="avatar-container">
+                <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=d4af37&color=000&size=128'">
+                <div class="avatar-glow"></div>
+            </div>
+            <h2 id="profile-name" class="profile-name">جاري التحميل...</h2>
+            <p id="profile-username" class="profile-username">@...</p>
+
+            <div class="profile-info-box">
+                <span class="profile-id-label">الآيدي</span>
+                <div class="profile-id-val">
+                    <span id="profile-id">...</span>
+                    <button class="btn-icon" onclick="copyToClipboard(document.getElementById('profile-id').textContent)">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="profile-stats-grid">
+                <div class="stat-box">
+                    <span class="stat-label">الرصيد الحالي</span>
+                    <span class="stat-value" id="profile-balance">$0.00</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">مجموع المشتريات</span>
+                    <span class="stat-value" id="profile-spent">$0.00</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -755,6 +806,18 @@ function updateBalanceDisplay(newBalance) {
     state.displayedBalance = newBalance;
 }
 
+function updateProfileUI() {
+    if (!state.user) return;
+    document.getElementById("profile-name").textContent = state.user.first_name || "مستخدم";
+    document.getElementById("profile-username").textContent = state.user.username ? "@" + state.user.username : "لا يوجد يوزر";
+    document.getElementById("profile-id").textContent = state.user.id || "---";
+    document.getElementById("profile-balance").textContent = "$" + (state.user.balance || 0).toFixed(2);
+    document.getElementById("profile-spent").textContent = "$" + (state.user.total_spent || 0).toFixed(2);
+    
+    const avatar = document.getElementById("profile-avatar");
+    avatar.src = `${API_BASE}/api/avatar/${state.user.id}?t=${new Date().getTime()}`;
+}
+
 async function withButtonLoader(btn, fn) {
     if (btn.disabled) return;
     const original = btn.innerHTML;
@@ -900,9 +963,11 @@ function switchTab(index, tabName) {
     document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
     document.getElementById(`tab-${tabName}`).classList.add("active");
     
+    // تعديل المؤشر لـ 4 أزرار
     document.getElementById("tab-indicator").style.transform = `translateX(-${index * 100}%)`;
     
     if (tabName === "purchases") loadPurchases();
+    if (tabName === "profile") updateProfileUI();
     
     setTimeout(() => { state.isSwitchingTab = false; }, 300);
 }
@@ -944,6 +1009,7 @@ async function bootApp() {
         
         state.displayedBalance = 0;
         updateBalanceDisplay(state.user ? state.user.balance : null);
+        updateProfileUI();
         
         try {
             const cfg = await api("/api/config");
@@ -974,6 +1040,10 @@ function startBalancePoller() {
             const me = await api("/api/me");
             state.user = me;
             updateBalanceDisplay(me.balance);
+            // تحديث الملف الشخصي إذا كنا بداخله
+            if (document.getElementById("tab-profile").classList.contains("active")) {
+                updateProfileUI();
+            }
         } catch(e) {}
     }, 15000));
 }
@@ -1000,6 +1070,7 @@ document.getElementById("login-btn").onclick = () => {
             
             state.displayedBalance = 0;
             updateBalanceDisplay(state.user.balance);
+            updateProfileUI();
             
             try {
                 const cfg = await api("/api/config");
@@ -1130,7 +1201,9 @@ async function buyNumber(item) {
         const res = await api("/api/buy", "POST", { node_id: item.id });
         
         state.user.balance = res.new_balance;
+        state.user.total_spent = (state.user.total_spent || 0) + price;
         updateBalanceDisplay(res.new_balance);
+        updateProfileUI();
         
         state.lastPurchasedId = res.number_id;
         document.getElementById("succ-phone").textContent = res.phone || "";
@@ -1179,7 +1252,6 @@ async function loadPurchases() {
         const res = await api("/api/purchases");
         const items = Array.isArray(res.items) ? res.items : [];
         
-        // فلترة المشتريات الأقدم من 24 ساعة
         const now = new Date().getTime();
         const validItems = items.filter(p => {
             if (!p.purchased_at) return true;
@@ -1250,7 +1322,7 @@ async function logoutNumber(numberId) {
         showToast("جاري تسجيل الخروج...", "success");
         await api("/api/logout/" + numberId, "POST");
         showToast("تم تسجيل الخروج بنجاح", "success");
-        loadPurchases(); // إعادة تحميل القائمة لإخفاء الرقم فورا
+        loadPurchases();
     } catch (e) { showToast(e.message, "error"); }
 }
 
@@ -1395,6 +1467,7 @@ document.getElementById("asia-confirm-submit").onclick = () => {
             state.user = state.user || {};
             state.user.balance = res.new_balance;
             updateBalanceDisplay(res.new_balance);
+            updateProfileUI();
             document.getElementById("asia-steps").classList.add("hidden");
             document.getElementById("asia-msg").classList.add("hidden");
             document.getElementById("asia-phone").value = "";
@@ -1413,4 +1486,4 @@ if ('serviceWorker' in navigator) {
 bootApp();
 </script>
 </body>
-    </html>
+</html>
