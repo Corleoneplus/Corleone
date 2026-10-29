@@ -36,17 +36,45 @@
     --smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* 🎨 شريط التمرير المخصص */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--gold-dark);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gold);
+}
+
 html, body {
     height: 100%;
     background-color: var(--bg-main);
-    background-image: radial-gradient(circle at 50% -10%, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
-    background-repeat: no-repeat;
     color: var(--text-main);
     font-family: var(--font-ar);
     overflow-x: hidden;
     overscroll-behavior: none;
     scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
+}
+
+/* 🌌 الخلفية المتحركة (خفيفة جداً) */
+body::before {
+    content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% -10%, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+    z-index: -1;
+    animation: bgPulse 12s infinite alternate ease-in-out;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+@keyframes bgPulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.05); opacity: 1; }
 }
 
 .hidden { display: none !important; }
@@ -86,6 +114,7 @@ html, body {
     -webkit-text-fill-color: transparent;
     letter-spacing: 3px;
     direction: ltr;
+    position: relative;
 }
 .splash-title span {
     display: inline-block; opacity: 0; transform: translateY(20px);
@@ -125,7 +154,23 @@ header {
 
 .header-right { display: flex; align-items: center; gap: 12px; }
 .header-logo { height: 38px; width: 38px; border-radius: 28%; object-fit: cover; border: 1px solid var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
-.header-title { font-family: var(--font-en); font-weight: 900; color: var(--gold); font-size: 1.2rem; letter-spacing: 1px; display: none; }
+
+/* ✨ لمعة الشعار */
+.header-title { 
+    font-family: var(--font-en); font-weight: 900; color: var(--gold); font-size: 1.2rem; letter-spacing: 1px; display: none; 
+    position: relative; overflow: hidden;
+}
+.header-title::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: logoShine 4s infinite;
+    transform: skewX(-20deg);
+}
+@keyframes logoShine {
+    0% { left: -100%; }
+    20% { left: 200%; }
+    100% { left: 200%; }
+}
 
 #user-bar { display: flex; gap: 10px; align-items: center; }
 
@@ -171,6 +216,13 @@ header {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: 2px; margin-bottom: 10px; 
+    position: relative; overflow: hidden;
+}
+.brand-title::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: logoShine 4s infinite;
+    transform: skewX(-20deg);
 }
 
 .input-group { position: relative; margin-bottom: 24px; width: 100%; }
@@ -458,11 +510,14 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
 }
 .avatar-container {
     position: relative; width: 120px; height: 120px; margin-bottom: 20px;
+    cursor: pointer; /* للضغط على الصورة */
 }
 .profile-avatar {
     width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
     border: 3px solid var(--gold); position: relative; z-index: 2; background: #000;
+    transition: transform 0.3s;
 }
+.avatar-container:hover .profile-avatar { transform: scale(1.05); }
 .avatar-glow {
     position: absolute; inset: -5px; border-radius: 50%;
     background: var(--gold); filter: blur(15px); opacity: 0.4; z-index: 1;
@@ -501,6 +556,7 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
 }
 .form-control:focus { border-color: var(--gold); box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 0 15px rgba(212, 175, 55, 0.15); background: rgba(0,0,0,0.6); }
 
+/* المودالات */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px); }
 .modal.show { opacity: 1; pointer-events: auto; }
 .modal-content { 
@@ -513,6 +569,20 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
 }
 .modal.show .modal-content { transform: scale(1) translateY(0); }
 .modal-title { font-weight: 900; color: var(--gold); font-size: 1.5rem; margin-bottom: 24px; text-align: center; }
+
+/* مودال معاينة الصورة */
+#image-modal { background: rgba(0,0,0,0.95); z-index: 2000; }
+#image-modal .modal-content {
+    background: transparent; border: none; box-shadow: none; padding: 0;
+    max-width: 95vw; max-height: 95vh; display: flex; justify-content: center; align-items: center;
+}
+#image-modal img {
+    width: 100%; height: auto; max-height: 85vh; border-radius: 16px;
+    border: 2px solid var(--gold); object-fit: contain;
+    box-shadow: 0 0 40px rgba(212,175,55,0.3);
+    transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#image-modal.show .modal-content img { transform: scale(1); }
 
 .logout-list { list-style: none; padding: 0; margin: 0 0 26px 0; text-align: right; }
 .logout-list li { font-size: 1.05rem; font-weight: 600; color: var(--text-main); margin-bottom: 14px; display: flex; align-items: center; gap: 12px; line-height: 1.6; }
@@ -563,7 +633,6 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
             <div class="status-dot" id="server-status-dot"></div>
             <span class="status-text" id="server-status-text">حالة السيرفر</span>
         </div>
-        <!-- شلنا الرصيد من هنا لأنه صار بالبطاقة الزجاجية -->
         <button id="logout-btn" class="btn outline" style="width:auto; padding:8px 14px; font-size:0.9rem;">خروج</button>
     </div>
 </header>
@@ -597,7 +666,7 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
             </div>
             <div class="wallet-bottom">
                 <div class="wallet-user" id="wallet-user-name">جاري التحميل...</div>
-                <!-- هنا صار يعرض الآيدي الحقيقي -->
+                <!-- عرض الآيدي الحقيقي -->
                 <div class="wallet-id" id="wallet-user-id" onclick="copyToClipboard(state.user ? state.user.id : '')" title="اضغط لنسخ الآيدي">
                     ID: ---
                 </div>
@@ -689,7 +758,7 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
 
     <div id="tab-profile" class="tab-content">
         <div class="profile-card">
-            <div class="avatar-container">
+            <div class="avatar-container" onclick="openImageModal()">
                 <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=d4af37&color=000&size=128'">
                 <div class="avatar-glow"></div>
             </div>
@@ -716,6 +785,29 @@ details[open] summary { border-bottom: 1px solid rgba(255,255,255,0.05); color: 
                     <span class="stat-value" id="profile-spent">$0.00</span>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال معاينة الصورة -->
+<div id="image-modal" class="modal">
+    <div class="modal-content">
+        <img id="preview-avatar" src="" alt="Preview" onclick="closeImageModal()" style="cursor: pointer;">
+    </div>
+</div>
+
+<!-- مودال تأكيد الشراء -->
+<div id="purchase-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">تأكيد الشراء</div>
+        <div style="text-align: center; margin-bottom: 24px;">
+            <p style="color: var(--text-muted); margin-bottom: 10px;">هل أنت متأكد من رغبتك بشراء:</p>
+            <div style="font-size: 1.4rem; font-weight: 900; color: var(--text-main); margin-bottom: 10px;" id="confirm-item-title">---</div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: var(--gold-light); font-family: var(--font-en);" id="confirm-item-price">$0.00</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <button class="btn" onclick="confirmPurchase()" style="background: var(--success); color: white;">تأكيد الشراء</button>
+            <button class="btn outline" onclick="closePurchaseModal()">إلغاء</button>
         </div>
     </div>
 </div>
@@ -790,6 +882,7 @@ const state = {
     currentParent: null,
     chatNumberId: null,
     lastPurchasedId: null,
+    pendingPurchase: null, // لتخزين العنصر اللي نريد نشتريه
     displayedBalance: 0,
     intervals: [],
     balanceAnimFrame: null,
@@ -933,6 +1026,75 @@ function updateProfileUI() {
     const wId = document.getElementById("wallet-user-id");
     if (wName) wName.textContent = state.user.first_name || "User";
     if (wId) wId.textContent = `ID: ${state.user.id || "---"}`;
+}
+
+/* ============ 🖼️ معاينة الصورة ============ */
+function openImageModal() {
+    const avatarSrc = document.getElementById("profile-avatar").src;
+    if (!avatarSrc) return;
+    document.getElementById("preview-avatar").src = avatarSrc;
+    document.getElementById("image-modal").classList.add("show");
+}
+function closeImageModal() {
+    document.getElementById("image-modal").classList.remove("show");
+}
+
+/* ============ 🛒 تأكيد الشراء المخصص ============ */
+function openPurchaseModal(item) {
+    state.pendingPurchase = item;
+    document.getElementById("confirm-item-title").textContent = item.title;
+    document.getElementById("confirm-item-price").textContent = `$${Number(item.price || 0).toFixed(2)}`;
+    document.getElementById("purchase-modal").classList.add("show");
+}
+function closePurchaseModal() {
+    document.getElementById("purchase-modal").classList.remove("show");
+    state.pendingPurchase = null;
+}
+
+async function confirmPurchase() {
+    if (!state.pendingPurchase) return;
+    const item = state.pendingPurchase;
+    closePurchaseModal();
+    
+    if (state.isBuying) return;
+    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
+    if (!state.user || typeof state.user.balance !== 'number') {
+        return showToast("جاري تحميل الرصيد...", "error");
+    }
+    const price = Number(item.price || 0);
+    if (price > state.user.balance) {
+        return showToast(`رصيدك غير كافي (لديك ${state.user.balance.toFixed(2)}$)`, "error");
+    }
+    
+    state.isBuying = true;
+    try {
+        showToast("جاري إتمام الشراء...", "success");
+        const res = await api("/api/buy", "POST", { node_id: item.id });
+        
+        state.user.balance = res.new_balance;
+        state.user.total_spent = (state.user.total_spent || 0) + price;
+        updateBalanceDisplay(res.new_balance);
+        updateProfileUI();
+        
+        state.lastPurchasedId = res.number_id;
+        document.getElementById("succ-phone").textContent = res.phone || "";
+        
+        const pwdContainer = document.getElementById("succ-pwd-container");
+        if (res.password) {
+            pwdContainer.style.display = "block";
+            document.getElementById("succ-pwd").textContent = res.password;
+        } else {
+            pwdContainer.style.display = "none";
+        }
+        
+        document.getElementById("success-modal").classList.add("show");
+        loadShop(state.currentParent);
+        
+    } catch (e) {
+        showToast(e.message, "error");
+    } finally {
+        state.isBuying = false;
+    }
 }
 
 async function withButtonLoader(btn, fn) {
@@ -1275,7 +1437,8 @@ async function loadShop(parentId) {
                             <span class="price">${Number(item.price || 0).toFixed(2)}$</span>
                             <span style="color:var(--text-muted); font-size:0.85rem;">متوفر: ${item.stock}</span>
                         </div>`;
-                    div.onclick = () => buyNumber(item);
+                    // هنا نستدعي مودال التأكيد بدل confirm الافتراضي
+                    div.onclick = () => openPurchaseModal(item);
                 } else {
                     div.innerHTML = `
                         <div class="title">${escapeHtml(item.title)}</div>
@@ -1296,49 +1459,6 @@ async function loadShop(parentId) {
         grid.innerHTML = `<div style="grid-column: 1/-1; color: var(--danger); text-align: center; padding: 20px; font-weight:700;">${escapeHtml(e.message)}</div>`;
     } finally {
         state.isLoadingShop = false;
-    }
-}
-
-async function buyNumber(item) {
-    if (state.isBuying) return;
-    if (!isServerOnline) return showToast("السيرفر غير متصل الآن", "error");
-    if (!state.user || typeof state.user.balance !== 'number') {
-        return showToast("جاري تحميل الرصيد...", "error");
-    }
-    const price = Number(item.price || 0);
-    if (price > state.user.balance) {
-        return showToast(`رصيدك غير كافي (لديك ${state.user.balance.toFixed(2)}$)`, "error");
-    }
-    if (!confirm(`هل تريد شراء ${item.title} بـ ${price.toFixed(2)}$؟`)) return;
-    
-    state.isBuying = true;
-    try {
-        showToast("جاري إتمام الشراء...", "success");
-        const res = await api("/api/buy", "POST", { node_id: item.id });
-        
-        state.user.balance = res.new_balance;
-        state.user.total_spent = (state.user.total_spent || 0) + price;
-        updateBalanceDisplay(res.new_balance);
-        updateProfileUI();
-        
-        state.lastPurchasedId = res.number_id;
-        document.getElementById("succ-phone").textContent = res.phone || "";
-        
-        const pwdContainer = document.getElementById("succ-pwd-container");
-        if (res.password) {
-            pwdContainer.style.display = "block";
-            document.getElementById("succ-pwd").textContent = res.password;
-        } else {
-            pwdContainer.style.display = "none";
-        }
-        
-        document.getElementById("success-modal").classList.add("show");
-        loadShop(state.currentParent);
-        
-    } catch (e) {
-        showToast(e.message, "error");
-    } finally {
-        state.isBuying = false;
     }
 }
 
